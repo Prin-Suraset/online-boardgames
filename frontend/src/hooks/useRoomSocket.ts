@@ -101,6 +101,8 @@ function isWhatNumberView(value: unknown): value is WhatNumberView {
     isRecord(value) &&
     Array.isArray(value.players) &&
     value.players.every(isWhatNumberPlayer) &&
+    Array.isArray(value.revealed_center_cards) &&
+    value.revealed_center_cards.every((card) => typeof card === "number") &&
     typeof value.turn_counter === "number" &&
     typeof value.thinking_time_seconds === "number" &&
     ["THINKING", "ATTACK", "PENALTY", "FINISHED"].includes(
@@ -165,6 +167,7 @@ function isGameEvent(value: unknown): value is GameEvent {
     "TURN_END",
     "TURN_START",
     "SKILL_USED",
+    "CENTER_CARD_REVEALED",
   ];
   return (
     isRecord(value) &&

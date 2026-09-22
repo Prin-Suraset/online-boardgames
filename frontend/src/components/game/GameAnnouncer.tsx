@@ -24,7 +24,7 @@ interface MajorAnnouncement {
 }
 
 function isMajorEvent(event: GameEvent): boolean {
-  return ["TURN_START", "VOLUNTEER", "TIMEOUT_PICK", "TURN_END"].includes(
+  return ["TURN_START", "VOLUNTEER", "TIMEOUT_PICK", "TURN_END", "CENTER_CARD_REVEALED"].includes(
     event.event_type,
   );
 }
@@ -58,6 +58,12 @@ function majorAnnouncementContent(event: GameEvent): Omit<MajorAnnouncement, "id
         icon: "🏁",
         message: "จบเทิร์น",
         subtext: "กำลังส่งต่อไปยังเทิร์นถัดไป",
+      };
+    case "CENTER_CARD_REVEALED":
+      return {
+        icon: "",
+        message: `🔍 กองกลางเปิดการ์ดเลข ${value} เพิ่มแล้ว!`,
+        subtext: "การ์ดคำใบ้ใบใหม่เปิดให้ทุกคนเห็นแล้ว",
       };
     default:
       return {
@@ -97,6 +103,8 @@ function eventMessage(event: GameEvent, currentPlayerId: string): string {
       return event.target_name === null
         ? `${actor} ใช้การ์ด ${value}`
         : `${actor} ใช้การ์ด ${value} ใส่ ${target}`;
+    case "CENTER_CARD_REVEALED":
+      return `🔍 กองกลางเปิดการ์ดเลข ${value} เพิ่มแล้ว!`;
   }
 }
 
@@ -116,6 +124,8 @@ function eventIcon(event: GameEvent): string {
       return "🏁";
     case "TURN_START":
       return "🎲";
+    case "CENTER_CARD_REVEALED":
+      return "🔍";
   }
 }
 

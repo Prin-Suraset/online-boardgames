@@ -421,6 +421,13 @@ class RoomManager:
 
         if after.turn_counter > before.turn_counter:
             self._emit_event(room, "TURN_END", actor_id=actor_id)
+            if len(after.revealed_center_cards) > len(before.revealed_center_cards):
+                revealed_number = after.revealed_center_cards[-1]
+                self._emit_event(
+                    room,
+                    "CENTER_CARD_REVEALED",
+                    value=str(revealed_number),
+                )
             self._emit_event(room, "TURN_START", value=after.turn_counter)
 
     def _emit_event(
@@ -429,6 +436,7 @@ class RoomManager:
         event_type: Literal[
             "VOLUNTEER", "TIMEOUT_PICK", "ATTACK_GUESS", "GUESS_CORRECT",
             "GUESS_WRONG", "TURN_END", "TURN_START", "SKILL_USED",
+            "CENTER_CARD_REVEALED",
         ],
         *,
         actor_id: str | None = None,

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { WhatNumberBoard } from "./game/WhatNumberBoard";
+import { SkillConfirmModal } from "./game/SkillConfirmModal";
 import { TargetSelectionModal } from "./game/TargetSelectionModal";
 import type { ChatMessage, Player, SkillCardView, WhatNumberView } from "../types";
 
@@ -35,6 +36,7 @@ export function WhatNumberGame({
   });
   const [guessedNumber, setGuessedNumber] = useState<string>("");
   const [selectedSkill, setSelectedSkill] = useState<SkillCardView | null>(null);
+  const [skillTargetSelection, setSkillTargetSelection] = useState("");
   const [radarRange, setRadarRange] = useState<"LOW" | "HIGH">("LOW");
   const expiredTurnRef = useRef<number | null>(null);
 
@@ -51,7 +53,11 @@ export function WhatNumberGame({
   const selectedTargetId = activeOpponents.some((player) => player.player_id === turnTargetId)
     ? turnTargetId
     : "";
-  const skillTargetId = selectedTargetId || activeOpponents[0]?.player_id || "";
+  const skillTargetId = activeOpponents.some(
+    (player) => player.player_id === skillTargetSelection,
+  )
+    ? skillTargetSelection
+    : activeOpponents[0]?.player_id || "";
   const isAttacker = game.phase === "ATTACK" && game.active_player_id === playerId;
   const hasPenalty = game.phase === "PENALTY" && game.pending_penalty_player_id === playerId;
 
@@ -148,6 +154,12 @@ export function WhatNumberGame({
       }
     }
     setSelectedSkill(null);
+    setSkillTargetSelection("");
+  };
+
+  const selectSkill = (skill: SkillCardView): void => {
+    setSelectedSkill(skill);
+    setSkillTargetSelection(activeOpponents[0]?.player_id ?? "");
   };
 
   return (
@@ -166,7 +178,7 @@ export function WhatNumberGame({
         onTargetChange={selectTarget}
         onGuessChange={setGuessedNumber}
         onSubmitGuess={submitGuess}
-        onSelectSkill={setSelectedSkill}
+        onSelectSkill={selectSkill}
         chatMessages={chatMessages}
         onSendChat={sendChat}
       />
@@ -180,52 +192,21 @@ export function WhatNumberGame({
       )}
 
       {selectedSkill !== null && (
-        <div className="fixed inset-0 z-50 grid animate-[fade-in_180ms_ease-out_both] place-items-center bg-slate-950/80 p-5 backdrop-blur-sm">
-          <div className="panel w-full max-w-md animate-[modal-pop_240ms_ease-out_both] p-6">
-            <p className="eyebrow">Activate skill</p>
-            <h3 className="mt-2 text-2xl font-black text-white">
-              {selectedSkill.skill_type.replace("_", " ")}
-            </h3>
-            <p className="mt-2 text-sm leading-6 text-slate-400">{selectedSkill.description}</p>
-            {!(["SHIELD", "SAFE_EXIT", "SWAP"] as const).some(
-              (skillType) => skillType === selectedSkill.skill_type,
-            ) && (
-              <select
-                className="text-input mt-5 w-full"
-                value={skillTargetId}
-                onChange={(event) => { selectTarget(event.target.value); }}
-              >
-                {activeOpponents.map((player) => (
-                  <option key={player.player_id} value={player.player_id}>
-                    {players.find((item) => item.id === player.player_id)?.name ?? player.player_id}
-                  </option>
-                ))}
-              </select>
-            )}
-            {selectedSkill.skill_type === "RADAR" && (
-              <select
-                className="text-input mt-3 w-full"
-                value={radarRange}
-                onChange={(event) => { setRadarRange(event.target.value === "HIGH" ? "HIGH" : "LOW"); }}
-              >
-                <option value="LOW">Low range · 1–20</option>
-                <option value="HIGH">High range · 21–40</option>
-              </select>
-            )}
-            <div className="mt-6 flex gap-3">
-              <button
-                type="button"
-                onClick={() => { setSelectedSkill(null); }}
-                className="secondary-button flex-1"
-              >
-                Cancel
-              </button>
-              <button type="button" onClick={activateSkill} className="primary-button flex-1">
-                Activate
-              </button>
-            </div>
-          </div>
-        </div>
+        <SkillConfirmModal
+          skill={selectedSkill}
+          opponents={activeOpponents}
+          players={players}
+          targetPlayerId={skillTargetId}
+          radarRange={radarRange}
+          hasFaceDownCard={ownView?.cards.some((card) => !card.is_revealed) ?? false}
+          onTargetChange={setSkillTargetSelection}
+          onRadarRangeChange={setRadarRange}
+          onCancel={() => {
+            setSelectedSkill(null);
+            setSkillTargetSelection("");
+          }}
+          onConfirm={activateSkill}
+        />
       )}
     </>
   );

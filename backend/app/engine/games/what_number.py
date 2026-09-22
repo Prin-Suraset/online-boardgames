@@ -72,6 +72,7 @@ class WhatNumberState(BaseModel):
 
     players: tuple[WhatNumberPlayer, ...]
     number_deck: tuple[int, ...]
+    revealed_center_cards: list[int] = Field(default_factory=list)
     skill_deck: tuple[SkillCard, ...]
     turn_counter: int = Field(ge=1)
     thinking_time_seconds: int = Field(ge=20, le=120)
@@ -127,6 +128,7 @@ class WhatNumberView(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
 
     players: tuple[WhatNumberPlayerView, ...]
+    revealed_center_cards: list[int]
     turn_counter: int
     thinking_time_seconds: int
     phase: Phase
@@ -192,9 +194,12 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
             number_index += 5
             skill_index += 2
 
+        remaining_numbers = numbers[number_index:]
+        revealed_center_cards = remaining_numbers[:5]
         return WhatNumberState(
             players=tuple(players),
-            number_deck=tuple(numbers[number_index:]),
+            number_deck=tuple(remaining_numbers[5:]),
+            revealed_center_cards=revealed_center_cards,
             skill_deck=skill_cards[skill_index:],
             turn_counter=1,
             thinking_time_seconds=cls.thinking_time_for_turn(1),
@@ -274,6 +279,7 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
             )
         return WhatNumberView(
             players=tuple(player_views),
+            revealed_center_cards=state.revealed_center_cards.copy(),
             turn_counter=state.turn_counter,
             thinking_time_seconds=state.thinking_time_seconds,
             phase=state.phase,
@@ -542,9 +548,16 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
     @classmethod
     def _next_turn(cls, state: WhatNumberState) -> WhatNumberState:
         turn = state.turn_counter + 1
+        number_deck = state.number_deck
+        revealed_center_cards = state.revealed_center_cards.copy()
+        if turn > 1 and turn % 2 == 1 and number_deck:
+            revealed_center_cards.append(number_deck[0])
+            number_deck = number_deck[1:]
         return state.model_copy(
             update={
                 "turn_counter": turn,
+                "number_deck": number_deck,
+                "revealed_center_cards": revealed_center_cards,
                 "thinking_time_seconds": cls.thinking_time_for_turn(turn),
                 "phase": "THINKING",
                 "active_player_id": None,

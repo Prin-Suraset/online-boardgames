@@ -13,6 +13,7 @@ import {
 
 import { FlipCard } from "./FlipCard";
 import { ChatBox } from "./ChatBox";
+import { CenterTable } from "./CenterTable";
 import { cn } from "../../lib/styles";
 import type {
   ChatMessage,
@@ -325,6 +326,7 @@ export function WhatNumberBoard({
               <DeckPile label="Number deck" accent="amber" />
               <DeckPile label="Skill deck" accent="violet" />
             </div>
+            <CenterTable cards={game.revealed_center_cards} />
             <div className="mt-4 flex max-w-72 items-center justify-center gap-2 rounded-full border border-emerald-200/10 bg-emerald-950/80 px-4 py-2 text-xs font-bold text-emerald-100">
               <Sparkles className="size-3.5 shrink-0 text-amber-300" /> {announcement}
             </div>

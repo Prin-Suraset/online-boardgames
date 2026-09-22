@@ -19,6 +19,7 @@ GameEventType = Literal[
     "TURN_END",
     "TURN_START",
     "SKILL_USED",
+    "CENTER_CARD_REVEALED",
 ]
 
 

@@ -47,6 +47,7 @@ export interface WhatNumberPlayerView {
 
 export interface WhatNumberView {
   players: readonly WhatNumberPlayerView[];
+  revealed_center_cards: readonly number[];
   turn_counter: number;
   thinking_time_seconds: number;
   phase: WhatNumberPhase;
@@ -100,7 +101,8 @@ export type GameEventType =
   | "GUESS_WRONG"
   | "TURN_END"
   | "TURN_START"
-  | "SKILL_USED";
+  | "SKILL_USED"
+  | "CENTER_CARD_REVEALED";
 
 export interface GameEvent {
   event_type: GameEventType;

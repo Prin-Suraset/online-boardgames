@@ -29,8 +29,10 @@ def test_deck_distribution() -> None:
     assert all(len(player.cards) == 5 for player in state.players)
     assert all(len(player.skills) == 2 for player in state.players)
     assert len(dealt) == len(set(dealt)) == 20
-    assert len(state.number_deck) == 20
+    assert len(state.number_deck) == 15
     assert set(dealt).isdisjoint(state.number_deck)
+    assert len(state.revealed_center_cards) == 5
+    assert set(dealt).isdisjoint(state.revealed_center_cards)
     all_skills = [
         skill.skill_type
         for player in state.players
@@ -51,6 +53,39 @@ def test_anti_cheat_player_view() -> None:
     assert all(card.number is None for card in opponent.cards)
     assert opponent.skills == ()
     assert opponent.skill_count == 2
+
+
+def test_center_cards_initial_and_periodic() -> None:
+    state = WhatNumberEngine.create_state(PLAYERS, seed=23)
+
+    assert len(state.revealed_center_cards) == 5
+    dealt = {card.number for player in state.players for card in player.cards}
+    assert dealt.isdisjoint(state.revealed_center_cards)
+
+    for _ in range(2):
+        state = WhatNumberEngine.apply_action(
+            state, "p1", WhatNumberAction(action_type="VOLUNTEER")
+        )
+        target = next(player for player in state.players if player.player_id == "p2")
+        target_numbers = {card.number for card in target.cards}
+        wrong_number = next(number for number in range(1, 41) if number not in target_numbers)
+        state = WhatNumberEngine.apply_action(
+            state,
+            "p1",
+            WhatNumberAction(
+                action_type="GUESS",
+                target_player_id="p2",
+                guessed_number=wrong_number,
+            ),
+        )
+        own_card = next(card for card in state.players[0].cards if not card.is_revealed)
+        state = WhatNumberEngine.apply_action(
+            state, "p1", WhatNumberAction(action_type="REVEAL_OWN", card_id=own_card.id)
+        )
+
+    assert state.turn_counter == 3
+    assert len(state.revealed_center_cards) == 6
+    assert dealt.isdisjoint(state.revealed_center_cards)
 
 
 def test_correct_guess_chain() -> None:
@@ -224,3 +259,49 @@ def test_room_emits_ordered_game_events_and_records_actions() -> None:
         "TURN_START",
     ]
     assert all("timestamp" in entry for entry in room.action_logs)
+
+
+def test_room_emits_center_card_reveal_after_every_two_completed_turns() -> None:
+    rooms = RoomManager()
+    host = PlayerInput(id="p1", name="Player One", avatar="1")
+    room = rooms.create_room(host, "what_number")
+    for player_id in ("p2", "p3"):
+        rooms.join_room(room.code, PlayerInput(id=player_id, name=player_id, avatar=player_id))
+    for player_id in ("p1", "p2", "p3"):
+        rooms.toggle_ready(room.code, player_id, True)
+    rooms.start_game(room.code, "p1")
+    rooms.take_pending_events(room.code)
+
+    for completed_turn in range(2):
+        rooms.apply_game_action(room.code, "p1", "VOLUNTEER", {})
+        rooms.take_pending_events(room.code)
+        assert isinstance(room.game_state, WhatNumberState)
+        target = next(player for player in room.game_state.players if player.player_id == "p2")
+        wrong_number = next(
+            number
+            for number in range(1, 41)
+            if number not in {card.number for card in target.cards}
+        )
+        rooms.apply_game_action(
+            room.code,
+            "p1",
+            "GUESS",
+            {"target_player_id": "p2", "guessed_number": wrong_number},
+        )
+        rooms.take_pending_events(room.code)
+        own_card = next(
+            card
+            for card in room.game_state.players[0].cards
+            if not card.is_revealed
+        )
+        rooms.apply_game_action(
+            room.code, "p1", "REVEAL_OWN", {"card_id": own_card.id}
+        )
+        events = rooms.take_pending_events(room.code)
+        if completed_turn == 1:
+            assert [event.event_type for event in events] == [
+                "TURN_END",
+                "CENTER_CARD_REVEALED",
+                "TURN_START",
+            ]
+            assert events[1].value is not None

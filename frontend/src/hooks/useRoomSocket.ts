@@ -36,6 +36,21 @@ interface ClientEnvelope {
   payload: object;
 }
 
+function getWsBaseUrl(): string {
+  let url =
+    import.meta.env.VITE_WS_URL || "wss://boardgames-backend-pzln.onrender.com";
+
+  if (url.startsWith("https://")) {
+    url = url.replace("https://", "wss://");
+  } else if (url.startsWith("http://")) {
+    url = url.replace("http://", "ws://");
+  } else if (!url.startsWith("ws://") && !url.startsWith("wss://")) {
+    url = `wss://${url}`;
+  }
+
+  return url.replace(/\/$/, "");
+}
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
@@ -244,10 +259,8 @@ export function useRoomSocket(
     const normalizedRoomCode = roomCode.trim().toUpperCase();
     const websocketUrl = new URL(
       `/ws/rooms/${encodeURIComponent(normalizedRoomCode)}`,
-      window.location.href,
+      `${getWsBaseUrl()}/`,
     );
-    websocketUrl.protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    websocketUrl.port = import.meta.env.DEV ? "8000" : window.location.port;
     websocketUrl.searchParams.set("token", authToken);
     const socket = new WebSocket(websocketUrl);
     socketRef.current = socket;

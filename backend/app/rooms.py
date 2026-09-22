@@ -396,6 +396,20 @@ class RoomManager:
                 value=guessed_number,
                 is_correct=is_correct,
             )
+            if not is_correct and guessed_number is not None:
+                reveal_event = (
+                    "CENTER_REVEALED_FROM_GUESS"
+                    if guessed_number in before.number_deck
+                    and guessed_number not in after.number_deck
+                    else "GUESS_HELD_BY_ANOTHER"
+                )
+                self._emit_event(
+                    room,
+                    reveal_event,
+                    actor_id=actor_id,
+                    target_id=target_id,
+                    value=str(guessed_number),
+                )
         elif action.action_type == "USE_SKILL":
             actor_before = next(
                 player for player in before.players if player.player_id == actor_id
@@ -436,7 +450,8 @@ class RoomManager:
         event_type: Literal[
             "VOLUNTEER", "TIMEOUT_PICK", "ATTACK_GUESS", "GUESS_CORRECT",
             "GUESS_WRONG", "TURN_END", "TURN_START", "SKILL_USED",
-            "CENTER_CARD_REVEALED",
+            "CENTER_CARD_REVEALED", "CENTER_REVEALED_FROM_GUESS",
+            "GUESS_HELD_BY_ANOTHER",
         ],
         *,
         actor_id: str | None = None,

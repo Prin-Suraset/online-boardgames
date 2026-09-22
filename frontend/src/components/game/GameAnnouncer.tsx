@@ -24,9 +24,14 @@ interface MajorAnnouncement {
 }
 
 function isMajorEvent(event: GameEvent): boolean {
-  return ["TURN_START", "VOLUNTEER", "TIMEOUT_PICK", "TURN_END", "CENTER_CARD_REVEALED"].includes(
-    event.event_type,
-  );
+  return [
+    "TURN_START",
+    "VOLUNTEER",
+    "TIMEOUT_PICK",
+    "TURN_END",
+    "CENTER_CARD_REVEALED",
+    "CENTER_REVEALED_FROM_GUESS",
+  ].includes(event.event_type);
 }
 
 function majorAnnouncementContent(event: GameEvent): Omit<MajorAnnouncement, "id" | "status"> {
@@ -64,6 +69,12 @@ function majorAnnouncementContent(event: GameEvent): Omit<MajorAnnouncement, "id
         icon: "",
         message: `🔍 กองกลางเปิดการ์ดเลข ${value} เพิ่มแล้ว!`,
         subtext: "การ์ดคำใบ้ใบใหม่เปิดให้ทุกคนเห็นแล้ว",
+      };
+    case "CENTER_REVEALED_FROM_GUESS":
+      return {
+        icon: "",
+        message: `🔍 เลข ${value} อยู่ในกองกลาง! ทำการเปิดการ์ดลงกองกลาง`,
+        subtext: "การ์ดคำใบ้ถูกเปิดจากการทายผิด",
       };
     default:
       return {
@@ -105,6 +116,10 @@ function eventMessage(event: GameEvent, currentPlayerId: string): string {
         : `${actor} ใช้การ์ด ${value} ใส่ ${target}`;
     case "CENTER_CARD_REVEALED":
       return `🔍 กองกลางเปิดการ์ดเลข ${value} เพิ่มแล้ว!`;
+    case "CENTER_REVEALED_FROM_GUESS":
+      return `🔍 เลข ${value} อยู่ในกองกลาง! ทำการเปิดการ์ดลงกองกลาง`;
+    case "GUESS_HELD_BY_ANOTHER":
+      return `🤫 เลข ${value} ไม่ได้อยู่ในกองกลาง! (มีผู้เล่นคนอื่นถืออยู่)`;
   }
 }
 
@@ -126,6 +141,10 @@ function eventIcon(event: GameEvent): string {
       return "🎲";
     case "CENTER_CARD_REVEALED":
       return "🔍";
+    case "CENTER_REVEALED_FROM_GUESS":
+      return "🔍";
+    case "GUESS_HELD_BY_ANOTHER":
+      return "🤫";
   }
 }
 

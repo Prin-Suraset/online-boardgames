@@ -66,9 +66,8 @@ def test_center_cards_initial_and_periodic() -> None:
         state = WhatNumberEngine.apply_action(
             state, "p1", WhatNumberAction(action_type="VOLUNTEER")
         )
-        target = next(player for player in state.players if player.player_id == "p2")
-        target_numbers = {card.number for card in target.cards}
-        wrong_number = next(number for number in range(1, 41) if number not in target_numbers)
+        other_player = next(player for player in state.players if player.player_id == "p3")
+        wrong_number = other_player.cards[0].number
         state = WhatNumberEngine.apply_action(
             state,
             "p1",
@@ -138,6 +137,62 @@ def test_wrong_guess_penalty() -> None:
     assert state.players[0].cards[0].is_revealed is True
     assert state.phase == "THINKING"
     assert state.turn_counter == 2
+
+
+def test_wrong_guess_center_reveal() -> None:
+    state = WhatNumberEngine.create_state(PLAYERS, seed=29)
+    center_number = state.number_deck[0]
+    state = WhatNumberEngine.apply_action(
+        state, "p1", WhatNumberAction(action_type="VOLUNTEER")
+    )
+    state = WhatNumberEngine.apply_action(
+        state,
+        "p1",
+        WhatNumberAction(
+            action_type="GUESS",
+            target_player_id="p2",
+            guessed_number=center_number,
+        ),
+    )
+
+    assert state.phase == "PENALTY"
+    assert center_number not in state.number_deck
+    assert center_number in state.revealed_center_cards
+    assert any(
+        entry == f"CENTER_REVEALED_FROM_GUESS: {center_number}"
+        for entry in state.event_log
+    )
+
+    held_state = WhatNumberEngine.create_state(PLAYERS, seed=29)
+    held_number = next(
+        card.number
+        for card in next(player for player in held_state.players if player.player_id == "p3").cards
+    )
+    held_state = WhatNumberEngine.apply_action(
+        held_state, "p1", WhatNumberAction(action_type="VOLUNTEER")
+    )
+    held_state = WhatNumberEngine.apply_action(
+        held_state,
+        "p1",
+        WhatNumberAction(
+            action_type="GUESS",
+            target_player_id="p2",
+            guessed_number=held_number,
+        ),
+    )
+
+    p3_card = next(
+        card
+        for card in next(player for player in held_state.players if player.player_id == "p3").cards
+        if card.number == held_number
+    )
+    assert held_state.phase == "PENALTY"
+    assert held_number not in held_state.revealed_center_cards
+    assert p3_card.is_revealed is False
+    assert any(
+        entry == f"GUESS_HELD_BY_ANOTHER: {held_number}"
+        for entry in held_state.event_log
+    )
 
 
 def test_timer_reduction() -> None:
@@ -231,9 +286,9 @@ def test_room_emits_ordered_game_events_and_records_actions() -> None:
     assert volunteer[0].actor_name == "Player One"
 
     assert isinstance(room.game_state, WhatNumberState)
-    target = next(player for player in room.game_state.players if player.player_id == "p2")
-    target_numbers = {card.number for card in target.cards}
-    wrong_number = next(number for number in range(1, 41) if number not in target_numbers)
+    wrong_number = next(
+        player for player in room.game_state.players if player.player_id == "p3"
+    ).cards[0].number
     rooms.apply_game_action(
         room.code,
         "p1",
@@ -244,6 +299,7 @@ def test_room_emits_ordered_game_events_and_records_actions() -> None:
     assert [event.event_type for event in guess_events] == [
         "ATTACK_GUESS",
         "GUESS_WRONG",
+        "GUESS_HELD_BY_ANOTHER",
     ]
     assert guess_events[0].target_name == "Player Two"
     assert guess_events[0].value == wrong_number
@@ -259,6 +315,41 @@ def test_room_emits_ordered_game_events_and_records_actions() -> None:
         "TURN_START",
     ]
     assert all("timestamp" in entry for entry in room.action_logs)
+
+
+def test_room_emits_center_reveal_from_wrong_guess() -> None:
+    rooms = RoomManager()
+    players = [
+        PlayerInput(id="p1", name="Player One", avatar="1"),
+        PlayerInput(id="p2", name="Player Two", avatar="2"),
+        PlayerInput(id="p3", name="Player Three", avatar="3"),
+    ]
+    room = rooms.create_room(players[0], "what_number")
+    rooms.join_room(room.code, players[1])
+    rooms.join_room(room.code, players[2])
+    for player in players:
+        rooms.toggle_ready(room.code, player.id, True)
+    rooms.start_game(room.code, players[0].id)
+    rooms.take_pending_events(room.code)
+    rooms.apply_game_action(room.code, "p1", "VOLUNTEER", {})
+    rooms.take_pending_events(room.code)
+
+    assert isinstance(room.game_state, WhatNumberState)
+    center_number = room.game_state.number_deck[0]
+    rooms.apply_game_action(
+        room.code,
+        "p1",
+        "GUESS",
+        {"target_player_id": "p2", "guessed_number": center_number},
+    )
+
+    events = rooms.take_pending_events(room.code)
+    assert [event.event_type for event in events] == [
+        "ATTACK_GUESS",
+        "GUESS_WRONG",
+        "CENTER_REVEALED_FROM_GUESS",
+    ]
+    assert events[-1].value == str(center_number)
 
 
 def test_room_emits_center_card_reveal_after_every_two_completed_turns() -> None:

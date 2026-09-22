@@ -102,7 +102,9 @@ export type GameEventType =
   | "TURN_END"
   | "TURN_START"
   | "SKILL_USED"
-  | "CENTER_CARD_REVEALED";
+  | "CENTER_CARD_REVEALED"
+  | "CENTER_REVEALED_FROM_GUESS"
+  | "GUESS_HELD_BY_ANOTHER";
 
 export interface GameEvent {
   event_type: GameEventType;

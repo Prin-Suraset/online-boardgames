@@ -354,14 +354,28 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
             None,
         )
         if matching is None:
+            guessed_number = action.guessed_number
+            number_deck = state.number_deck
+            revealed_center_cards = state.revealed_center_cards.copy()
+            if guessed_number in number_deck:
+                number_deck = tuple(
+                    number for number in number_deck if number != guessed_number
+                )
+                revealed_center_cards.append(guessed_number)
+                guess_result = f"CENTER_REVEALED_FROM_GUESS: {guessed_number}"
+            else:
+                guess_result = f"GUESS_HELD_BY_ANOTHER: {guessed_number}"
             return state.model_copy(
                 update={
                     "phase": "PENALTY",
                     "pending_penalty_player_id": player_id,
+                    "number_deck": number_deck,
+                    "revealed_center_cards": revealed_center_cards,
                     "event_log": state.event_log
                     + (
                         f"{player_id} guessed {action.guessed_number} against "
                         f"{target.player_id} and missed.",
+                        guess_result,
                     ),
                 }
             )

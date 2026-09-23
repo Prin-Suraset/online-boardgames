@@ -12,13 +12,13 @@ export function Navbar() {
   );
 
   return (
-    <nav className="relative z-50 border-b border-slate-800/80 bg-slate-950/75 backdrop-blur-xl">
+    <nav className="relative z-50 border-b border-slate-800/80 bg-slate-950/75 shadow-lg shadow-black/10 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="/" className="flex items-center gap-3 text-white">
-          <span className="grid size-9 place-items-center rounded-xl bg-indigo-500 shadow-lg shadow-indigo-500/20">
+        <a href="/" className="group flex items-center gap-3 text-white">
+          <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-amber-300 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20 transition-transform duration-200 group-hover:rotate-6">
             <Dices className="size-5" />
           </span>
-          <span className="font-display text-sm font-black tracking-tight sm:text-base">ONLINE BOARD GAMES</span>
+          <span className="font-display text-sm font-black tracking-tight sm:text-base"><span className="text-amber-300">Online</span> Board Games</span>
         </a>
 
         {isLoading ? (
@@ -31,12 +31,12 @@ export function Navbar() {
               type="button"
               onClick={() => { setMenuOpen((open) => !open); }}
               aria-expanded={isMenuOpen}
-              className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-900/80 p-1.5 pr-3 text-left transition hover:border-slate-700"
+              className="flex items-center gap-3 rounded-full border border-slate-700/80 bg-slate-900/80 p-1.5 pr-3 text-left shadow-lg shadow-black/10 transition hover:border-amber-400/40"
             >
-              <span className="grid size-9 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 text-xs font-black text-white">{initials}</span>
+              <span className="grid size-9 place-items-center rounded-full bg-gradient-to-br from-amber-300 to-amber-600 text-xs font-black text-slate-950">{initials}</span>
               <span className="hidden sm:block">
                 <span className="block max-w-36 truncate text-sm font-bold text-slate-100">{user.display_name}</span>
-                <span className={isGuest ? "text-[10px] font-bold tracking-wider text-amber-400 uppercase" : "text-[10px] font-bold tracking-wider text-emerald-400 uppercase"}>{user.is_admin ? "Admin" : isGuest ? "Guest" : "Member"}</span>
+                <span className={isGuest ? "mt-0.5 inline-flex w-fit rounded-full bg-amber-400/10 px-2 py-0.5 text-[9px] font-bold tracking-wider text-amber-300 uppercase" : "mt-0.5 inline-flex w-fit rounded-full bg-emerald-400/10 px-2 py-0.5 text-[9px] font-bold tracking-wider text-emerald-300 uppercase"}>{user.is_admin ? "Admin" : isGuest ? "Guest" : "Member"}</span>
               </span>
               <ChevronDown className="size-4 text-slate-500" />
             </button>
@@ -45,7 +45,7 @@ export function Navbar() {
               <div className="absolute top-[calc(100%+0.6rem)] right-0 w-64 rounded-2xl border border-slate-700 bg-slate-900 p-2 shadow-2xl shadow-black/40">
                 {isGuest ? (
                   <>
-                    <button type="button" onClick={() => { setMenuOpen(false); openAuthModal("register"); }} className="menu-action text-indigo-200">
+                    <button type="button" onClick={() => { setMenuOpen(false); openAuthModal("register"); }} className="menu-action text-amber-200">
                       <UserPlus className="size-4" /> Save / register account
                     </button>
                     <button type="button" onClick={() => { setMenuOpen(false); openAuthModal("guest"); }} className="menu-action">

@@ -45,10 +45,10 @@ export function FlipCard({
           isRevealed && "[transform:rotateY(180deg)]",
         )}
       >
-        <span className="absolute inset-0 overflow-hidden rounded-xl [backface-visibility:hidden]">
+        <span className="absolute inset-0 overflow-hidden rounded-xl shadow-[0_10px_22px_rgba(0,0,0,0.35)] [backface-visibility:hidden]">
           {back}
         </span>
-        <span className="absolute inset-0 overflow-hidden rounded-xl [backface-visibility:hidden] [transform:rotateY(180deg)]">
+        <span className="absolute inset-0 overflow-hidden rounded-xl shadow-[0_10px_22px_rgba(0,0,0,0.35)] [backface-visibility:hidden] [transform:rotateY(180deg)]">
           {front}
         </span>
       </span>

@@ -178,8 +178,8 @@ function NumberCard({
             "grid size-full place-items-center border font-black shadow-lg",
             compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
             isOwn
-              ? "border-cyan-200/30 bg-[radial-gradient(circle_at_50%_35%,#285e68,#102b34_65%)] text-cyan-50"
-              : "border-amber-100/20 bg-[repeating-linear-gradient(135deg,#6d3d22,#6d3d22_7px,#3d2217_7px,#3d2217_14px)] text-amber-100",
+              ? "border-emerald-200/30 bg-[radial-gradient(circle_at_50%_35%,#285e68,#102b34_65%)] text-emerald-50"
+              : "border-rose-200/30 bg-[repeating-linear-gradient(45deg,#17152f_0,#17152f_8px,#4a1f2d_8px,#4a1f2d_16px)] text-amber-100",
           )}
         >
           <span className={cn(
@@ -193,11 +193,13 @@ function NumberCard({
       front={
         <span
           className={cn(
-            "grid size-full place-items-center border border-rose-300/45 bg-[radial-gradient(circle_at_50%_35%,#fff7ed,#fed7aa_70%)] font-black text-rose-800 shadow-lg",
+            "relative grid size-full place-items-center border border-amber-400/70 bg-[radial-gradient(circle_at_50%_35%,#fff7ed,#fed7aa_70%)] font-black text-rose-900 shadow-lg",
             compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
           )}
         >
-          {card.number ?? "?"}
+          <span className="pointer-events-none absolute inset-x-2 top-1.5 h-px bg-amber-700/45" />
+          <span className="pointer-events-none absolute inset-x-2 bottom-1.5 h-px bg-amber-700/45" />
+          <span className="relative">{card.number ?? "?"}</span>
         </span>
       }
     />
@@ -224,7 +226,7 @@ function OpponentSeat({
     <article
       style={placement.style}
       className={cn(
-        "absolute z-20 rounded-2xl border bg-[#071713]/95 p-2 shadow-xl backdrop-blur-sm sm:p-2.5",
+        "absolute z-20 rounded-2xl border bg-slate-950/85 p-2 shadow-xl backdrop-blur-md sm:p-2.5",
         placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:left-6 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
         placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
@@ -234,13 +236,16 @@ function OpponentSeat({
             ? "w-36 sm:w-40 xl:w-44 2xl:w-48"
             : "w-44 sm:w-48 xl:w-56 2xl:w-60",
         isActive
-          ? "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-2 ring-amber-300/20"
-          : "animate-[seat-in_450ms_ease-out_both] border-emerald-100/15",
+          ? "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-4 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.5)]"
+          : "animate-[seat-in_450ms_ease-out_both] border-slate-700/80",
         gamePlayer.status === "ELIMINATED" && "opacity-50 grayscale",
       )}
     >
       <div className="flex items-center gap-2">
-        <span className="grid size-8 shrink-0 place-items-center rounded-full border border-amber-100/20 bg-[#6d3d22] text-xs font-black text-amber-50">
+        <span className={cn(
+          "grid size-8 shrink-0 place-items-center rounded-full border text-xs font-black text-amber-50",
+          isActive ? "border-amber-200/70 bg-gradient-to-br from-amber-300 to-amber-700 text-slate-950" : "border-amber-100/20 bg-[#6d3d22]",
+        )}>
           {player?.avatar ?? "?"}
         </span>
         <div className="min-w-0 flex-1">
@@ -410,9 +415,9 @@ export function WhatNumberBoard({
 
       <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
       <section className="relative h-full w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-3 xl:p-5">
-        <div className="relative h-full w-full overflow-hidden rounded-[3rem] border-4 border-amber-950/70 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] sm:rounded-[5rem] sm:p-4 xl:rounded-[100px] xl:border-8 xl:p-8">
+        <div className="relative h-full w-full overflow-hidden rounded-[60px] border-[6px] border-amber-950/80 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/90 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),0_25px_70px_rgba(0,0,0,0.5)] md:rounded-[90px] md:border-8 md:p-4 xl:p-8">
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
-          <div className="pointer-events-none absolute inset-3 rounded-[86px] border border-emerald-200/10" />
+          <div className="pointer-events-none absolute inset-3 rounded-[54px] border border-emerald-200/10 md:rounded-[82px]" />
 
           <div className="absolute inset-0">
             {opponents.map((gamePlayer, index) => {
@@ -498,7 +503,7 @@ export function WhatNumberBoard({
                   ? "z-40 -translate-y-8 scale-110 border-rose-500 bg-slate-900/95 ring-4 ring-rose-500/70 shadow-2xl"
                   : "z-20 border-slate-700/60 bg-slate-900/85",
                 game.active_player_id === playerId && !hasPenalty
-                  && "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-2 ring-amber-300/20",
+                  && "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-4 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.5)]",
                 ownView.status === "ELIMINATED" && "opacity-50 grayscale",
               )}
             >

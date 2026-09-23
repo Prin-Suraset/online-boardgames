@@ -173,7 +173,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         "mx-auto w-full",
         isWhatNumberSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
-        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl sm:px-5">
+        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
           <button type="button" onClick={exitRoom} className="ghost-button">
             <ArrowLeft className="size-4" /> Exit room
           </button>
@@ -188,8 +188,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               </button>
             )}
             <div className="text-right">
-              <p className="text-[10px] font-bold tracking-[0.18em] text-slate-500 uppercase">Room code</p>
-              <p className="font-mono text-lg font-black tracking-[0.2em] text-white">{code.toUpperCase()}</p>
+              <p className="text-[10px] font-bold tracking-[0.18em] text-amber-300/70 uppercase">Room code</p>
+              <p className="font-mono text-lg font-black tracking-[0.2em] text-amber-100">{code.toUpperCase()}</p>
             </div>
             <button type="button" onClick={() => void copyInvite()} className="icon-button size-10" aria-label="Copy room code">
               <Clipboard className="size-4" />

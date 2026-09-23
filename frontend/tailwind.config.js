@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        "slate-950": "#07111f",
-        "slate-900": "#0b1728",
+        "slate-950": "#090d16",
+        "slate-900": "#101827",
         coral: "#ff7a66",
         cyan: "#67e8e1",
         mint: "#7ce6a3",

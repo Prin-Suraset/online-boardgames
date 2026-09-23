@@ -1,7 +1,7 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Ship responsive What Number gameplay, target-side SWAP, private skill-result UX, and desktop notification refinements.
+* **Active Task**: Apply the cohesive Grand Tabletop Lounge theme across navigation, catalog, and the game arena.
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
@@ -39,11 +39,14 @@
 * [x] Verified frontend `npm run build`, `npm run lint`, and `git diff --check`; committed as `ee63be2` (`refactor(responsive): implement full-width table with slide-over chat drawer and top HUD for tablet/mobile viewports`).
 * [x] Pinned the left opponent pod to the table edge at `xl`, preserved all tablet/mobile positioning rules, extended toast notifications to 5 seconds with a 300ms exit transition, verified `npm run build` and `git diff --check`, and committed the requested implementation as `27cc33f` (`fix(ui): align left player pod to table edge on desktop and extend notification duration to 5s`).
 * [x] Corrected the Tailwind desktop utility cascade so the explicit left-edge anchor overrides the previous variable anchor; the correction is included with this handoff update.
+* [x] Applied the Grand Tabletop Lounge visual system: radial indigo mesh, amber CTAs, glass panels, guest/member profile pills, tabletop catalog cards, felt arena, active-turn halos, and tactile number cards.
+* [x] Committed the final UI pass as `c6e5a64` (`style(ui): apply cohesive Grand Tabletop Lounge theme across navigation, catalog, and game arena`).
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
+* [ ] Install frontend dependencies when npm registry access is available, then run `npm run build` and `npm run lint` from `frontend/`.
 
 ## 4. Known Issues & Notes
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.
@@ -55,3 +58,5 @@
 * Backend tests may update `data/boardgame.db` as a test artifact; it is not part of this gameplay change.
 * Push attempts (including escalated network access) are currently blocked by DNS resolution failure for `github.com`; commits `e34cef3`, `665bef1`, `5f868b6`, `238b8b3`, and `5f541b9` remain ready to push.
 * The current sandbox also rejects Vite dev-server socket binding with `EPERM` on both `0.0.0.0:5173` and `127.0.0.1:5173`, so live browser viewport verification could not be run here; production build and lint checks pass.
+* For the current theme pass, `frontend/node_modules` was absent. Both sandboxed and escalated `npm ci --no-audit --no-fund` attempts failed resolving `registry.npmjs.org` with `EAI_AGAIN`; the requested build therefore could not be executed in this session. `git diff --check` passes.
+* The main `.git` mount is read-only. The theme commit is recorded in `/tmp/TheBoardGame-rematch-git/.git` as `c6e5a64`; sync or push it when repository Git metadata is writable.

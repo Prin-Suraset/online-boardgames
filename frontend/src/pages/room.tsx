@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Bot,
@@ -105,12 +105,22 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     chatMessages,
     gameEvents,
     clearError,
+    clearTransientState,
     sendAction,
     sendChat,
     toggleReady,
     startGame,
     leaveRoom,
   } = useRoomSocket(code, profile, token);
+
+  const previousRoomStatus = useRef(room?.status);
+  useEffect(() => {
+    if (room?.status === "LOBBY" && previousRoomStatus.current !== "LOBBY") {
+      setNotice(null);
+      clearTransientState();
+    }
+    previousRoomStatus.current = room?.status;
+  }, [clearTransientState, room?.status]);
 
   const currentPlayer = room?.players.find((player) => player.id === profile.playerId);
   const minPlayers = room?.game_type === "what_number" ? 3 : 2;
@@ -326,14 +336,14 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   {(currentPlayer?.is_host === true || user.is_admin) && (
                     <button
                       type="button"
-                      onClick={() => { sendAction("RESET_ROOM", {}); }}
+                      onClick={() => { sendAction("REMATCH", {}); }}
                       className="primary-button mt-7 w-full"
                     >
-                      <Play className="size-4" /> Play again
+                      <Play className="size-4" /> 🔄 เล่นใหม่อีกรอบ (Play Again)
                     </button>
                   )}
                   <button type="button" onClick={exitRoom} className="secondary-button mt-3 w-full">
-                    <LogOut className="size-4" /> Return to lobby
+                    <LogOut className="size-4" /> กลับสู่ห้องพัก (Back to Lobby)
                   </button>
                 </div>
               </div>

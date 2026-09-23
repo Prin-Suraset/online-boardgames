@@ -62,6 +62,18 @@ export function WhatNumberGame({
   const hasPenalty = game.phase === "PENALTY" && game.pending_penalty_player_id === playerId;
 
   useEffect(() => {
+    if (game.phase !== "THINKING" || game.turn_counter !== 1) {
+      return;
+    }
+    setTimerState({ turn: 1, secondsLeft: game.thinking_time_seconds });
+    setTargetSelection({ turn: 1, playerId: "" });
+    setGuessedNumber("");
+    setSelectedSkill(null);
+    setSkillTargetSelection("");
+    expiredTurnRef.current = null;
+  }, [game.phase, game.thinking_time_seconds, game.turn_counter]);
+
+  useEffect(() => {
     if (game.phase !== "THINKING") {
       return;
     }

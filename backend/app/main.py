@@ -239,7 +239,11 @@ def create_app(
                                     "Only admin can force end the game",
                                 )
                             rooms.get_room(code).force_end_game(message.player_id)
-                        elif message.payload.action_type == "RESET_ROOM":
+                        elif message.payload.action_type in {
+                            "REMATCH",
+                            "PLAY_AGAIN",
+                            "RESET_ROOM",
+                        }:
                             if (
                                 authenticated_user is None
                                 or authenticated_user.id != message.player_id
@@ -248,7 +252,7 @@ def create_app(
                                     "FORBIDDEN",
                                     "Sign in as the host or an admin to play again.",
                                 )
-                            rooms.get_room(code).reset_to_lobby(message.player_id)
+                            rooms.get_room(code).reset_for_rematch(message.player_id)
                         else:
                             try:
                                 rooms.apply_game_action(

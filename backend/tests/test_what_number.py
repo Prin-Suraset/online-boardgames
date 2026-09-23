@@ -246,6 +246,44 @@ def test_room_adds_ready_bots_and_preserves_scoped_views() -> None:
     assert all(card.number is None for player in opponents for card in player.cards)
 
 
+def test_room_rematch_discards_old_state_and_deals_a_fresh_game() -> None:
+    rooms = RoomManager()
+    host = PlayerInput(id="host", name="Host Player", avatar="H")
+    room = rooms.create_room(host, "what_number")
+    rooms.toggle_ready(room.code, host.id, True)
+    rooms.add_test_bots(room.code, host.id, 2)
+    rooms.start_game(room.code, host.id)
+
+    assert isinstance(room.game_state, WhatNumberState)
+    first_state = room.game_state
+    first_numbers = tuple(
+        card.number for player in first_state.players for card in player.cards
+    )
+    room.action_logs.append({"action": "OLD_MATCH"})
+    room.status = "FINISHED"
+
+    room.reset_for_rematch(host.id)
+
+    assert room.status == "LOBBY"
+    assert room.game_state is None
+    assert room.action_logs == []
+    assert all(player.is_ready == player.is_bot for player in room.players.values())
+
+    rooms.toggle_ready(room.code, host.id, True)
+    rooms.start_game(room.code, host.id)
+
+    assert isinstance(room.game_state, WhatNumberState)
+    second_state = room.game_state
+    second_numbers = tuple(
+        card.number for player in second_state.players for card in player.cards
+    )
+    assert second_state.seed != first_state.seed
+    assert second_numbers != first_numbers
+    assert second_state.turn_counter == 1
+    assert second_state.thinking_time_seconds == 120
+    assert len(second_state.revealed_center_cards) == 5
+
+
 def test_room_auto_resolves_a_selected_bot_turn() -> None:
     rooms = RoomManager()
     host = PlayerInput(id="host", name="Host Player", avatar="H")

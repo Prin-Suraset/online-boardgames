@@ -478,7 +478,7 @@ async def test_only_authenticated_admin_can_force_end_and_reset_game(
             assert opponent_finished.result == admin_finished.result
 
             await admin_socket.send_json(
-                room_action_message(admin_id, "RESET_ROOM")
+                room_action_message(admin_id, "REMATCH")
             )
             admin_lobby = StateEnvelope.model_validate(
                 await admin_socket.receive_json()

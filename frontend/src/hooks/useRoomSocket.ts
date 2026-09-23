@@ -23,6 +23,7 @@ interface UseRoomSocketResult {
   chatMessages: readonly ChatMessage[];
   gameEvents: readonly GameEvent[];
   clearError: () => void;
+  clearTransientState: () => void;
   sendAction: (actionType: string, payload: object) => void;
   sendChat: (text: string) => void;
   toggleReady: (ready: boolean) => void;
@@ -294,6 +295,11 @@ export function useRoomSocket(
       if (envelope === null) {
         setNotification("The server sent an unsupported room message.");
       } else if ("type" in envelope && envelope.type === "GAME_STATE_UPDATE") {
+        if (envelope.payload.status === "LOBBY") {
+          setError(null);
+          setNotification(null);
+          setGameEvents([]);
+        }
         setRoom(envelope.payload);
       } else if ("type" in envelope) {
         setNotification(`${envelope.payload.code}: ${envelope.payload.message}`);
@@ -350,6 +356,17 @@ export function useRoomSocket(
     socket.send(JSON.stringify({ action: "SEND_CHAT", payload: { text } }));
   }, []);
 
+  const clearError = useCallback((): void => {
+    setError(null);
+    setNotification(null);
+  }, []);
+
+  const clearTransientState = useCallback((): void => {
+    setError(null);
+    setNotification(null);
+    setGameEvents([]);
+  }, []);
+
   const toggleReady = useCallback(
     (ready: boolean): void => {
       send({
@@ -377,10 +394,8 @@ export function useRoomSocket(
     notification,
     chatMessages,
     gameEvents,
-    clearError: () => {
-      setError(null);
-      setNotification(null);
-    },
+    clearError,
+    clearTransientState,
     sendAction,
     sendChat,
     toggleReady,

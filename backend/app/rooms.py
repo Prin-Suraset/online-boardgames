@@ -101,8 +101,8 @@ class Room:
         )
         return True
 
-    def reset_to_lobby(self, requested_by_player_id: str) -> bool:
-        """Prepare a finished room for another game."""
+    def reset_for_rematch(self, requested_by_player_id: str) -> bool:
+        """Destroy the finished match state and return the room to the lobby."""
         player = self.players.get(requested_by_player_id)
         if player is None or (
             requested_by_player_id != self.host_id and not player.is_admin
@@ -122,6 +122,10 @@ class Room:
         for room_player in self.players.values():
             room_player.is_ready = room_player.is_bot
         return True
+
+    def reset_to_lobby(self, requested_by_player_id: str) -> bool:
+        """Backward-compatible alias for the rematch reset action."""
+        return self.reset_for_rematch(requested_by_player_id)
 
     @property
     def min_players(self) -> int:
@@ -223,7 +227,9 @@ class RoomManager:
         room.game_state = (
             TicTacToeGame.initial_state(player_ids)
             if room.game_type == "tictactoe"
-            else WhatNumberEngine.initial_state(player_ids)
+            else WhatNumberEngine.create_state(
+                player_ids, seed=secrets.randbits(64)
+            )
         )
         room.status = "PLAYING"
         room.game_over_result = None

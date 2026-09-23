@@ -158,7 +158,7 @@ function NumberCard({
       onClick={() => { onReveal(card.id); }}
       className={cn(
         "animate-[card-deal_500ms_cubic-bezier(0.2,0.8,0.2,1)_backwards] rounded-xl transition-transform duration-200",
-        size === "local" && "!h-16 !w-11 !flex-none !aspect-auto sm:!h-[4.5rem] sm:!w-[3.25rem] md:!h-20 md:!w-14",
+        size === "local" && "!h-16 !w-12 !flex-none !aspect-auto sm:!h-[4.5rem] sm:!w-[3.25rem] md:!h-[4.75rem] md:!w-14",
         size === "opponent" && "!h-14 !w-10 !flex-none !aspect-auto",
         size === "opponentDense" && "!h-11 !w-7 !flex-none !aspect-auto",
         canReveal && "cursor-pointer hover:-translate-y-2 hover:rotate-1 hover:scale-105 hover:ring-2 hover:ring-amber-300",
@@ -227,7 +227,7 @@ function OpponentSeat({
     <article
       style={placement.style}
       className={cn(
-        "absolute z-20 rounded-2xl border bg-slate-950/80 p-2 shadow-xl shadow-black/30 backdrop-blur-md sm:p-2.5",
+        "absolute z-20 rounded-2xl border bg-slate-950/80 p-2 shadow-xl shadow-black/30 backdrop-blur-md xl:p-2.5",
         placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:left-6 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
         placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
@@ -262,7 +262,7 @@ function OpponentSeat({
       <div className={cn(
         "mt-2 gap-1",
         isFlank
-          ? "grid grid-cols-2 justify-items-center"
+          ? "grid grid-cols-2 justify-items-center gap-y-0.5 xl:gap-y-1"
           : "flex flex-row justify-center",
       )}>
         {gamePlayer.cards.map((card, index) => (
@@ -375,7 +375,7 @@ export function WhatNumberBoard({
 
   return (
     <>
-      <div className="fixed top-3 left-1/2 z-30 flex max-w-[calc(100vw-5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/90 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
+      <div className="absolute top-6 left-1/2 z-30 flex max-w-[calc(100%-7rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/90 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
         <span className="rounded-full bg-emerald-400/15 px-2 py-1 text-[10px] font-black tracking-wide text-emerald-200 sm:text-xs">
           T{game.turn_counter}
         </span>
@@ -411,9 +411,9 @@ export function WhatNumberBoard({
         onSend={onSendChat}
       />
 
-      <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
-      <section className="relative h-full w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-3 xl:p-5">
-        <div className="relative h-full w-full overflow-hidden rounded-[60px] border-[6px] border-amber-950/80 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/90 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),0_25px_70px_rgba(0,0,0,0.5)] md:rounded-[90px] md:border-8 md:p-4 xl:p-8">
+      <div className="relative flex h-full min-h-0 w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
+      <section className="relative box-border h-full min-h-0 w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-4">
+        <div className="relative box-border h-full w-full overflow-hidden rounded-[60px] border-[6px] border-amber-950/80 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/90 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),0_25px_70px_rgba(0,0,0,0.5)] sm:p-4 md:rounded-[90px] md:border-8">
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
           <div className="pointer-events-none absolute inset-3 rounded-[86px] border border-emerald-200/10" />
 
@@ -496,16 +496,16 @@ export function WhatNumberBoard({
           {ownView !== undefined && (
             <article
               className={cn(
-                "absolute bottom-2 left-1/2 z-20 flex max-h-[38%] max-w-[95vw] -translate-x-1/2 flex-col items-center gap-1.5 rounded-2xl border px-3 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3 sm:max-w-none sm:px-5 sm:py-2.5",
+                "absolute bottom-2 left-1/2 z-20 flex max-h-[35%] max-w-[95%] -translate-x-1/2 flex-col items-center gap-1.5 overflow-visible rounded-2xl border px-4 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3",
                 hasPenalty
                   ? "z-40 -translate-y-8 scale-110 border-rose-500 bg-slate-900/95 ring-4 ring-rose-500/70 shadow-2xl"
-                  : "z-20 border-slate-700/60 bg-slate-900/85",
+                  : "z-20 border-slate-700/60 bg-slate-900/90",
                 game.active_player_id === playerId && !hasPenalty
                   && "animate-pulse border-amber-400/80 ring-4 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.5)]",
                 ownView.status === "ELIMINATED" && "opacity-50 grayscale",
               )}
             >
-              <div className="flex w-full flex-wrap items-center justify-between gap-2">
+              <div className="flex w-full shrink-0 flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="grid size-9 place-items-center rounded-full border border-cyan-100/30 bg-cyan-900 font-black text-cyan-50">
                     {players.find((player) => player.id === playerId)?.avatar ?? "?"}
@@ -525,7 +525,7 @@ export function WhatNumberBoard({
                   </span>
                 )}
               </div>
-              <div className="flex justify-center gap-1.5 sm:gap-2">
+              <div className="flex shrink-0 justify-center gap-1.5 sm:gap-2">
                 {ownView.cards.map((card, index) => (
                   <NumberCard
                     key={card.id}
@@ -539,7 +539,7 @@ export function WhatNumberBoard({
                 ))}
               </div>
               {ownView.skills.length > 0 && (
-                <div className="flex max-w-full gap-1.5 overflow-x-auto pb-0.5">
+                <div className="flex max-w-full shrink-0 items-center gap-1.5 overflow-x-auto pb-0.5">
                   {ownView.skills.map((skill) => {
                     const Icon = SKILL_ICONS[skill.skill_type];
                     return (
@@ -548,17 +548,10 @@ export function WhatNumberBoard({
                         type="button"
                         title={skill.description}
                         onClick={() => { onSelectSkill(skill); }}
-                        className="group flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-300/20 bg-violet-400/10 px-2 py-1.5 text-left transition hover:-translate-y-0.5 hover:border-violet-300/50 hover:bg-violet-400/15"
+                        className="flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-300/20 bg-violet-400/10 px-3 py-1 text-xs font-bold text-violet-100 transition hover:border-violet-300/50 hover:bg-violet-400/15"
                       >
                         <Icon className="size-4 text-violet-200" />
-                        <span>
-                          <span className="block text-[10px] font-black text-violet-100">
-                            {skill.skill_type.replace("_", " ")}
-                          </span>
-                          <span className="block text-[8px] font-bold tracking-wider text-violet-300/60 uppercase group-hover:text-violet-200">
-                            Activate
-                          </span>
-                        </span>
+                        <span>{skill.skill_type.replace("_", " ")}</span>
                       </button>
                     );
                   })}
@@ -583,8 +576,8 @@ export function WhatNumberBoard({
         </div>
       </section>
 
-      <aside className="hidden max-h-[42rem] w-80 max-w-full shrink-0 flex-col gap-4 border-t border-slate-800 bg-slate-900/90 p-4 xl:flex xl:max-h-none xl:border-t-0 xl:border-l">
-        <section className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+      <aside className="hidden h-full min-h-0 w-80 max-w-full shrink-0 flex-col gap-4 overflow-hidden border-l border-slate-800 bg-slate-900/90 p-4 xl:flex">
+        <section className="shrink-0 rounded-2xl border border-white/10 bg-slate-950/60 p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
               Turn {game.turn_counter}
@@ -609,7 +602,7 @@ export function WhatNumberBoard({
         </section>
 
         {game.phase === "THINKING" && (
-          <button type="button" onClick={onVolunteer} className="primary-button w-full py-4 text-base">
+          <button type="button" onClick={onVolunteer} className="primary-button w-full shrink-0 py-4 text-base">
             <Zap className="size-5" /> Volunteer to Attack!
           </button>
         )}

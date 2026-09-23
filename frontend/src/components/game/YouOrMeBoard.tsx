@@ -1,9 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  Check,
   ChevronUp,
   CircleDollarSign,
-  Coins,
   Crown,
   HandCoins,
   PhoneCall,
@@ -107,10 +105,10 @@ function phaseLabel(phase: YouOrMeView["phase"]): string {
 
 function seatPositionClass(position: SeatPosition): string {
   if (position === "local") {
-    return "bottom-3 left-1/2 w-48 -translate-x-1/2 sm:bottom-5";
+    return "bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3";
   }
   if (position === "top") {
-    return "top-4 left-1/2 w-48 -translate-x-1/2 md:top-6";
+    return "top-3 sm:top-5 left-1/2 w-44 -translate-x-1/2 sm:w-48";
   }
   if (position === "top-left") {
     return "top-[12%] left-[3%] w-44 sm:left-[8%] md:w-48";
@@ -151,8 +149,9 @@ function PlayerPod({
   return (
     <article
       className={cn(
-        "absolute z-20 rounded-2xl border p-2.5 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] backdrop-blur-md transition-all sm:p-3",
+        "absolute z-10 rounded-2xl border p-2 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] backdrop-blur-md transition-all sm:p-2.5",
         seatPositionClass(position),
+        isLocal && "w-[min(90vw,20rem)] max-w-[calc(100%-1rem)]",
         isTurn
           ? "border-amber-200 bg-amber-950/85 ring-2 ring-amber-300/80 ring-offset-2 ring-offset-emerald-950 shadow-[0_0_28px_rgba(251,191,36,0.42)]"
           : "border-amber-100/15 bg-slate-950/80",
@@ -160,40 +159,45 @@ function PlayerPod({
         gamePlayer.is_folded && "opacity-55 grayscale",
       )}
     >
-      <div className="flex items-center gap-2">
-        <span
-          className={cn(
-            "grid size-10 shrink-0 place-items-center rounded-full border-2 border-amber-200/50 bg-gradient-to-br from-amber-300/35 to-rose-950 text-xl shadow-inner",
-            isTurn && "border-amber-200 shadow-[0_0_16px_rgba(251,191,36,0.7)]",
-          )}
-        >
-          {player?.avatar ?? "?"}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-black text-white">{nameOf(player)}</p>
-          <p className="truncate text-[9px] font-bold tracking-[0.12em] text-amber-200/65 uppercase">
-            {isLocal ? "You · Dealer seat" : gamePlayer.is_folded ? "Folded" : isTurn ? "Active turn" : "Player"}
-          </p>
+      <div className={cn(isLocal && "min-w-0 flex-1")}>
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "grid size-9 shrink-0 place-items-center rounded-full border-2 border-amber-200/50 bg-gradient-to-br from-amber-300/35 to-rose-950 text-lg shadow-inner sm:size-10 sm:text-xl",
+              isTurn && "border-amber-200 shadow-[0_0_16px_rgba(251,191,36,0.7)]",
+            )}
+          >
+            {player?.avatar ?? "?"}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-black text-white">{nameOf(player)}</p>
+            <p className="truncate text-[9px] font-bold tracking-[0.12em] text-amber-200/65 uppercase">
+              {isLocal ? "You · Dealer seat" : gamePlayer.is_folded ? "Folded" : isTurn ? "Active turn" : "Player"}
+            </p>
+          </div>
+          {isTurn && <Crown className="size-4 shrink-0 text-amber-300" />}
         </div>
-        {isTurn && <Crown className="size-4 shrink-0 text-amber-300" />}
-      </div>
 
-      <div className="mt-2 flex items-center justify-between gap-2 text-[10px] font-black">
+        <div className="mt-1.5 flex items-center justify-between gap-1 text-[9px] font-black sm:mt-2 sm:gap-2 sm:text-[10px]">
         <span className="rounded-full border border-rose-300/20 bg-rose-950/70 px-2 py-1 text-rose-100">
           ❤️ {String(gamePlayer.coins)} Coins
         </span>
         <span className="rounded-full border border-amber-300/20 bg-amber-950/65 px-2 py-1 text-amber-100">
           BET: {String(gamePlayer.round_bet)}
         </span>
+        </div>
       </div>
 
-      <div className="mt-2 flex min-h-16 items-center justify-center rounded-xl border border-dashed border-amber-200/20 bg-black/10 py-1">
+      <div className={cn(
+        "mt-1.5 flex min-h-14 items-center justify-center rounded-xl border border-dashed border-amber-200/20 bg-black/10 py-1 sm:mt-2 sm:min-h-16",
+        isLocal && "w-12 shrink-0",
+      )}>
         {selectedCard !== null ? (
           <YouOrMeCard
             card={selectedCard}
             faceDown={!showCardFace}
             className={cn(
-              "w-11 border-amber-200/70 sm:w-12",
+              "w-10 border-amber-200/70 sm:w-11",
               showCardFace ? "animate-[card-flip_700ms_ease-out]" : "animate-[deal-card_550ms_ease-out]",
             )}
           />
@@ -312,32 +316,51 @@ export function YouOrMeBoard({
       )}
 
       <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
-        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#090d16] p-1 sm:p-2">
-          <div className="relative min-h-0 flex-1 overflow-hidden rounded-[2rem]">
-            <div className="relative h-full w-full overflow-hidden rounded-[100px] border-[12px] border-amber-950 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_2px_8px_rgba(255,255,255,0.15)] md:rounded-[140px] md:border-[16px]">
-              <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[88px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 p-3 md:rounded-[124px] md:p-6">
+        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#090d16]">
+          <div className="w-full flex-1 min-h-0 relative p-2 sm:p-4 overflow-hidden flex items-center justify-center">
+            <div className="w-full h-full max-w-5xl max-h-full relative rounded-[50px] md:rounded-[80px] border-4 sm:border-8 border-amber-950 shadow-2xl flex flex-col justify-between overflow-hidden">
+              <div className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 relative w-full h-full">
           <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-amber-500/20 md:rounded-[120px]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(52,211,153,0.15),transparent_35%),linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.03),transparent_80%)]" />
 
-          <div className="absolute top-1/2 left-1/2 z-10 w-[min(70%,22rem)] -translate-x-1/2 -translate-y-1/2 rounded-[2rem] border border-amber-200/30 bg-slate-950/55 px-4 py-4 text-center shadow-[0_0_42px_rgba(251,191,36,0.17)] backdrop-blur-sm sm:px-7 sm:py-5">
-            <div className="flex items-center justify-center gap-2 text-rose-100">
-              <HandCoins className="size-5 text-amber-300" />
-              <span className="text-base font-black sm:text-xl">❤️ POT: {String(game.pot)} เหรียญ</span>
+          {ownView && (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1">
+              {game.phase === "SELECT_CARD" && (
+                <p className="text-[10px] sm:text-xs text-amber-300/80 font-medium">คลิกเลือกไพ่ 1 ใบ</p>
+              )}
+              <div className="flex items-center gap-1 sm:gap-2">
+                {ownView.hand.map((card) => (
+                  <YouOrMeCard
+                    key={card.id}
+                    card={card}
+                    selectable={game.phase === "SELECT_CARD" && ownView.selected_card === null}
+                    onClick={() => { selectCard(card.id); }}
+                    className="w-11 h-15 sm:w-13 sm:h-18 md:w-14 md:h-19 shadow-2xl hover:-translate-y-3 transition-transform"
+                  />
+                ))}
+              </div>
             </div>
-            <div className="mt-2 flex justify-center -space-x-2 text-2xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" aria-label="stacked gold and ruby coins">
+          )}
+
+          <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-1 w-[min(70%,22rem)] rounded-[2rem] border border-amber-200/30 bg-slate-950/55 px-3 py-2 text-center shadow-[0_0_42px_rgba(251,191,36,0.17)] backdrop-blur-sm sm:px-5 sm:py-3">
+            <div className="flex items-center justify-center gap-2 text-rose-100">
+              <HandCoins className="size-4 text-amber-300 sm:size-5" />
+              <span className="text-sm font-black sm:text-lg">❤️ POT: {String(game.pot)} เหรียญ</span>
+            </div>
+            <div className="flex justify-center -space-x-2 text-xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" aria-label="stacked gold and ruby coins">
               <span>🪙</span><span>🪙</span><span>🔴</span><span>🪙</span>
             </div>
-            <div className="mt-3 flex items-center justify-center gap-2">
+            <div className="flex items-center justify-center gap-2">
               <span className="rounded-full border border-amber-300/50 bg-amber-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-amber-100 uppercase">
                 ROUND {String(game.round_number)} / {String(game.total_rounds)}
               </span>
             </div>
-            <p className="mt-3 text-xs font-black text-emerald-100 sm:text-sm">{phaseLabel(game.phase)}</p>
+            <p className="text-[10px] font-black text-emerald-100 sm:text-xs">{phaseLabel(game.phase)}</p>
             {game.phase === "BETTING" && (
-              <p className="mt-1 text-[10px] font-bold text-amber-200/60">Current table bet: {String(game.current_bet)} ❤️</p>
+              <p className="text-[9px] font-bold text-amber-200/60">Current table bet: {String(game.current_bet)} ❤️</p>
             )}
             {lastRound && game.phase !== "BETTING" && (
-              <p className="mt-2 text-[10px] font-bold text-amber-100/70">
+              <p className="text-[9px] font-bold text-amber-100/70">
                 Last winner: {lastRound.winner_ids.map((id) => nameOf(playerMap.get(id))).join(", ")} · {rankName(lastRound.winning_rank)}
               </p>
             )}
@@ -429,32 +452,6 @@ export function YouOrMeBoard({
               </div>
             </div>
           </div>
-
-          <div className="relative z-20 mx-1 mt-2 shrink-0 rounded-2xl border border-amber-200/20 bg-slate-950/85 p-2 shadow-[0_14px_30px_rgba(0,0,0,0.45)] backdrop-blur-md sm:mx-2 sm:mt-3 sm:p-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div>
-                <p className="flex items-center gap-2 text-xs font-black tracking-wider text-amber-100 uppercase">
-                  <Coins className="size-4 text-amber-300" /> Your hand · {String(ownView?.hand_count ?? 0)} cards left
-                </p>
-                {game.phase === "SELECT_CARD" && <p className="mt-1 text-xs text-amber-200/70">คลิกเลือกไพ่ 1 ใบเพื่อวางคว่ำลงกระดาน</p>}
-              </div>
-              {ownView?.selected_card !== null && ownView?.selected_card !== undefined && (
-                <span className="flex items-center gap-1 text-xs font-bold text-emerald-200"><Check className="size-4" /> Card selected</span>
-              )}
-            </div>
-            <div className="mt-2 flex min-h-20 gap-2 overflow-x-auto pb-1 sm:mt-3 sm:min-h-24">
-              {ownView?.hand.map((card) => (
-                <YouOrMeCard
-                  key={card.id}
-                  card={card}
-                  selectable={game.phase === "SELECT_CARD" && ownView.selected_card === null}
-                  onClick={() => { selectCard(card.id); }}
-                  className="w-14 shadow-2xl transition-all hover:-translate-y-4 hover:scale-105 sm:w-16"
-                />
-              ))}
-            </div>
-          </div>
-
         </main>
 
         <aside className="hidden w-80 flex-shrink-0 flex-col border-l border-slate-800 bg-slate-900/90 p-3 xl:flex">

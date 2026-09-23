@@ -1,8 +1,8 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Refine You or me ante, showdown reveal timing, and round-result pop-ups.
-* **State**: Ready for Test (backend test environment unavailable)
+* **Active Task**: Verify the responsive You or me poker table layout on tablet viewports.
+* **State**: Ready for Test (production build passes; live browser viewport smoke test remains pending)
 
 ## 2. Completed in this Session
 * [x] Added the pure `YouOrMeEngine` with a 52-card deck, seven rounds, antes, hidden-card views, betting actions, folds, showdown settlement, ties, and overall winner calculation.
@@ -61,17 +61,15 @@
 * [x] Set the ante to 10 coins, preserved folded cards face-down while revealing active showdown cards, added the structured `ROUND_RESULT` event, and added the five-second showdown hold with centered Thai round/elimination/game-over announcements; committed as `0a73553` (`feat(rules): set ante to 10 coins, add 5s showdown card reveal, and show round result popups`) in temporary Git metadata.
 * [x] Updated You or Me regression tests for the 10-coin ante, folded-card privacy, showdown transitions, and last-player-standing completion.
 * [x] Verified `frontend/npm run build`, `frontend/npm run lint` (0 errors; one existing Fast Refresh warning), Python compilation, and `git diff --check`.
+* [x] Replaced the squashed poker table with a fluid flex-height arena, integrated the compact in-table hand dock, repositioned the pot and player pods, and added tablet card sizing; committed as `188df98` (`refactor(poker-layout): fix squashed table on tablet by integrating compact hand dock and fluid sizing`).
+* [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), and `git diff --check` for the responsive poker layout.
 
 ## 3. Pending & Next Steps
-* [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available; this session's `npm run build` reached `tsc -b` but `tsc` is unavailable because dependencies are not installed.
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
-* [ ] Install frontend dependencies when npm registry access is available, then run `npm run build` and `npm run lint` from `frontend/`.
-* [ ] Run the frontend production build and lint for the card-confirmation/bet-input update once `frontend/node_modules` is available.
-* [ ] Install frontend dependencies when npm registry access is available, then rerun `npm run build` and `npm run lint` for the poker layout/chat update.
 * [ ] Perform a browser smoke test at desktop and tablet/mobile sizes, including table/hand viewport fit and chat send/receive between players.
-* [ ] Rerun `npm run build` from `frontend/` once dependencies are installed; the current attempt is blocked because `tsc` is unavailable.
+* [ ] Perform the requested live tablet landscape smoke test at 1024x768 and 1280x800 when a reachable local/deployed game session is available.
 * [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes

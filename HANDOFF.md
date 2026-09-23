@@ -1,8 +1,8 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Implement the full-stack "You or me who more than?" betting card game.
-* **State**: In-Progress
+* **Active Task**: Add card placement confirmation and spinner-free bet input to "You or me who more than?".
+* **State**: Ready for Test
 
 ## 2. Completed in this Session
 * [x] Added the pure `YouOrMeEngine` with a 52-card deck, seven rounds, antes, hidden-card views, betting actions, folds, showdown settlement, ties, and overall winner calculation.
@@ -50,6 +50,8 @@
 * [x] Added `getCardImagePath` and mapped You or me cards to the exact fantasy card assets, including numeric, animal-label, Thai-label, hidden-card, and fallback cases; committed as `a68833b` (`fix(ui): map You or me cards to fantasy assets`) in temporary Git metadata.
 * [x] Rebuilt `YouOrMeBoard.tsx` as an authentic oval casino poker table with padded amber rail, emerald felt, gold racetrack, radial 2–4 player seating, center pot/round display, hidden showdown cards, bottom hand dock, and floating casino betting controls; committed as `f393664` (`style(poker): transform You or me who more than? into authentic oval casino poker table`), with the requested Coins seat-label polish in `76c24f0`.
 * [x] Preserved `SELECT_CARD`, `CHECK`, `CALL`, `BET`, and `FOLD` dispatches, reused the existing fantasy card image resolver, and added face-down presentation plus deal/showdown animations without changing backend payload contracts.
+* [x] Added a card placement confirmation modal with enlarged artwork, Thai/English confirm and cancel actions, and deferred `SELECT_CARD` dispatch; replaced the betting number input with a sanitized spinner-free numeric text field.
+* [x] Committed as `4cd4c8c` (`feat(gameplay): confirm card placement and sanitize bet input`) in temporary Git metadata because the workspace `.git` mount is read-only.
 
 ## 3. Pending & Next Steps
 * [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available; this session's `npm run build` reached `tsc -b` but `tsc` is unavailable because dependencies are not installed.
@@ -57,6 +59,7 @@
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 * [ ] Install frontend dependencies when npm registry access is available, then run `npm run build` and `npm run lint` from `frontend/`.
+* [ ] Run the frontend production build and lint for the card-confirmation/bet-input update once `frontend/node_modules` is available.
 
 ## 4. Known Issues & Notes
 * The new game is integrated through the existing `backend/app/rooms.py` room manager; this repository does not contain `backend/app/engine/room.py`.

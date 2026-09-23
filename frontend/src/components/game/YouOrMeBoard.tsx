@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "../../lib/styles";
-import type { Player, YouOrMePlayerView, YouOrMeView } from "../../types";
+import type { Player, YouOrMeCardView as Card, YouOrMePlayerView, YouOrMeView } from "../../types";
 import { YouOrMeCard } from "./YouOrMeCard";
 
 interface YouOrMeBoardProps {
@@ -146,7 +146,8 @@ function PlayerPod({
 }
 
 export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: YouOrMeBoardProps) {
-  const [raiseAmount, setRaiseAmount] = useState(String(Math.max(5, game.current_bet + 5)));
+  const [betAmount, setBetAmount] = useState(String(Math.max(5, game.current_bet + 5)));
+  const [pendingCard, setPendingCard] = useState<Card | null>(null);
   const ownView = game.players.find((player) => player.player_id === playerId);
   const playerMap = useMemo(
     () => new Map(players.map((player) => [player.id, player])),
@@ -159,7 +160,7 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
   const lastRound = game.round_history.at(-1);
 
   const submitRaise = (): void => {
-    const amount = Number(raiseAmount);
+    const amount = Number(betAmount);
     if (!Number.isInteger(amount) || amount <= game.current_bet || amount > maxRaise) {
       notify(`Raise must be a whole number from ${String(game.current_bet + 1)} to ${String(maxRaise)}.`);
       return;
@@ -169,12 +170,19 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
 
   const selectCard = (cardId: string): void => {
     if (game.phase !== "SELECT_CARD" || ownView?.selected_card !== null) return;
-    sendAction("SELECT_CARD", { card_id: cardId });
+    const card = ownView?.hand.find((handCard) => handCard.id === cardId);
+    if (card) setPendingCard(card);
   };
 
   const setQuickRaise = (increment: number): void => {
     const quickAmount = Math.min(maxRaise, game.current_bet + increment);
-    setRaiseAmount(String(Math.max(game.current_bet + 1, quickAmount)));
+    setBetAmount(String(Math.max(game.current_bet + 1, quickAmount)));
+  };
+
+  const confirmCardSelection = (): void => {
+    if (!pendingCard) return;
+    sendAction("SELECT_CARD", { card_id: pendingCard.id });
+    setPendingCard(null);
   };
 
   return (
@@ -274,12 +282,16 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
                 <div className="mt-2 flex gap-2">
                   <input
                     id="you-or-me-raise"
-                    type="number"
-                    min={game.current_bet + 1}
-                    max={maxRaise}
-                    value={raiseAmount}
-                    onChange={(event) => { setRaiseAmount(event.target.value); }}
-                    className="text-input min-h-10 w-full px-3 py-2 text-sm"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="ระบุเหรียญ"
+                    value={betAmount}
+                    onChange={(event) => {
+                      const val = event.target.value.replace(/[^0-9]/g, "");
+                      setBetAmount(val);
+                    }}
+                    className="w-32 px-4 py-2 bg-slate-900 border border-amber-500/50 rounded-xl text-center text-lg font-bold text-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <button type="button" onClick={submitRaise} className="primary-button min-h-10 shrink-0 px-3 text-xs">CONFIRM</button>
                 </div>
@@ -287,7 +299,7 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
                   {[5, 10, 20].map((increment) => (
                     <button key={increment} type="button" onClick={() => { setQuickRaise(increment); }} className="rounded-lg border border-amber-200/15 bg-white/5 px-1 py-1.5 text-[10px] font-black text-amber-100 transition hover:border-amber-300/50 hover:bg-amber-300/10">+{String(increment)}</button>
                   ))}
-                  <button type="button" onClick={() => { setRaiseAmount(String(maxRaise)); }} className="rounded-lg border border-rose-300/25 bg-rose-950/50 px-1 py-1.5 text-[10px] font-black text-rose-100 transition hover:bg-rose-800/70">ALL-IN</button>
+                  <button type="button" onClick={() => { setBetAmount(String(maxRaise)); }} className="rounded-lg border border-rose-300/25 bg-rose-950/50 px-1 py-1.5 text-[10px] font-black text-rose-100 transition hover:bg-rose-800/70">ALL-IN</button>
                 </div>
               </div>
             </div>
@@ -335,6 +347,27 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
         <p className="relative z-10 mt-2 flex items-center justify-center gap-2 text-[10px] font-bold text-emerald-100/50">
           <Sparkles className="size-3" /> Secret cards stay hidden until showdown
         </p>
+      )}
+
+      {pendingCard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm" role="presentation">
+          <section
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-card-title"
+            className="w-full max-w-md animate-[modal-pop_240ms_ease-out_both] rounded-[2rem] border border-amber-300/35 bg-slate-950/95 p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.7)]"
+          >
+            <div className="mx-auto w-fit rounded-2xl bg-amber-300/10 p-2 shadow-[0_0_32px_rgba(251,191,36,0.2)]">
+              <YouOrMeCard card={pendingCard} className="w-44 sm:w-52" />
+            </div>
+            <h2 id="confirm-card-title" className="mt-5 text-xl font-black text-amber-100 sm:text-2xl">ยืนยันการวางไพ่ใบนี้?</h2>
+            <p className="mt-2 text-sm font-medium leading-6 text-amber-100/65">ไพ่ใบนี้จะถูกวางคว่ำหน้าลงบนโต๊ะและไม่สามารถเปลี่ยนได้</p>
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row-reverse">
+              <button type="button" onClick={confirmCardSelection} className="primary-button min-h-11 flex-1">✅ ยืนยันลงไพ่ (Confirm)</button>
+              <button type="button" onClick={() => { setPendingCard(null); }} className="secondary-button min-h-11 flex-1">❌ ยกเลิก (Cancel)</button>
+            </div>
+          </section>
+        </div>
       )}
     </section>
   );

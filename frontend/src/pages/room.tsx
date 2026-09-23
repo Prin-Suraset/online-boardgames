@@ -166,7 +166,6 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
   return (
     <main className={cn(
       "min-h-screen",
-      isWhatNumberSession && "h-screen overflow-hidden",
       isWhatNumberSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
     )}>
       <div className="ambient ambient-one" />

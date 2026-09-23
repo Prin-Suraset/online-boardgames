@@ -83,8 +83,6 @@ function isRoundResultValue(value: unknown): value is RoundResultValue {
   );
 }
 
-type SeatPosition = "top" | "top-left" | "top-right" | "left" | "right" | "local";
-
 function nameOf(player: Player | undefined): string {
   return player?.name ?? "ผู้เล่น";
 }
@@ -103,44 +101,17 @@ function phaseLabel(phase: YouOrMeView["phase"]): string {
   return "สรุปผลการแข่งขัน";
 }
 
-function seatPositionClass(position: SeatPosition): string {
-  if (position === "local") {
-    return "bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3";
-  }
-  if (position === "top") {
-    return "top-3 sm:top-5 left-1/2 w-44 -translate-x-1/2 sm:w-48";
-  }
-  if (position === "top-left") {
-    return "top-[12%] left-[3%] w-44 sm:left-[8%] md:w-48";
-  }
-  if (position === "top-right") {
-    return "top-[12%] right-[3%] w-44 sm:right-[8%] md:w-48";
-  }
-  if (position === "left") {
-    return "top-1/2 left-1 w-44 -translate-y-1/2 sm:left-5 md:w-48";
-  }
-  return "top-1/2 right-1 w-44 -translate-y-1/2 sm:right-5 md:w-48";
-}
-
-function opponentPositions(opponentCount: number): SeatPosition[] {
-  if (opponentCount === 1) return ["top"];
-  if (opponentCount === 2) return ["top-left", "top-right"];
-  return ["top", "left", "right"];
-}
-
 function PlayerPod({
   gamePlayer,
   player,
   isLocal,
   isTurn,
-  position,
   phase,
 }: {
   gamePlayer: YouOrMePlayerView & { round_bet: number };
   player: Player | undefined;
   isLocal: boolean;
   isTurn: boolean;
-  position: SeatPosition;
   phase: YouOrMeView["phase"];
 }) {
   const showCardFace = phase === "SHOWDOWN" || phase === "FINISHED";
@@ -149,9 +120,8 @@ function PlayerPod({
   return (
     <article
       className={cn(
-        "absolute z-10 rounded-2xl border p-2 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] backdrop-blur-md transition-all sm:p-2.5",
-        seatPositionClass(position),
-        isLocal && "w-[min(90vw,20rem)] max-w-[calc(100%-1rem)]",
+        "flex w-full items-center gap-2 rounded-2xl border p-2 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] backdrop-blur-md transition-all sm:gap-3 sm:p-2.5",
+        isLocal ? "max-w-[24rem]" : "max-w-[20rem]",
         isTurn
           ? "border-amber-200 bg-amber-950/85 ring-2 ring-amber-300/80 ring-offset-2 ring-offset-emerald-950 shadow-[0_0_28px_rgba(251,191,36,0.42)]"
           : "border-amber-100/15 bg-slate-950/80",
@@ -159,7 +129,7 @@ function PlayerPod({
         gamePlayer.is_folded && "opacity-55 grayscale",
       )}
     >
-      <div className={cn(isLocal && "min-w-0 flex-1")}>
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span
             className={cn(
@@ -179,18 +149,17 @@ function PlayerPod({
         </div>
 
         <div className="mt-1.5 flex items-center justify-between gap-1 text-[9px] font-black sm:mt-2 sm:gap-2 sm:text-[10px]">
-        <span className="rounded-full border border-rose-300/20 bg-rose-950/70 px-2 py-1 text-rose-100">
-          ❤️ {String(gamePlayer.coins)} Coins
-        </span>
-        <span className="rounded-full border border-amber-300/20 bg-amber-950/65 px-2 py-1 text-amber-100">
-          BET: {String(gamePlayer.round_bet)}
-        </span>
+          <span className="rounded-full border border-rose-300/20 bg-rose-950/70 px-2 py-1 text-rose-100">
+            ❤️ {String(gamePlayer.coins)} Coins
+          </span>
+          <span className="rounded-full border border-amber-300/20 bg-amber-950/65 px-2 py-1 text-amber-100">
+            BET: {String(gamePlayer.round_bet)}
+          </span>
         </div>
       </div>
 
       <div className={cn(
-        "mt-1.5 flex min-h-14 items-center justify-center rounded-xl border border-dashed border-amber-200/20 bg-black/10 py-1 sm:mt-2 sm:min-h-16",
-        isLocal && "w-12 shrink-0",
+        "flex min-h-14 w-12 shrink-0 items-center justify-center rounded-xl border border-dashed border-amber-200/20 bg-black/10 py-1 sm:min-h-16 sm:w-14",
       )}>
         {selectedCard !== null ? (
           <YouOrMeCard
@@ -318,76 +287,80 @@ export function YouOrMeBoard({
       <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
         <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#090d16]">
           <div className="w-full flex-1 min-h-0 relative p-2 sm:p-4 overflow-hidden flex items-center justify-center">
-            <div className="w-full h-full max-w-5xl max-h-full relative rounded-[50px] md:rounded-[80px] border-4 sm:border-8 border-amber-950 shadow-2xl flex flex-col justify-between overflow-hidden">
-              <div className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 relative w-full h-full">
-          <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-amber-500/20 md:rounded-[120px]" />
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(52,211,153,0.15),transparent_35%),linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.03),transparent_80%)]" />
+            <div className="w-full h-full rounded-[40px] md:rounded-[70px] border-4 md:border-8 border-amber-950 shadow-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 flex flex-col justify-between items-center p-3 sm:p-5 relative overflow-hidden">
+              <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-amber-500/20 md:rounded-[120px]" />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(52,211,153,0.15),transparent_35%),linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.03),transparent_80%)]" />
 
-          {ownView && (
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1">
-              {game.phase === "SELECT_CARD" && (
-                <p className="text-[10px] sm:text-xs text-amber-300/80 font-medium">คลิกเลือกไพ่ 1 ใบ</p>
-              )}
-              <div className="flex items-center gap-1 sm:gap-2">
-                {ownView.hand.map((card) => (
-                  <YouOrMeCard
-                    key={card.id}
-                    card={card}
-                    selectable={game.phase === "SELECT_CARD" && ownView.selected_card === null}
-                    onClick={() => { selectCard(card.id); }}
-                    className="w-11 h-15 sm:w-13 sm:h-18 md:w-14 md:h-19 shadow-2xl hover:-translate-y-3 transition-transform"
-                  />
-                ))}
+              <div className="w-full flex justify-center items-center flex-shrink-0 z-10">
+                <div className="flex w-full flex-wrap justify-center gap-2 sm:gap-3">
+                  {opponents.map((gamePlayer) => (
+                    <PlayerPod
+                      key={gamePlayer.player_id}
+                      gamePlayer={{ ...gamePlayer, round_bet: game.player_round_bets[gamePlayer.player_id] ?? 0 }}
+                      player={playerMap.get(gamePlayer.player_id)}
+                      isLocal={false}
+                      isTurn={gamePlayer.player_id === game.current_player_id}
+                      phase={game.phase}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
 
-          <div className="absolute top-[42%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-1 w-[min(70%,22rem)] rounded-[2rem] border border-amber-200/30 bg-slate-950/55 px-3 py-2 text-center shadow-[0_0_42px_rgba(251,191,36,0.17)] backdrop-blur-sm sm:px-5 sm:py-3">
-            <div className="flex items-center justify-center gap-2 text-rose-100">
-              <HandCoins className="size-4 text-amber-300 sm:size-5" />
-              <span className="text-sm font-black sm:text-lg">❤️ POT: {String(game.pot)} เหรียญ</span>
-            </div>
-            <div className="flex justify-center -space-x-2 text-xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" aria-label="stacked gold and ruby coins">
-              <span>🪙</span><span>🪙</span><span>🔴</span><span>🪙</span>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <span className="rounded-full border border-amber-300/50 bg-amber-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-amber-100 uppercase">
-                ROUND {String(game.round_number)} / {String(game.total_rounds)}
-              </span>
-            </div>
-            <p className="text-[10px] font-black text-emerald-100 sm:text-xs">{phaseLabel(game.phase)}</p>
-            {game.phase === "BETTING" && (
-              <p className="text-[9px] font-bold text-amber-200/60">Current table bet: {String(game.current_bet)} ❤️</p>
-            )}
-            {lastRound && game.phase !== "BETTING" && (
-              <p className="text-[9px] font-bold text-amber-100/70">
-                Last winner: {lastRound.winner_ids.map((id) => nameOf(playerMap.get(id))).join(", ")} · {rankName(lastRound.winning_rank)}
-              </p>
-            )}
-          </div>
+              <div className="my-auto flex flex-col items-center justify-center gap-1 z-10">
+                <div className="flex w-[min(100%,22rem)] flex-col items-center gap-1 rounded-[2rem] border border-amber-200/30 bg-slate-950/55 px-3 py-2 text-center shadow-[0_0_42px_rgba(251,191,36,0.17)] backdrop-blur-sm sm:px-5 sm:py-3">
+                  <div className="flex items-center justify-center gap-2 text-rose-100">
+                    <HandCoins className="size-4 text-amber-300 sm:size-5" />
+                    <span className="text-sm font-black sm:text-lg">❤️ POT: {String(game.pot)} เหรียญ</span>
+                  </div>
+                  <div className="flex justify-center -space-x-2 text-xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" aria-label="stacked gold and ruby coins">
+                    <span>🪙</span><span>🪙</span><span>🔴</span><span>🪙</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="rounded-full border border-amber-300/50 bg-amber-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-amber-100 uppercase">
+                      ROUND {String(game.round_number)} / {String(game.total_rounds)}
+                    </span>
+                  </div>
+                  <p className="text-[10px] font-black text-emerald-100 sm:text-xs">{phaseLabel(game.phase)}</p>
+                  {game.phase === "BETTING" && (
+                    <p className="text-[9px] font-bold text-amber-200/60">Current table bet: {String(game.current_bet)} ❤️</p>
+                  )}
+                  {lastRound && game.phase !== "BETTING" && (
+                    <p className="text-[9px] font-bold text-amber-100/70">
+                      Last winner: {lastRound.winner_ids.map((id) => nameOf(playerMap.get(id))).join(", ")} · {rankName(lastRound.winning_rank)}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-          {opponents.map((gamePlayer, index) => (
-            <PlayerPod
-              key={gamePlayer.player_id}
-              gamePlayer={{ ...gamePlayer, round_bet: game.player_round_bets[gamePlayer.player_id] ?? 0 }}
-              player={playerMap.get(gamePlayer.player_id)}
-              isLocal={false}
-              isTurn={gamePlayer.player_id === game.current_player_id}
-              position={opponentPositions(opponents.length)[index] ?? "top"}
-              phase={game.phase}
-            />
-          ))}
-
-          {ownView && (
-            <PlayerPod
-              gamePlayer={{ ...ownView, round_bet: game.player_round_bets[playerId] ?? 0 }}
-              player={playerMap.get(playerId)}
-              isLocal
-              isTurn={isBettingTurn}
-              position="local"
-              phase={game.phase}
-            />
-          )}
+              <div className="w-full flex flex-col items-center gap-1.5 flex-shrink-0 z-20">
+                {ownView && (
+                  <>
+                    <PlayerPod
+                      gamePlayer={{ ...ownView, round_bet: game.player_round_bets[playerId] ?? 0 }}
+                      player={playerMap.get(playerId)}
+                      isLocal
+                      isTurn={isBettingTurn}
+                      phase={game.phase}
+                    />
+                    <div className="flex max-w-full flex-col items-center gap-1 overflow-visible">
+                      {game.phase === "SELECT_CARD" && (
+                        <p className="text-[10px] font-medium text-amber-300/80 sm:text-xs">คลิกเลือกไพ่ 1 ใบ</p>
+                      )}
+                      <div className="flex items-center justify-center gap-1 sm:gap-2">
+                        {ownView.hand.map((card) => (
+                          <YouOrMeCard
+                            key={card.id}
+                            card={card}
+                            selectable={game.phase === "SELECT_CARD" && ownView.selected_card === null}
+                            onClick={() => { selectCard(card.id); }}
+                            className="w-11 h-15 sm:w-13 sm:h-18 md:w-14 md:h-19 shadow-2xl transition-transform hover:-translate-y-3"
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
 
           {isBettingTurn && (
             <div className="absolute right-3 bottom-3 z-30 w-[calc(100%-1.5rem)] max-w-[20rem] rounded-2xl border border-amber-200/35 bg-slate-950/95 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:right-5 sm:bottom-5 sm:p-4 lg:right-7 lg:w-80">
@@ -449,7 +422,6 @@ export function YouOrMeBoard({
               <Trophy className="size-4 text-amber-300" /> Winner: {nameOf(playerMap.get(game.winner_id ?? ""))}
             </div>
           )}
-              </div>
             </div>
           </div>
         </main>

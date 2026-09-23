@@ -7,9 +7,10 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from app.engine.games.tictactoe import TicTacToeView
+from app.engine.games.you_or_me import YouOrMeView
 from app.engine.games.what_number import WhatNumberView
 
-GameType = Literal["tictactoe", "what_number"]
+GameType = Literal["tictactoe", "what_number", "you_or_me"]
 GameEventType = Literal[
     "VOLUNTEER",
     "TIMEOUT_PICK",
@@ -76,7 +77,7 @@ class RoomStateView(StrictModel):
     status: Literal["LOBBY", "PLAYING", "FINISHED"]
     host_id: str
     players: tuple[PlayerView, ...]
-    game: TicTacToeView | WhatNumberView | None
+    game: TicTacToeView | WhatNumberView | YouOrMeView | None
     result: GameOverResult | None
 
 

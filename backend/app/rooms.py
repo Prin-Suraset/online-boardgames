@@ -17,6 +17,12 @@ from app.engine.games.what_number import (
     WhatNumberState,
     WhatNumberView,
 )
+from app.engine.games.you_or_me import (
+    YouOrMeAction,
+    YouOrMeEngine,
+    YouOrMeState,
+    YouOrMeView,
+)
 from app.schemas import (
     GameEventData,
     GameOverResult,
@@ -28,7 +34,7 @@ from app.schemas import (
 )
 
 RoomStatus = Literal["LOBBY", "PLAYING", "FINISHED"]
-GameState = TicTacToeState | WhatNumberState
+GameState = TicTacToeState | WhatNumberState | YouOrMeState
 _ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 _BOT_NAMES = ("Bot_Alpha", "Bot_Beta", "Bot_Gamma", "Bot_Delta", "Bot_Echo", "Bot_Foxtrot", "Bot_Golf")
 
@@ -129,16 +135,24 @@ class Room:
 
     @property
     def min_players(self) -> int:
-        return 2 if self.game_type == "tictactoe" else 3
+        if self.game_type == "tictactoe":
+            return 2
+        if self.game_type == "what_number":
+            return 3
+        return 2
 
     @property
     def max_players(self) -> int:
-        return 2 if self.game_type == "tictactoe" else 8
+        if self.game_type == "tictactoe":
+            return 2
+        if self.game_type == "what_number":
+            return 8
+        return 4
 
     def add_test_bots(self, count: int) -> None:
         """Add ready development bots without coupling bots to game rules."""
-        if self.game_type != "what_number":
-            raise RoomError("INVALID_ACTION", "Test bots are only available for this game.")
+        if self.game_type not in {"what_number", "you_or_me"}:
+            raise RoomError("INVALID_ACTION", "Test bots are only available for supported games.")
         if self.status != "LOBBY":
             raise RoomError("INVALID_ROOM_STATE", "Bots can only join in the lobby.")
         if count < 1:
@@ -229,6 +243,8 @@ class RoomManager:
             if room.game_type == "tictactoe"
             else WhatNumberEngine.create_state(
                 player_ids, seed=secrets.randbits(64)
+            ) if room.game_type == "what_number" else YouOrMeEngine.init_game(
+                player_ids, seed=secrets.randbits(64)
             )
         )
         room.status = "PLAYING"
@@ -242,6 +258,11 @@ class RoomManager:
         self._log_action(room, "START_GAME", actor_id=player_id)
         if room.game_type == "what_number":
             self._emit_event(room, "TURN_START", value=1)
+        elif room.game_type == "you_or_me":
+            self._run_bot_actions(room)
+            if isinstance(room.game_state, YouOrMeState) and room.game_state.phase == "FINISHED":
+                room.status = "FINISHED"
+                room.finished_at = _utc_now()
         return room
 
     def make_move(self, room_code: str, player_id: str, move: TicTacToeMove) -> Room:
@@ -272,14 +293,19 @@ class RoomManager:
             if action_type != "MAKE_MOVE":
                 raise RoomError("INVALID_ACTION", "This game does not support that action.")
             return self.make_move(room_code, player_id, TicTacToeMove.model_validate(payload))
-        if not isinstance(room.game_state, WhatNumberState):
-            raise RoomError("GAME_NOT_ACTIVE", "What number I have? is not active.")
-        action = WhatNumberAction.model_validate({"action_type": action_type, **payload})
-        previous_state = room.game_state
-        room.game_state = WhatNumberEngine.apply_action(previous_state, player_id, action)
-        self._record_what_number_action(room, player_id, action, previous_state, room.game_state)
-        self._run_bot_actions(room)
-        if room.game_state.phase == "FINISHED":
+        if isinstance(room.game_state, WhatNumberState):
+            action = WhatNumberAction.model_validate({"action_type": action_type, **payload})
+            previous_state = room.game_state
+            room.game_state = WhatNumberEngine.apply_action(previous_state, player_id, action)
+            self._record_what_number_action(room, player_id, action, previous_state, room.game_state)
+            self._run_bot_actions(room)
+        elif isinstance(room.game_state, YouOrMeState):
+            action = YouOrMeAction.model_validate({"action_type": action_type, **payload})
+            room.game_state = YouOrMeEngine.apply_action(room.game_state, player_id, action)
+            self._run_bot_actions(room)
+        else:
+            raise RoomError("GAME_NOT_ACTIVE", "The selected game is not active.")
+        if isinstance(room.game_state, (WhatNumberState, YouOrMeState)) and room.game_state.phase == "FINISHED":
             room.status = "FINISHED"
             room.finished_at = room.finished_at or _utc_now()
         return room
@@ -308,7 +334,7 @@ class RoomManager:
     def player_view(self, room_code: str, player_id: str) -> RoomStateView:
         room = self.get_room(room_code)
         self._require_player(room, player_id)
-        game_view: TicTacToeView | WhatNumberView | None = None
+        game_view: TicTacToeView | WhatNumberView | YouOrMeView | None = None
         result = room.game_over_result
         if isinstance(room.game_state, TicTacToeState):
             game_view = TicTacToeGame.get_player_view(room.game_state, player_id)
@@ -328,6 +354,10 @@ class RoomManager:
             )
             if room.status == "FINISHED" and result is None:
                 result = GameOverResult(outcome="WIN", winner_id=room.game_state.winner_id)
+        elif isinstance(room.game_state, YouOrMeState):
+            game_view = YouOrMeEngine.get_player_view(room.game_state, player_id)
+            if room.status == "FINISHED" and result is None:
+                result = GameOverResult(outcome="WIN", winner_id=room.game_state.winner_id)
         return RoomStateView(
             room_code=room.code, game_type=room.game_type, status=room.status,
             host_id=room.host_id,
@@ -339,6 +369,11 @@ class RoomManager:
         """Resolve active bot attacks and penalties with a bounded heuristic."""
         for _ in range(64):
             state = room.game_state
+            if isinstance(state, YouOrMeState):
+                self._run_you_or_me_bot_action(room, state)
+                if room.game_state is state:
+                    return
+                continue
             if not isinstance(state, WhatNumberState) or state.phase == "FINISHED":
                 return
             actor_id = state.pending_penalty_player_id if state.phase == "PENALTY" else state.active_player_id
@@ -365,6 +400,50 @@ class RoomManager:
             room.game_state = next_state
             self._record_what_number_action(room, actor.id, action, state, next_state)
         raise RoomError("BOT_ACTION_LIMIT", "Bot action safety limit was reached.")
+
+    def _run_you_or_me_bot_action(self, room: Room, state: YouOrMeState) -> None:
+        if state.phase == "FINISHED":
+            return
+        if state.phase == "SELECT_CARD":
+            bot = next(
+                (
+                    player
+                    for player in room.players.values()
+                    if player.is_bot
+                    and next(item for item in state.players if item.player_id == player.id).selected_card is None
+                ),
+                None,
+            )
+            if bot is None:
+                return
+            engine_player = next(item for item in state.players if item.player_id == bot.id)
+            card = secrets.choice(engine_player.hand)
+            room.game_state = YouOrMeEngine.apply_action(
+                state, bot.id, YouOrMeAction(action_type="SELECT_CARD", card_id=card.id)
+            )
+            return
+        if state.phase != "BETTING" or state.current_player_id is None:
+            return
+        actor = room.players.get(state.current_player_id)
+        if actor is None or not actor.is_bot:
+            return
+        if state.current_bet == 0:
+            engine_player = next(item for item in state.players if item.player_id == actor.id)
+            selected_rank = engine_player.selected_card.rank if engine_player.selected_card else 1
+            action = (
+                YouOrMeAction(action_type="BET", amount=min(5, engine_player.coins))
+                if selected_rank >= 10 and engine_player.coins >= 5
+                else YouOrMeAction(action_type="CHECK")
+            )
+        else:
+            engine_player = next(item for item in state.players if item.player_id == actor.id)
+            difference = state.current_bet - state.player_round_bets[actor.id]
+            action = (
+                YouOrMeAction(action_type="CALL")
+                if difference <= 10 and difference <= engine_player.coins
+                else YouOrMeAction(action_type="FOLD")
+            )
+        room.game_state = YouOrMeEngine.apply_action(state, actor.id, action)
 
     def _record_what_number_action(
         self,

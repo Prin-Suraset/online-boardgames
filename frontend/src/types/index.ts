@@ -1,6 +1,6 @@
 export type PlayerMark = "X" | "O";
 export type RoomStatus = "LOBBY" | "PLAYING" | "FINISHED";
-export type GameType = "tictactoe" | "what_number";
+export type GameType = "tictactoe" | "what_number" | "you_or_me";
 export type ConnectionStatus = "CONNECTING" | "CONNECTED" | "DISCONNECTED" | "ERROR";
 
 export interface Player {
@@ -60,6 +60,48 @@ export interface WhatNumberView {
   private_insights: readonly string[];
 }
 
+export type YouOrMePhase = "SELECT_CARD" | "BETTING" | "SHOWDOWN" | "FINISHED";
+
+export interface YouOrMeCardView {
+  id: string;
+  rank: number | null;
+  card_key: string | null;
+  is_revealed: boolean;
+}
+
+export interface YouOrMePlayerView {
+  player_id: string;
+  coins: number;
+  hand: readonly YouOrMeCardView[];
+  hand_count: number;
+  selected_card: YouOrMeCardView | null;
+  is_folded: boolean;
+  status: "ACTIVE" | "ELIMINATED";
+}
+
+export interface YouOrMeRoundResult {
+  round_number: number;
+  pot: number;
+  winner_ids: readonly string[];
+  winning_rank: number | null;
+  payouts: Readonly<Record<string, number>>;
+  selected_cards: Readonly<Record<string, number | null>>;
+}
+
+export interface YouOrMeView {
+  players: readonly YouOrMePlayerView[];
+  round_number: number;
+  total_rounds: number;
+  pot: number;
+  phase: YouOrMePhase;
+  current_bet: number;
+  current_player_id: string | null;
+  player_round_bets: Readonly<Record<string, number>>;
+  round_history: readonly YouOrMeRoundResult[];
+  winner_id: string | null;
+  event_log: readonly string[];
+}
+
 export interface GameOverResult {
   is_over: boolean;
   outcome: "WIN" | "DRAW" | "FORCED";
@@ -73,7 +115,7 @@ export interface RoomState {
   status: RoomStatus;
   host_id: string;
   players: readonly Player[];
-  game: TicTacToeView | WhatNumberView | null;
+  game: TicTacToeView | WhatNumberView | YouOrMeView | null;
   result: GameOverResult | null;
 }
 

@@ -1,10 +1,15 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Add the custom Grand Tabletop Lounge favicon to the browser tab.
-* **State**: Ready for Test
+* **Active Task**: Implement the full-stack "You or me who more than?" betting card game.
+* **State**: In-Progress
 
 ## 2. Completed in this Session
+* [x] Added the pure `YouOrMeEngine` with a 52-card deck, seven rounds, antes, hidden-card views, betting actions, folds, showdown settlement, ties, and overall winner calculation.
+* [x] Registered `you_or_me` for 2–4 players in the room manager and schemas, including random bot card selection and betting heuristics.
+* [x] Added the requested engine tests; focused tests pass 7/7 and the complete backend suite passes 45/45.
+* [x] Added catalog registration, strict WebSocket parsing, the felt betting arena, card image/fallback rendering, hand selection, betting controls, and finish state UI.
+* [x] Committed as `a3da1c3` (`feat(game): implement You or me who more than? betting game engine, bots, and poker table UI`) in temporary Git metadata because the workspace `.git` mount is read-only.
 * [x] Added a typed `VITE_WS_URL` resolver with `wss://boardgames-backend-pzln.onrender.com` as its fallback.
 * [x] Removed the WebSocket dependency on `window.location`, including the production Vercel host fallback.
 * [x] Added strict Vite typing for `VITE_WS_URL` and verified the frontend production build, lint, and whitespace checks pass.
@@ -44,12 +49,17 @@
 * [x] Added the scalable golden die favicon at `frontend/public/favicon.svg` and linked it from `frontend/index.html`; committed as `b75cec5` (`feat(ui): add Grand Tabletop Lounge favicon`).
 
 ## 3. Pending & Next Steps
+* [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available.
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 * [ ] Install frontend dependencies when npm registry access is available, then run `npm run build` and `npm run lint` from `frontend/`.
 
 ## 4. Known Issues & Notes
+* The new game is integrated through the existing `backend/app/rooms.py` room manager; this repository does not contain `backend/app/engine/room.py`.
+* The existing frontend is Vite-based, so the catalog and room wiring are in `frontend/src/pages/index.tsx` and `frontend/src/pages/room.tsx`.
+* `pytest -v backend/tests/test_you_or_me.py` could not run directly because no project pytest executable is installed; the same command ran via the available FastAPI virtualenv and passed 7/7. The full backend suite passed 45/45 there.
+* `npm run build` is currently blocked because `frontend/node_modules` is absent; offline `npm ci` cannot find the uncached `zod-validation-error` package.
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.
 * The local `.git` directory is read-only; commits are stored in `/tmp/TheBoardGame-rematch-git` until pushed.
 * Push to `origin/main` may be blocked because this environment cannot resolve `github.com`; the rematch commit `e34cef3` is ready to push.

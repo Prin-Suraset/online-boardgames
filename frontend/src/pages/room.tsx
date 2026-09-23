@@ -16,16 +16,21 @@ import {
 
 import { TicTacToeBoard } from "../components/TicTacToeBoard";
 import { WhatNumberGame } from "../components/WhatNumberGame";
+import { YouOrMeBoard } from "../components/game/YouOrMeBoard";
 import { GameAnnouncer } from "../components/game/GameAnnouncer";
 import { Toast } from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
 import { useRoomSocket } from "../hooks/useRoomSocket";
 import { navigate } from "../lib/navigation";
 import { cn } from "../lib/styles";
-import type { AuthUser, Player, TicTacToeView, WhatNumberView } from "../types";
+import type { AuthUser, Player, TicTacToeView, WhatNumberView, YouOrMeView } from "../types";
 
-function isTicTacToeView(game: TicTacToeView | WhatNumberView): game is TicTacToeView {
+function isTicTacToeView(game: TicTacToeView | WhatNumberView | YouOrMeView): game is TicTacToeView {
   return "board" in game;
+}
+
+function isYouOrMeView(game: TicTacToeView | WhatNumberView | YouOrMeView): game is YouOrMeView {
+  return "pot" in game;
 }
 
 function PlayerSlot({ player, label }: { player: Player | undefined; label: string }) {
@@ -124,7 +129,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
   const currentPlayer = room?.players.find((player) => player.id === profile.playerId);
   const minPlayers = room?.game_type === "what_number" ? 3 : 2;
-  const maxPlayers = room?.game_type === "what_number" ? 8 : 2;
+  const maxPlayers = room?.game_type === "what_number" ? 8 : room?.game_type === "you_or_me" ? 4 : 2;
   const allPlayersReady =
     room !== null && room.players.length >= minPlayers && room.players.every((player) => player.is_ready);
   const canStart = currentPlayer?.is_host === true && allPlayersReady;
@@ -135,6 +140,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     room.game.current_player === profile.playerId;
   const wasForceEnded = room?.result?.details.forced === true;
   const isWhatNumberSession = room?.game_type === "what_number" && room.status !== "LOBBY";
+  const isYouOrMeSession = room?.game_type === "you_or_me" && room.status !== "LOBBY";
 
   const forceEndGame = (): void => {
     if (window.confirm("Are you sure you want to force terminate this game?")) {
@@ -166,12 +172,12 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
   return (
     <main className={cn(
       "min-h-screen",
-      isWhatNumberSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
+        isWhatNumberSession || isYouOrMeSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
     )}>
       <div className="ambient ambient-one" />
       <div className={cn(
         "mx-auto w-full",
-        isWhatNumberSession ? "max-w-[120rem]" : "max-w-5xl",
+        isWhatNumberSession || isYouOrMeSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
         <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
           <button type="button" onClick={exitRoom} className="ghost-button">
@@ -221,7 +227,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         ) : room.status === "LOBBY" ? (
           <section className="relative z-10 mx-auto max-w-3xl pt-16 pb-14 sm:pt-24">
             <div className="text-center">
-              <p className="eyebrow">Private {room.game_type === "what_number" ? "What number I have?" : "Tic-Tac-Toe"} room</p>
+              <p className="eyebrow">Private {room.game_type === "what_number" ? "What number I have?" : room.game_type === "you_or_me" ? "You or me who more than?" : "Tic-Tac-Toe"} room</p>
               <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-white sm:text-6xl">Gather your players.</h1>
               <p className="mx-auto mt-4 max-w-lg text-slate-400">All players need to mark themselves ready. The host starts when at least {minPlayers} players are seated.</p>
             </div>
@@ -262,7 +268,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
             {currentPlayer?.is_host === true && (
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {room.game_type === "what_number" && room.players.length < minPlayers && (
+                {(room.game_type === "what_number" || room.game_type === "you_or_me") && room.players.length < minPlayers && (
                   <button
                     type="button"
                     onClick={() => { sendAction("ADD_TEST_BOTS", { count: minPlayers - room.players.length }); }}
@@ -281,12 +287,12 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         ) : (
           <section className={cn(
             "relative z-10",
-            isWhatNumberSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
+            isWhatNumberSession || isYouOrMeSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
           )}>
             {!isWhatNumberSession && <div className="mb-8 text-center">
               <p className="eyebrow">Room {room.room_code}</p>
               <h1 className="mt-3 font-display text-3xl font-black text-white sm:text-5xl">
-                {room.game_type === "what_number" ? "Read the table. Hide your hand." : "Three in a row wins."}
+                {room.game_type === "what_number" ? "Read the table. Hide your hand." : room.game_type === "you_or_me" ? "Bluff boldly. Bet wisely." : "Three in a row wins."}
               </h1>
             </div>}
 
@@ -300,16 +306,26 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
             )}
 
             {room.game !== null && !isTicTacToeView(room.game) && (
-              <WhatNumberGame
-                game={room.game}
-                players={room.players}
-                playerId={profile.playerId}
-                isTimerAuthority={room.host_id === profile.playerId}
-                sendAction={sendAction}
-                notify={setNotice}
-                chatMessages={chatMessages}
-                sendChat={sendChat}
-              />
+              isYouOrMeView(room.game) ? (
+                <YouOrMeBoard
+                  game={room.game}
+                  players={room.players}
+                  playerId={profile.playerId}
+                  sendAction={sendAction}
+                  notify={setNotice}
+                />
+              ) : (
+                <WhatNumberGame
+                  game={room.game}
+                  players={room.players}
+                  playerId={profile.playerId}
+                  isTimerAuthority={room.host_id === profile.playerId}
+                  sendAction={sendAction}
+                  notify={setNotice}
+                  chatMessages={chatMessages}
+                  sendChat={sendChat}
+                />
+              )
             )}
 
             {room.status === "FINISHED" && room.game !== null && (

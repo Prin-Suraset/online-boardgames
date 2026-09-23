@@ -137,6 +137,7 @@ export function HubPage() {
               >
                 <option value="tictactoe">Tic-Tac-Toe · 2 players</option>
                 <option value="what_number">What number I have? · 3–8 players</option>
+                <option value="you_or_me">You or me who more than? · 2–4 players</option>
               </select>
             </label>
             <button type="button" onClick={() => { void createRoom(); }} disabled={busyAction !== null} className="primary-button mt-5 w-full py-3">
@@ -214,6 +215,21 @@ export function HubPage() {
                 <span className="game-tag"><Clock3 className="size-3 text-amber-300" /> ~15m</span>
               </div>
               <button type="button" onClick={() => { void createRoom("what_number"); }} className="primary-button mt-6 w-full">Play now</button>
+            </article>
+
+            <article className="group overflow-hidden rounded-3xl border border-rose-400/25 bg-gradient-to-b from-rose-500/10 to-slate-900 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-300/50 hover:shadow-2xl hover:shadow-amber-500/10">
+              <div className="flex items-center justify-between">
+                <div className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-rose-300 to-rose-700 text-slate-950 shadow-lg shadow-rose-500/20"><span className="text-2xl">🃏</span></div>
+                <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-[10px] font-bold text-emerald-300 uppercase">Available</span>
+              </div>
+              <h3 className="mt-7 text-2xl font-black text-white">You or me who more than?</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-400">High-stakes betting, hidden cards, and one bold question: who has more?</p>
+              <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-bold tracking-wide text-slate-400 uppercase">
+                <span className="game-tag"><Users className="size-3 text-amber-300" /> 2–4 players</span>
+                <span className="game-tag"><Swords className="size-3 text-amber-300" /> Bluffing</span>
+                <span className="game-tag"><Clock3 className="size-3 text-amber-300" /> ~20m</span>
+              </div>
+              <button type="button" onClick={() => { void createRoom("you_or_me"); }} className="primary-button mt-6 w-full">Play now</button>
             </article>
 
             <article className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 opacity-70">

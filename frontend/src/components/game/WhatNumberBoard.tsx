@@ -224,10 +224,10 @@ function OpponentSeat({
     <article
       style={placement.style}
       className={cn(
-        "absolute z-20 rounded-2xl border bg-[#071713]/95 p-2 shadow-xl backdrop-blur-sm sm:p-2.5 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:-translate-x-1/2 xl:-translate-y-1/2",
-        placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:right-auto",
-        placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:right-auto",
-        placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:right-auto",
+        "absolute z-20 rounded-2xl border bg-[#071713]/95 p-2 shadow-xl backdrop-blur-sm sm:p-2.5",
+        placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:left-6 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
+        placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
+        placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         isFlank
           ? "w-28 sm:w-32 xl:w-36 2xl:w-40"
           : isDense

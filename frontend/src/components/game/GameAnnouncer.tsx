@@ -196,13 +196,13 @@ export function GameAnnouncer({ events, currentPlayerId }: GameAnnouncerProps) {
         setNotifications((current) => current.map((item) =>
           item.id === notification.id ? { ...item, isExiting: true } : item
         ));
-      }, 3200);
+      }, 5000);
       const removeTimer = window.setTimeout(() => {
         setNotifications((current) => current.filter(
           (item) => item.id !== notification.id
         ));
         timersRef.current.delete(notification.id);
-      }, 3500);
+      }, 5300);
       timersRef.current.set(notification.id, [exitTimer, removeTimer]);
     }
 

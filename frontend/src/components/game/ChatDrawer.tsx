@@ -38,7 +38,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
           setReadMessageCount(messages.length);
           setIsOpen(true);
         }}
-        className="absolute top-6 right-6 z-40 flex items-center justify-center rounded-full bg-indigo-600 p-3 text-white shadow-xl transition-transform hover:scale-105 hover:bg-indigo-500 focus-visible:outline-indigo-300 xl:hidden"
+        className="fixed top-3 right-3 z-40 flex items-center justify-center rounded-full bg-indigo-600 p-3 text-white shadow-xl transition-transform hover:scale-105 hover:bg-indigo-500 focus-visible:outline-indigo-300 xl:hidden"
         aria-label={unreadCount > 0 ? `Open chat, ${String(unreadCount)} unread messages` : "Open chat"}
         aria-expanded={isOpen}
       >
@@ -51,7 +51,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
       </button>
 
       <div
-        className={`absolute inset-0 z-50 xl:hidden ${isOpen ? "pointer-events-auto" : "pointer-events-none"}`}
+        className={`fixed inset-0 z-50 xl:hidden ${isOpen ? "pointer-events-auto" : "pointer-events-none"}`}
         aria-hidden={!isOpen}
       >
         <button
@@ -65,10 +65,10 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
           tabIndex={isOpen ? 0 : -1}
         />
         <aside
-          className={`absolute inset-y-0 right-0 flex min-h-0 w-80 max-w-[calc(100vw-3.5rem)] flex-col border-l border-slate-800 bg-slate-900/95 p-4 shadow-2xl backdrop-blur-xl transition-transform duration-300 sm:w-96 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+          className={`absolute inset-y-0 right-0 flex w-80 max-w-[calc(100vw-3.5rem)] flex-col border-l border-slate-800 bg-slate-900/95 p-4 shadow-2xl backdrop-blur-xl transition-transform duration-300 sm:w-96 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
           aria-label="Room chat"
         >
-          <div className="mb-3 flex shrink-0 items-center justify-between">
+          <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-black text-white">Room Chat</h2>
             <button
               type="button"

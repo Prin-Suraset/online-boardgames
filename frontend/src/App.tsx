@@ -11,11 +11,11 @@ export function App() {
     : <HubPage />;
 
   return (
-    <div className={roomMatch !== null ? "flex h-screen max-h-screen flex-col overflow-hidden bg-slate-950 supports-[height:100dvh]:h-[100dvh]" : undefined}>
+    <>
       <Navbar />
-      {roomMatch !== null ? <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{page}</div> : page}
+      {page}
       <AuthModal />
-    </div>
+    </>
   );
 }
 import { AuthModal } from "./components/AuthModal";

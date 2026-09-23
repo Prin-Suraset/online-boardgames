@@ -158,7 +158,7 @@ function NumberCard({
       onClick={() => { onReveal(card.id); }}
       className={cn(
         "animate-[card-deal_500ms_cubic-bezier(0.2,0.8,0.2,1)_backwards] rounded-xl transition-transform duration-200",
-        size === "local" && "!h-16 !w-12 !flex-none !aspect-auto sm:!h-[4.5rem] sm:!w-[3.25rem] md:!h-[4.75rem] md:!w-14",
+        size === "local" && "!h-16 !w-11 !flex-none !aspect-auto sm:!h-[4.5rem] sm:!w-[3.25rem] md:!h-20 md:!w-14",
         size === "opponent" && "!h-14 !w-10 !flex-none !aspect-auto",
         size === "opponentDense" && "!h-11 !w-7 !flex-none !aspect-auto",
         canReveal && "cursor-pointer hover:-translate-y-2 hover:rotate-1 hover:scale-105 hover:ring-2 hover:ring-amber-300",
@@ -175,16 +175,15 @@ function NumberCard({
       back={
         <span
           className={cn(
-            "relative grid size-full place-items-center overflow-hidden rounded-xl border font-black shadow-lg",
+            "grid size-full place-items-center border font-black shadow-lg",
             compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
             isOwn
-              ? "border-amber-200/30 bg-[repeating-linear-gradient(135deg,#18233d_0,#18233d_9px,#481d2c_9px,#481d2c_18px)] text-amber-50"
-              : "border-rose-200/25 bg-[repeating-linear-gradient(135deg,#111827_0,#111827_9px,#4c1d32_9px,#4c1d32_18px)] text-rose-100",
+              ? "border-cyan-200/30 bg-[radial-gradient(circle_at_50%_35%,#285e68,#102b34_65%)] text-cyan-50"
+              : "border-amber-100/20 bg-[repeating-linear-gradient(135deg,#6d3d22,#6d3d22_7px,#3d2217_7px,#3d2217_14px)] text-amber-100",
           )}
         >
-          <span className="pointer-events-none absolute inset-1 rounded-lg border border-white/10" />
           <span className={cn(
-            "relative z-10 grid place-items-center rounded-full border border-current/40 bg-black/20 shadow-inner",
+            "grid place-items-center rounded-full border border-current/40 bg-black/15",
             compact ? "size-5" : "size-8 sm:size-9 md:size-10",
           )}>
             {isOwn ? card.number ?? "?" : "?"}
@@ -194,13 +193,11 @@ function NumberCard({
       front={
         <span
           className={cn(
-            "relative grid size-full place-items-center overflow-hidden rounded-xl border border-amber-200/70 bg-[radial-gradient(circle_at_50%_35%,#fff7ed,#fed7aa_70%)] font-black text-rose-900 shadow-lg",
+            "grid size-full place-items-center border border-rose-300/45 bg-[radial-gradient(circle_at_50%_35%,#fff7ed,#fed7aa_70%)] font-black text-rose-800 shadow-lg",
             compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
           )}
         >
-          <span className="pointer-events-none absolute inset-x-2 top-2 h-px bg-gradient-to-r from-transparent via-amber-700/70 to-transparent" />
-          <span className="pointer-events-none absolute inset-x-2 bottom-2 h-px bg-gradient-to-r from-transparent via-amber-700/70 to-transparent" />
-          <span className="relative z-10">{card.number ?? "?"}</span>
+          {card.number ?? "?"}
         </span>
       }
     />
@@ -227,7 +224,7 @@ function OpponentSeat({
     <article
       style={placement.style}
       className={cn(
-        "absolute z-20 rounded-2xl border bg-slate-950/80 p-2 shadow-xl shadow-black/30 backdrop-blur-md xl:p-2.5",
+        "absolute z-20 rounded-2xl border bg-[#071713]/95 p-2 shadow-xl backdrop-blur-sm sm:p-2.5",
         placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:left-6 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
         placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
@@ -237,8 +234,8 @@ function OpponentSeat({
             ? "w-36 sm:w-40 xl:w-44 2xl:w-48"
             : "w-44 sm:w-48 xl:w-56 2xl:w-60",
         isActive
-          ? "animate-pulse border-amber-400/80 ring-4 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.5)]"
-          : "animate-[seat-in_450ms_ease-out_both] border-slate-700/70",
+          ? "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-2 ring-amber-300/20"
+          : "animate-[seat-in_450ms_ease-out_both] border-emerald-100/15",
         gamePlayer.status === "ELIMINATED" && "opacity-50 grayscale",
       )}
     >
@@ -262,7 +259,7 @@ function OpponentSeat({
       <div className={cn(
         "mt-2 gap-1",
         isFlank
-          ? "grid grid-cols-2 justify-items-center gap-y-0.5 xl:gap-y-1"
+          ? "grid grid-cols-2 justify-items-center"
           : "flex flex-row justify-center",
       )}>
         {gamePlayer.cards.map((card, index) => (
@@ -375,7 +372,7 @@ export function WhatNumberBoard({
 
   return (
     <>
-      <div className="absolute top-6 left-1/2 z-30 flex max-w-[calc(100%-7rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/90 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
+      <div className="fixed top-3 left-1/2 z-30 flex max-w-[calc(100vw-5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/90 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
         <span className="rounded-full bg-emerald-400/15 px-2 py-1 text-[10px] font-black tracking-wide text-emerald-200 sm:text-xs">
           T{game.turn_counter}
         </span>
@@ -411,9 +408,9 @@ export function WhatNumberBoard({
         onSend={onSendChat}
       />
 
-      <div className="relative flex h-full min-h-0 w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
-      <section className="relative box-border h-full min-h-0 w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-4">
-        <div className="relative box-border h-full w-full overflow-hidden rounded-[60px] border-[6px] border-amber-950/80 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/90 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),0_25px_70px_rgba(0,0,0,0.5)] sm:p-4 md:rounded-[90px] md:border-8">
+      <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
+      <section className="relative h-full w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-3 xl:p-5">
+        <div className="relative h-full w-full overflow-hidden rounded-[3rem] border-4 border-amber-950/70 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] sm:rounded-[5rem] sm:p-4 xl:rounded-[100px] xl:border-8 xl:p-8">
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
           <div className="pointer-events-none absolute inset-3 rounded-[86px] border border-emerald-200/10" />
 
@@ -496,16 +493,16 @@ export function WhatNumberBoard({
           {ownView !== undefined && (
             <article
               className={cn(
-                "absolute bottom-2 left-1/2 z-20 flex max-h-[35%] max-w-[95%] -translate-x-1/2 flex-col items-center gap-1.5 overflow-visible rounded-2xl border px-4 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3",
+                "absolute bottom-2 left-1/2 z-20 flex max-h-[38%] max-w-[95vw] -translate-x-1/2 flex-col items-center gap-1.5 rounded-2xl border px-3 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3 sm:max-w-none sm:px-5 sm:py-2.5",
                 hasPenalty
                   ? "z-40 -translate-y-8 scale-110 border-rose-500 bg-slate-900/95 ring-4 ring-rose-500/70 shadow-2xl"
-                  : "z-20 border-slate-700/60 bg-slate-900/90",
+                  : "z-20 border-slate-700/60 bg-slate-900/85",
                 game.active_player_id === playerId && !hasPenalty
-                  && "animate-pulse border-amber-400/80 ring-4 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.5)]",
+                  && "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-2 ring-amber-300/20",
                 ownView.status === "ELIMINATED" && "opacity-50 grayscale",
               )}
             >
-              <div className="flex w-full shrink-0 flex-wrap items-center justify-between gap-2">
+              <div className="flex w-full flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="grid size-9 place-items-center rounded-full border border-cyan-100/30 bg-cyan-900 font-black text-cyan-50">
                     {players.find((player) => player.id === playerId)?.avatar ?? "?"}
@@ -525,7 +522,7 @@ export function WhatNumberBoard({
                   </span>
                 )}
               </div>
-              <div className="flex shrink-0 justify-center gap-1.5 sm:gap-2">
+              <div className="flex justify-center gap-1.5 sm:gap-2">
                 {ownView.cards.map((card, index) => (
                   <NumberCard
                     key={card.id}
@@ -539,7 +536,7 @@ export function WhatNumberBoard({
                 ))}
               </div>
               {ownView.skills.length > 0 && (
-                <div className="flex max-w-full shrink-0 items-center gap-1.5 overflow-x-auto pb-0.5">
+                <div className="flex max-w-full gap-1.5 overflow-x-auto pb-0.5">
                   {ownView.skills.map((skill) => {
                     const Icon = SKILL_ICONS[skill.skill_type];
                     return (
@@ -548,10 +545,17 @@ export function WhatNumberBoard({
                         type="button"
                         title={skill.description}
                         onClick={() => { onSelectSkill(skill); }}
-                        className="flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-300/20 bg-violet-400/10 px-3 py-1 text-xs font-bold text-violet-100 transition hover:border-violet-300/50 hover:bg-violet-400/15"
+                        className="group flex shrink-0 items-center gap-1.5 rounded-lg border border-violet-300/20 bg-violet-400/10 px-2 py-1.5 text-left transition hover:-translate-y-0.5 hover:border-violet-300/50 hover:bg-violet-400/15"
                       >
                         <Icon className="size-4 text-violet-200" />
-                        <span>{skill.skill_type.replace("_", " ")}</span>
+                        <span>
+                          <span className="block text-[10px] font-black text-violet-100">
+                            {skill.skill_type.replace("_", " ")}
+                          </span>
+                          <span className="block text-[8px] font-bold tracking-wider text-violet-300/60 uppercase group-hover:text-violet-200">
+                            Activate
+                          </span>
+                        </span>
                       </button>
                     );
                   })}
@@ -576,8 +580,8 @@ export function WhatNumberBoard({
         </div>
       </section>
 
-      <aside className="hidden h-full min-h-0 w-80 max-w-full shrink-0 flex-col gap-4 overflow-hidden border-l border-slate-800 bg-slate-900/90 p-4 xl:flex">
-        <section className="shrink-0 rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+      <aside className="hidden max-h-[42rem] w-80 max-w-full shrink-0 flex-col gap-4 border-t border-slate-800 bg-slate-900/90 p-4 xl:flex xl:max-h-none xl:border-t-0 xl:border-l">
+        <section className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
               Turn {game.turn_counter}
@@ -602,7 +606,7 @@ export function WhatNumberBoard({
         </section>
 
         {game.phase === "THINKING" && (
-          <button type="button" onClick={onVolunteer} className="primary-button w-full shrink-0 py-4 text-base">
+          <button type="button" onClick={onVolunteer} className="primary-button w-full py-4 text-base">
             <Zap className="size-5" /> Volunteer to Attack!
           </button>
         )}

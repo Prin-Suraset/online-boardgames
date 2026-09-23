@@ -1,16 +1,10 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Fix desktop/tablet bottom viewport cutoff and incomplete chat scrolling.
+* **Active Task**: Eliminate What Number chat-induced page jumping and lock the game viewport.
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
-* [x] Constrained the room route to a single viewport-height flex shell, kept the shared navbar and room header from shrinking, and propagated `flex-1 min-h-0` through the room arena.
-* [x] Removed the board's nested viewport height and 600px minimum; made the arena/mat fill their allocated height, compacted local cards and skill buttons, and reduced tablet flank spacing.
-* [x] Changed the opponent entrance animation to use independent `scale`, preserving the translate transforms that center the flank pods.
-* [x] Kept desktop chat input/header from shrinking while allowing only the message list to scroll; constrained the tablet drawer and HUD to the arena below the headers.
-* [x] Verified final frontend `npm run build` (0 errors), `npm run lint`, and `git diff --check` after the layout, dynamic viewport cascade, and animation corrections.
-* [x] Committed the layout implementation as `4fd9c39` (`fix(layout): resolve bottom viewport cutoff by using flex-1 min-h-0 and compacting player docks`) in `/tmp/TheBoardGame-layout-git` because workspace Git metadata is read-only.
 * [x] Added a typed `VITE_WS_URL` resolver with `wss://boardgames-backend-pzln.onrender.com` as its fallback.
 * [x] Removed the WebSocket dependency on `window.location`, including the production Vercel host fallback.
 * [x] Added strict Vite typing for `VITE_WS_URL` and verified the frontend production build, lint, and whitespace checks pass.
@@ -48,22 +42,14 @@
 * [x] Replaced chat sentinel `scrollIntoView()` with isolated message-list scrolling, preserved form submission prevention, locked the What Number session root against document scrolling, and verified `npm run build` plus `git diff --check`.
 * [x] Committed the chat viewport fix as `377b77c` (`fix(chat): eliminate screen jumping on message reception by isolating scroll to chat container`).
 * [x] Followed up with `5a68875` to retain the project-supported form event typing; `npm run lint` and `npm run build` pass.
-* [x] Applied the Grand Tabletop Lounge theme: amber CTA system, slate glass panels, radial night backdrop, profile/status pill, catalog showcase cards, luxury felt table, active-turn halos, and tactile number cards.
-* [x] Verified `frontend/npm run build`, `frontend/npm run lint`, and `git diff --check` pass.
-* [x] Committed the UI theme as `11e4f69` (`style(ui): apply cohesive Grand Tabletop Lounge theme across navigation, catalog, and game arena`) in the temporary Git metadata because the workspace `.git` mount is read-only.
 
 ## 3. Pending & Next Steps
-* [ ] Browser verification for this layout fix remains blocked: check 1920x1080, 1366x768, and iPad 1024x768. Verify all five local cards and skill buttons, both flank pods' bottom cards, desktop chat input/send, and open tablet chat input/send have bottom clearance. Repeat with a long chat history and the penalty dock active.
-* [ ] Import the layout and handoff commits from `/tmp/TheBoardGame-layout-git` (or `/tmp/board-layout-fix.bundle`) into writable Git metadata before pushing; the workspace `.git` HEAD remains at `28daf7c`.
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 * [ ] Send and receive repeated chat messages in a browser and confirm only the inner message list scrolls while the game table remains stationary.
-* [ ] Run the Grand Tabletop Lounge visual smoke test at desktop and tablet breakpoints; confirm contrast, card readability, and no clipped table controls.
 
 ## 4. Known Issues & Notes
-* This session: `npm run dev -- --host 127.0.0.1` fails with `listen EPERM` on port 5173, including an escalated retry. The browser security policy also explicitly rejected the isolated `file:///tmp/board-layout-check/1366x768.html` fixture. No browser viewport checks were completed and no visual pass is claimed.
-* The workspace `.git` remains read-only even with an escalated `git add` attempt. This layout task uses a copy of the current repository metadata at `/tmp/TheBoardGame-layout-git`, based on workspace HEAD `28daf7c`; it does not reuse the older rematch metadata history.
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.
 * The local `.git` directory is read-only; commits are stored in `/tmp/TheBoardGame-rematch-git` until pushed.
 * Push to `origin/main` may be blocked because this environment cannot resolve `github.com`; the rematch commit `e34cef3` is ready to push.

@@ -69,7 +69,7 @@ export function RoomPage({ code }: RoomPageProps) {
 
   if (user === null || token === null) {
     return (
-      <main className="grid min-h-0 flex-1 place-items-center bg-slate-950 px-5 text-center">
+      <main className="grid min-h-[calc(100vh-4rem)] place-items-center bg-slate-950 px-5 text-center">
         <div>
           <LoaderCircle className="mx-auto size-8 animate-spin text-indigo-300" />
           <p className="mt-4 font-bold text-slate-300">Choose a player profile to join this room.</p>
@@ -165,19 +165,16 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
   return (
     <main className={cn(
-      "relative min-h-0 flex-1",
-      isWhatNumberSession ? "flex flex-col overflow-hidden" : "overflow-y-auto",
+      "min-h-screen",
+      isWhatNumberSession && "h-screen overflow-hidden",
       isWhatNumberSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
     )}>
       <div className="ambient ambient-one" />
       <div className={cn(
         "mx-auto w-full",
-        isWhatNumberSession ? "flex min-h-0 max-w-[120rem] flex-1 flex-col" : "max-w-5xl",
+        isWhatNumberSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
-        <header className={cn(
-          "relative z-10 flex shrink-0 items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-950/60 px-4 backdrop-blur-xl sm:px-5",
-          isWhatNumberSession ? "h-12 md:h-14" : "flex-wrap py-3",
-        )}>
+        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl sm:px-5">
           <button type="button" onClick={exitRoom} className="ghost-button">
             <ArrowLeft className="size-4" /> Exit room
           </button>
@@ -285,7 +282,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         ) : (
           <section className={cn(
             "relative z-10",
-            isWhatNumberSession ? "flex min-h-0 flex-1 overflow-hidden pt-2 sm:pt-3" : "pt-10 pb-20 sm:pt-14",
+            isWhatNumberSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
           )}>
             {!isWhatNumberSession && <div className="mb-8 text-center">
               <p className="eyebrow">Room {room.room_code}</p>

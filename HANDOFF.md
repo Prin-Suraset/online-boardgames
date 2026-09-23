@@ -33,10 +33,15 @@
 * [x] Added SWAP target selection to the skill confirmation flow and regression coverage for target replacement and guest-ID-safe private results.
 * [x] Verified `backend/venv/bin/pytest -v` (38 passed), `backend/venv/bin/pytest -v backend/tests/test_what_number.py` (17 passed), `npm run lint`, `npm run build`, and `git diff --check`.
 * [x] Committed the gameplay implementation as `5f868b6` (`fix(gameplay): optimize responsive multi-device layout, fix swap skill target, relocate radar/peek results, and add peek ghost silhouette`).
+* [x] Rebuilt the What Number arena as a full-width/full-height layout below `xl` (1280px), retaining the static sidebar only at `xl` and above.
+* [x] Added the compact tablet/mobile top HUD, floating chat toggle, right-side slide-over `ChatDrawer` with backdrop/Escape close behavior, unread badge, and responsive center/player spacing.
+* [x] Added `scale-85` to the Tailwind theme, compact clue cards, flank/top opponent anchors, wrapped display names, and responsive local card sizes.
+* [x] Verified frontend `npm run build`, `npm run lint`, and `git diff --check`; committed as `ee63be2` (`refactor(responsive): implement full-width table with slide-over chat drawer and top HUD for tablet/mobile viewports`).
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
+* [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 
 ## 4. Known Issues & Notes
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.
@@ -47,3 +52,4 @@
 * The repository is Vite-based, so the requested `src/app/page.tsx` changes are implemented in `frontend/src/pages/index.tsx`; `Navbar.tsx` remains the shared shell.
 * Backend tests may update `data/boardgame.db` as a test artifact; it is not part of this gameplay change.
 * Push attempts (including escalated network access) are currently blocked by DNS resolution failure for `github.com`; commits `e34cef3`, `665bef1`, `5f868b6`, `238b8b3`, and `5f541b9` remain ready to push.
+* The current sandbox also rejects Vite dev-server socket binding with `EPERM` on both `0.0.0.0:5173` and `127.0.0.1:5173`, so live browser viewport verification could not be run here; production build and lint checks pass.

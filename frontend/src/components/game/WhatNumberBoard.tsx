@@ -13,6 +13,7 @@ import {
 
 import { FlipCard } from "./FlipCard";
 import { ChatBox } from "./ChatBox";
+import { ChatDrawer } from "./ChatDrawer";
 import { CenterTable } from "./CenterTable";
 import { cn } from "../../lib/styles";
 import type {
@@ -58,6 +59,7 @@ interface SeatStyle extends CSSProperties {
 interface SeatPlacement {
   style: SeatStyle;
   orientation: "north" | "flank";
+  edge: "north" | "left" | "right";
 }
 
 const SKILL_ICONS = {
@@ -82,6 +84,17 @@ function seatPlacement(index: number, seatCount: number): SeatPlacement {
     return {
       style: { "--seat-x": "50%", "--seat-y": "10%" },
       orientation: "north",
+      edge: "north",
+    };
+  }
+  if (seatCount === 2) {
+    return {
+      style: {
+        "--seat-x": index === 0 ? "12%" : "88%",
+        "--seat-y": "50%",
+      },
+      orientation: "flank",
+      edge: index === 0 ? "left" : "right",
     };
   }
   if (seatCount === 3) {
@@ -89,19 +102,23 @@ function seatPlacement(index: number, seatCount: number): SeatPlacement {
       {
         style: { "--seat-x": "50%", "--seat-y": "10%" },
         orientation: "north",
+        edge: "north",
       },
       {
         style: { "--seat-x": "12%", "--seat-y": "50%" },
         orientation: "flank",
+        edge: "left",
       },
       {
         style: { "--seat-x": "88%", "--seat-y": "50%" },
         orientation: "flank",
+        edge: "right",
       },
     ];
     return fourPlayerSeats[index] ?? {
       style: { "--seat-x": "50%", "--seat-y": "10%" },
       orientation: "north",
+      edge: "north",
     };
   }
   const angle = Math.PI + (Math.PI * index) / (seatCount - 1);
@@ -114,6 +131,7 @@ function seatPlacement(index: number, seatCount: number): SeatPlacement {
       "--seat-y": `${String(50 + 40 * Math.sin(angle))}%`,
     },
     orientation: x <= 24 || x >= 76 ? "flank" : "north",
+    edge: x <= 24 ? "left" : x >= 76 ? "right" : "north",
   };
 }
 
@@ -140,7 +158,7 @@ function NumberCard({
       onClick={() => { onReveal(card.id); }}
       className={cn(
         "animate-[card-deal_500ms_cubic-bezier(0.2,0.8,0.2,1)_backwards] rounded-xl transition-transform duration-200",
-        size === "local" && "!h-20 !w-14 !flex-none !aspect-auto",
+        size === "local" && "!h-16 !w-11 !flex-none !aspect-auto sm:!h-[4.5rem] sm:!w-[3.25rem] md:!h-20 md:!w-14",
         size === "opponent" && "!h-14 !w-10 !flex-none !aspect-auto",
         size === "opponentDense" && "!h-11 !w-7 !flex-none !aspect-auto",
         canReveal && "cursor-pointer hover:-translate-y-2 hover:rotate-1 hover:scale-105 hover:ring-2 hover:ring-amber-300",
@@ -158,7 +176,7 @@ function NumberCard({
         <span
           className={cn(
             "grid size-full place-items-center border font-black shadow-lg",
-            compact ? "text-sm" : "text-2xl sm:text-3xl",
+            compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
             isOwn
               ? "border-cyan-200/30 bg-[radial-gradient(circle_at_50%_35%,#285e68,#102b34_65%)] text-cyan-50"
               : "border-amber-100/20 bg-[repeating-linear-gradient(135deg,#6d3d22,#6d3d22_7px,#3d2217_7px,#3d2217_14px)] text-amber-100",
@@ -166,7 +184,7 @@ function NumberCard({
         >
           <span className={cn(
             "grid place-items-center rounded-full border border-current/40 bg-black/15",
-            compact ? "size-5" : "size-10 sm:size-12",
+            compact ? "size-5" : "size-8 sm:size-9 md:size-10",
           )}>
             {isOwn ? card.number ?? "?" : "?"}
           </span>
@@ -176,7 +194,7 @@ function NumberCard({
         <span
           className={cn(
             "grid size-full place-items-center border border-rose-300/45 bg-[radial-gradient(circle_at_50%_35%,#fff7ed,#fed7aa_70%)] font-black text-rose-800 shadow-lg",
-            compact ? "text-sm" : "text-2xl sm:text-3xl",
+            compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
           )}
         >
           {card.number ?? "?"}
@@ -206,12 +224,15 @@ function OpponentSeat({
     <article
       style={placement.style}
       className={cn(
-        "relative z-20 rounded-2xl border bg-[#071713]/95 p-2.5 shadow-xl backdrop-blur-sm lg:absolute lg:left-[var(--seat-x)] lg:top-[var(--seat-y)] lg:-translate-x-1/2 lg:-translate-y-1/2",
+        "absolute z-20 rounded-2xl border bg-[#071713]/95 p-2 shadow-xl backdrop-blur-sm sm:p-2.5 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:-translate-x-1/2 xl:-translate-y-1/2",
+        placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:right-auto",
+        placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:right-auto",
+        placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:right-auto",
         isFlank
-          ? "lg:w-32 xl:w-36 2xl:w-40"
+          ? "w-28 sm:w-32 xl:w-36 2xl:w-40"
           : isDense
-            ? "lg:w-40 xl:w-44 2xl:w-48"
-            : "lg:w-52 xl:w-56 2xl:w-60",
+            ? "w-36 sm:w-40 xl:w-44 2xl:w-48"
+            : "w-44 sm:w-48 xl:w-56 2xl:w-60",
         isActive
           ? "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-2 ring-amber-300/20"
           : "animate-[seat-in_450ms_ease-out_both] border-emerald-100/15",
@@ -223,7 +244,7 @@ function OpponentSeat({
           {player?.avatar ?? "?"}
         </span>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-black text-white">
+          <p className="break-words text-[11px] font-black leading-tight text-white">
             {displayName(player)}
           </p>
           <p className="text-[9px] font-bold tracking-wider text-emerald-100/45 uppercase">
@@ -330,6 +351,7 @@ export function WhatNumberBoard({
     : game.phase === "PENALTY"
       ? `${playerNames.get(game.pending_penalty_player_id ?? "") ?? "ผู้เล่น"} must reveal a card`
       : `${playerNames.get(game.active_player_id ?? "") ?? "ผู้เล่น"} is targeting ${playerNames.get(selectedTargetId) ?? "ผู้เล่นเป้าหมาย"}`;
+  const activePlayerName = playerNames.get(game.active_player_id ?? "") ?? "Waiting for player";
   const latestInsight = game.private_insights.at(-1);
 
   useEffect(() => {
@@ -349,13 +371,50 @@ export function WhatNumberBoard({
   }, [game.private_insights, latestInsight]);
 
   return (
-    <div className="flex h-screen h-[100dvh] min-h-[600px] animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl lg:flex-row">
-      <section className="min-h-0 flex-1 overflow-y-auto bg-[#050c0b] p-3 sm:p-5 lg:overflow-hidden">
-        <div className="relative min-h-[62rem] overflow-visible rounded-[100px] border-8 border-amber-950/70 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-5 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] lg:size-full lg:min-h-0 lg:scale-90 lg:p-8 lg:origin-center xl:scale-95 2xl:scale-100">
+    <>
+      <div className="fixed top-3 left-1/2 z-30 flex max-w-[calc(100vw-5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/90 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
+        <span className="rounded-full bg-emerald-400/15 px-2 py-1 text-[10px] font-black tracking-wide text-emerald-200 sm:text-xs">
+          T{game.turn_counter}
+        </span>
+        <span className="max-w-[7rem] truncate text-xs font-bold text-slate-200 sm:max-w-[10rem]">
+          {game.phase === "THINKING" ? "Waiting for volunteer" : activePlayerName}
+        </span>
+        <span className={cn(
+          "flex shrink-0 items-center gap-1 font-mono text-sm font-black",
+          isUrgent ? "animate-pulse text-rose-300" : "text-emerald-200",
+        )}>
+          <Clock3 className="size-3.5" /> {secondsLeft}s
+        </span>
+        <div className="hidden h-1.5 w-12 overflow-hidden rounded-full bg-black/50 sm:block" aria-label={`${String(secondsLeft)} seconds remaining`}>
+          <div
+            className={cn("h-full rounded-full transition-[width,background-color] duration-500", isUrgent ? "bg-rose-400" : "bg-cyan-400")}
+            style={{ width: `${String(timePercent)}%` }}
+          />
+        </div>
+        {game.phase === "THINKING" && (
+          <button
+            type="button"
+            onClick={onVolunteer}
+            className="animate-pulse rounded-full bg-indigo-600 px-2.5 py-1.5 text-[10px] font-black text-white transition hover:bg-indigo-500 sm:px-3 sm:text-xs"
+          >
+            Volunteer!
+          </button>
+        )}
+      </div>
+
+      <ChatDrawer
+        messages={chatMessages}
+        currentPlayerId={playerId}
+        onSend={onSendChat}
+      />
+
+      <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
+      <section className="relative h-full w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-3 xl:p-5">
+        <div className="relative h-full w-full overflow-hidden rounded-[3rem] border-4 border-amber-950/70 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] sm:rounded-[5rem] sm:p-4 xl:rounded-[100px] xl:border-8 xl:p-8">
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
           <div className="pointer-events-none absolute inset-3 rounded-[86px] border border-emerald-200/10" />
 
-          <div className="relative grid grid-cols-1 gap-3 sm:grid-cols-2 lg:block">
+          <div className="absolute inset-0">
             {opponents.map((gamePlayer, index) => {
               const placement = seatPlacement(index, opponents.length);
               return (
@@ -372,19 +431,19 @@ export function WhatNumberBoard({
             })}
           </div>
 
-          <div className="relative z-10 mx-auto mt-6 w-fit rounded-[2rem] border border-emerald-200/10 bg-black/20 px-6 py-4 text-center shadow-inner lg:absolute lg:top-[42%] lg:left-1/2 lg:mt-0 lg:-translate-x-1/2 lg:-translate-y-1/2">
-            <div className="flex items-end justify-center gap-5">
+          <div className="absolute top-[36%] left-1/2 z-10 w-fit max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2 scale-85 rounded-[2rem] border border-emerald-200/10 bg-black/20 px-2 py-2 text-center shadow-inner sm:scale-90 sm:px-4 sm:py-3 md:top-[38%] md:scale-100 xl:top-[42%] xl:px-6 xl:py-4">
+            <div className="flex items-end justify-center gap-3 sm:gap-5">
               <DeckPile label="Number deck" accent="amber" />
               <DeckPile label="Skill deck" accent="violet" />
             </div>
             <CenterTable cards={game.revealed_center_cards} />
-            <div className="mt-4 flex max-w-72 items-center justify-center gap-2 rounded-full border border-emerald-200/10 bg-emerald-950/80 px-4 py-2 text-xs font-bold text-emerald-100">
+            <div className="mt-3 flex max-w-64 items-center justify-center gap-2 rounded-full border border-emerald-200/10 bg-emerald-950/80 px-3 py-1.5 text-[10px] font-bold text-emerald-100 sm:mt-4 sm:max-w-72 sm:px-4 sm:py-2 sm:text-xs">
               <Sparkles className="size-3.5 shrink-0 text-amber-300" /> {announcement}
             </div>
           </div>
 
           {isAttacker && selectedTarget !== undefined && (
-            <div className="relative z-30 mx-auto mt-6 flex w-fit max-w-full animate-[action-rise_300ms_ease-out_both] flex-wrap items-center justify-center gap-2 rounded-2xl border border-amber-400/30 bg-slate-950/95 p-3 shadow-2xl backdrop-blur-md lg:absolute lg:bottom-44 lg:left-1/2 lg:mt-0 lg:-translate-x-1/2">
+            <div className="absolute bottom-36 left-1/2 z-30 flex w-fit max-w-[95vw] -translate-x-1/2 animate-[action-rise_300ms_ease-out_both] flex-wrap items-center justify-center gap-2 rounded-2xl border border-amber-400/30 bg-slate-950/95 p-2 shadow-2xl backdrop-blur-md sm:bottom-40 sm:p-3 xl:bottom-44">
               <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm font-bold text-rose-100">
                 <Target className="size-4 text-rose-300" />
                 🎯 เป้าหมาย: {playerNames.get(selectedTarget.player_id) ?? "ผู้เล่นเป้าหมาย"}
@@ -434,7 +493,7 @@ export function WhatNumberBoard({
           {ownView !== undefined && (
             <article
               className={cn(
-                "relative mx-auto mt-8 flex max-h-[38%] max-w-[min(94%,44rem)] flex-col items-center gap-1.5 rounded-2xl border px-5 py-2.5 shadow-xl backdrop-blur-md transition-all duration-300 lg:absolute lg:bottom-3 lg:left-1/2 lg:mt-0 lg:-translate-x-1/2",
+                "absolute bottom-2 left-1/2 z-20 flex max-h-[38%] max-w-[95vw] -translate-x-1/2 flex-col items-center gap-1.5 rounded-2xl border px-3 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3 sm:max-w-none sm:px-5 sm:py-2.5",
                 hasPenalty
                   ? "z-40 -translate-y-8 scale-110 border-rose-500 bg-slate-900/95 ring-4 ring-rose-500/70 shadow-2xl"
                   : "z-20 border-slate-700/60 bg-slate-900/85",
@@ -463,7 +522,7 @@ export function WhatNumberBoard({
                   </span>
                 )}
               </div>
-              <div className="flex justify-center gap-2">
+              <div className="flex justify-center gap-1.5 sm:gap-2">
                 {ownView.cards.map((card, index) => (
                   <NumberCard
                     key={card.id}
@@ -521,7 +580,7 @@ export function WhatNumberBoard({
         </div>
       </section>
 
-      <aside className="flex max-h-[42rem] w-72 max-w-full shrink-0 flex-col gap-4 border-t border-slate-800 bg-slate-900/90 p-4 lg:max-h-none lg:w-80 lg:border-t-0 lg:border-l">
+      <aside className="hidden max-h-[42rem] w-80 max-w-full shrink-0 flex-col gap-4 border-t border-slate-800 bg-slate-900/90 p-4 xl:flex xl:max-h-none xl:border-t-0 xl:border-l">
         <section className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
@@ -558,6 +617,7 @@ export function WhatNumberBoard({
           onSend={onSendChat}
         />
       </aside>
-    </div>
+      </div>
+    </>
   );
 }

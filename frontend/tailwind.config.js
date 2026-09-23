@@ -13,6 +13,9 @@ export default {
       fontFamily: {
         display: ["Arial Black", "Avenir Next", "Segoe UI", "sans-serif"],
       },
+      scale: {
+        85: ".85",
+      },
     },
   },
   plugins: [],

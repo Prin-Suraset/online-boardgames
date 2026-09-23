@@ -125,7 +125,7 @@ function PlayerPod({
   return (
     <article
       className={cn(
-        "flex w-full items-center gap-2 rounded-2xl border p-2 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] backdrop-blur-md transition-all sm:gap-3 sm:p-2.5",
+        "flex w-full items-center gap-2 rounded-2xl border p-2 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] transition-all sm:gap-3 sm:p-2.5",
         isLocal ? "max-w-[24rem]" : "max-w-[20rem]",
         isTurn
           ? "border-amber-200 bg-amber-950/85 ring-2 ring-amber-300/80 ring-offset-2 ring-offset-emerald-950 shadow-[0_0_28px_rgba(251,191,36,0.42)]"
@@ -162,9 +162,7 @@ function PlayerPod({
         </div>
       </div>
 
-      <div className={cn(
-        "flex min-h-14 w-12 shrink-0 items-center justify-center rounded-xl border border-dashed border-amber-200/20 bg-black/10 py-1 sm:min-h-16 sm:w-14",
-      )}>
+      <div className="relative flex min-h-14 w-12 shrink-0 items-center justify-center rounded-xl border border-dashed border-amber-200/20 py-1 sm:min-h-16 sm:w-14">
         {selectedCard !== null ? (
           <YouOrMeCard
             card={selectedCard}
@@ -371,15 +369,21 @@ export function YouOrMeBoard({
                         <p className="text-[10px] font-medium text-amber-300/80 sm:text-xs">คลิกเลือกไพ่ 1 ใบ</p>
                       )}
                       <div className="flex items-center justify-center gap-1 sm:gap-2">
-                        {ownView.hand.map((card) => (
-                          <YouOrMeCard
-                            key={card.id}
-                            card={card}
-                            selectable={game.phase === "SELECT_CARD" && ownView.selected_card === null}
-                            onClick={() => { selectCard(card.id); }}
-                            className="w-11 h-15 sm:w-13 sm:h-18 md:w-14 md:h-19 shadow-2xl transition-transform hover:-translate-y-3"
-                          />
-                        ))}
+                        {ownView.hand.map((card) => {
+                          const canSelect = game.phase === "SELECT_CARD" && ownView.selected_card === null;
+                          return (
+                            <YouOrMeCard
+                              key={card.id}
+                              card={card}
+                              selectable={canSelect}
+                              onClick={() => { selectCard(card.id); }}
+                              className={cn(
+                                "h-15 w-11 shadow-2xl transition-transform sm:h-18 sm:w-13 md:h-19 md:w-14",
+                                canSelect ? "cursor-pointer hover:-translate-y-3" : "pointer-events-none",
+                              )}
+                            />
+                          );
+                        })}
                       </div>
                     </div>
                   </>

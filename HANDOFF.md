@@ -1,8 +1,8 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Implement precise You or me showdown pacing and full card opacity.
-* **State**: Ready for Test (production build passes; live browser smoke test remains pending)
+* **Active Task**: Fix placed-card dimming in the You or me poker UI.
+* **State**: Ready for Test (production build and live browser smoke test pass; deployed tab is an older build)
 
 ## 2. Completed in this Session
 * [x] Added the pure `YouOrMeEngine` with a 52-card deck, seven rounds, antes, hidden-card views, betting actions, folds, showdown settlement, ties, and overall winner calculation.
@@ -69,6 +69,8 @@
 * [x] Added the exact You or me showdown sequence: a card-reveal banner, 3000ms card inspection, 4000ms winner-result hold, then `SHOWDOWN_COMPLETE` transition; committed as `07fc77b` (`feat(poker): implement 3s showdown inspection delay, 4s winner hold, and enforce 100% card opacity`) in temporary Git metadata.
 * [x] Removed folded-player opacity/grayscale styling from the poker card pod and enforced `opacity-100 brightness-100 contrast-100` on card containers and artwork.
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), and `git diff --check`.
+* [x] Removed the placed-slot tint and pod backdrop blur, removed native disabled-card styling, enforced `pointer-events-none` for non-selectable cards, and added explicit `z-10` card/artwork stacking; committed as `9fc5122` (`fix(visuals): remove dark overlay on placed card slot and eliminate conditional dimming of played cards`) in temporary Git metadata.
+* [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
@@ -105,3 +107,4 @@
 * Frontend dependencies are available now; the requested production build passes, and lint reports only the existing `react-refresh/only-export-components` warning in `YouOrMeCard.tsx`.
 * The new gameplay commit is recorded as `0a73553` in `/tmp/TheBoardGame-rematch-git/.git` because the workspace `.git` index is read-only.
 * Browser smoke verification for the showdown pacing could not run in this session because the CUA browser kernel exited before exposing a tab; production build and static timing/style checks pass.
+* The placed-card visual smoke test used the existing live room and confirmed the bright card-back presentation, but that deployment still exposes the previous native disabled-card accessibility state; verify the new `pointer-events-none` behavior after deployment.

@@ -1,7 +1,7 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Remove oversized poker banners, fit the table and hand inside one viewport, and integrate live room chat in "You or me who more than?".
+* **Active Task**: Fix JSX mismatched closing tags in `YouOrMeBoard.tsx`.
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
@@ -55,6 +55,7 @@
 * [x] Removed the poker slogan and oversized table title, moved the round indicator into the center pot badge, and rebuilt the poker board as a bounded flex viewport with the table and local hand visible together.
 * [x] Added the existing live room `ChatBox` to the `xl` desktop sidebar and the existing `ChatDrawer` to tablet/mobile, wired through the established `CHAT_MESSAGE` and `SEND_CHAT` WebSocket flow.
 * [x] Committed as `34da4e6` (`refactor(poker): remove oversized title banner to fit table on screen and integrate live room chat`) and `4be4f14` (`fix(poker): remove remaining slogan and tighten mobile arena height`) in temporary Git metadata.
+* [x] Closed the missing `<main>` element in `frontend/src/components/game/YouOrMeBoard.tsx`, resolving the reported JSX parser cascade; committed as `6ca47a2` (`fix(ui): close You or Me board main element`) in temporary Git metadata.
 
 ## 3. Pending & Next Steps
 * [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available; this session's `npm run build` reached `tsc -b` but `tsc` is unavailable because dependencies are not installed.
@@ -65,6 +66,7 @@
 * [ ] Run the frontend production build and lint for the card-confirmation/bet-input update once `frontend/node_modules` is available.
 * [ ] Install frontend dependencies when npm registry access is available, then rerun `npm run build` and `npm run lint` for the poker layout/chat update.
 * [ ] Perform a browser smoke test at desktop and tablet/mobile sizes, including table/hand viewport fit and chat send/receive between players.
+* [ ] Rerun `npm run build` from `frontend/` once dependencies are installed; the current attempt is blocked because `tsc` is unavailable.
 
 ## 4. Known Issues & Notes
 * The new game is integrated through the existing `backend/app/rooms.py` room manager; this repository does not contain `backend/app/engine/room.py`.
@@ -86,3 +88,4 @@
 * The fantasy card mapping change was verified with `git diff --check` and an exact asset filename inventory; frontend build/lint remain unavailable until dependencies are installed.
 * The oval poker table refactor is committed in temporary Git metadata as `f393664`. `git diff --check` passes; `npm ci --offline` cannot resolve uncached `zod-validation-error`, and the normal install was interrupted after registry access stalled.
 * The poker layout/chat update's required `frontend/npm run build` verification is currently blocked because `frontend/node_modules` is absent and `tsc` is unavailable; `git diff --check` passes.
+* The JSX fix passes `git diff --check`; the production build could not proceed because `frontend/node_modules/.bin/tsc` is absent.

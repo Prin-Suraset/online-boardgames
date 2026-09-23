@@ -354,6 +354,8 @@ export function YouOrMeBoard({
           </div>
         </div>
 
+        </main>
+
         <aside className="hidden w-80 flex-shrink-0 flex-col border-l border-slate-800 bg-slate-900/90 p-3 xl:flex">
           <ChatBox
             messages={chatMessages}

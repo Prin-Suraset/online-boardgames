@@ -18,7 +18,7 @@ export function getCardImagePath(rank: number | string, isFaceUp: boolean = true
 
   const r = Number(rank);
   if (r >= 1 && r <= 10) {
-    return `/images/cards/fantasy-card-number-${r}.png`;
+    return `/images/cards/fantasy-card-number-${String(r)}.png`;
   }
   if (
     r === 11 ||

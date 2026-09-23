@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
   ChevronUp,
@@ -14,6 +14,7 @@ import {
 import { cn } from "../../lib/styles";
 import type {
   ChatMessage,
+  GameEvent,
   Player,
   YouOrMeCardView as Card,
   YouOrMePlayerView,
@@ -29,8 +30,59 @@ interface YouOrMeBoardProps {
   playerId: string;
   sendAction: (actionType: string, payload: object) => void;
   notify: (message: string) => void;
+  gameEvents: readonly GameEvent[];
   chatMessages: readonly ChatMessage[];
   sendChat: (text: string) => void;
+}
+
+interface RoundResultWinner {
+  id: string;
+  name: string;
+  won_amount: number;
+}
+
+interface RoundResultEliminatedPlayer {
+  id: string;
+  name: string;
+}
+
+interface RoundResultValue {
+  round_number: number;
+  winners: readonly RoundResultWinner[];
+  is_tie: boolean;
+  eliminated_players: readonly RoundResultEliminatedPlayer[];
+  is_game_over: boolean;
+  overall_winner: {
+    id: string;
+    name: string;
+    total_coins: number;
+  } | null;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function isRoundResultValue(value: unknown): value is RoundResultValue {
+  if (!isRecord(value) || typeof value.round_number !== "number" || typeof value.is_tie !== "boolean" || typeof value.is_game_over !== "boolean") {
+    return false;
+  }
+  if (!Array.isArray(value.winners) || !value.winners.every((winner) => (
+    isRecord(winner) && typeof winner.id === "string" && typeof winner.name === "string" && typeof winner.won_amount === "number"
+  ))) {
+    return false;
+  }
+  if (!Array.isArray(value.eliminated_players) || !value.eliminated_players.every((player) => (
+    isRecord(player) && typeof player.id === "string" && typeof player.name === "string"
+  ))) {
+    return false;
+  }
+  return value.overall_winner === null || (
+    isRecord(value.overall_winner) &&
+    typeof value.overall_winner.id === "string" &&
+    typeof value.overall_winner.name === "string" &&
+    typeof value.overall_winner.total_coins === "number"
+  );
 }
 
 type SeatPosition = "top" | "top-left" | "top-right" | "left" | "right" | "local";
@@ -94,7 +146,7 @@ function PlayerPod({
   phase: YouOrMeView["phase"];
 }) {
   const showCardFace = phase === "SHOWDOWN" || phase === "FINISHED";
-  const cardIsSelected = gamePlayer.selected_card !== null;
+  const selectedCard = gamePlayer.selected_card;
 
   return (
     <article
@@ -136,9 +188,9 @@ function PlayerPod({
       </div>
 
       <div className="mt-2 flex min-h-16 items-center justify-center rounded-xl border border-dashed border-amber-200/20 bg-black/10 py-1">
-        {cardIsSelected ? (
+        {selectedCard !== null ? (
           <YouOrMeCard
-            card={gamePlayer.selected_card!}
+            card={selectedCard}
             faceDown={!showCardFace}
             className={cn(
               "w-11 border-amber-200/70 sm:w-12",
@@ -159,11 +211,13 @@ export function YouOrMeBoard({
   playerId,
   sendAction,
   notify,
+  gameEvents,
   chatMessages,
   sendChat,
 }: YouOrMeBoardProps) {
   const [betAmount, setBetAmount] = useState(String(Math.max(5, game.current_bet + 5)));
   const [pendingCard, setPendingCard] = useState<Card | null>(null);
+  const showdownRoundRef = useRef<number | null>(null);
   const ownView = game.players.find((player) => player.player_id === playerId);
   const playerMap = useMemo(
     () => new Map(players.map((player) => [player.id, player])),
@@ -175,6 +229,29 @@ export function YouOrMeBoard({
   const opponents = game.players.filter((player) => player.player_id !== playerId);
   const lastRound = game.round_history.at(-1);
 
+  useEffect(() => {
+    if (game.phase !== "SHOWDOWN") {
+      showdownRoundRef.current = null;
+      return;
+    }
+    if (showdownRoundRef.current === game.round_number) return;
+    showdownRoundRef.current = game.round_number;
+    const timer = window.setTimeout(() => {
+      sendAction("SHOWDOWN_COMPLETE", {});
+    }, 5000);
+    return () => { window.clearTimeout(timer); };
+  }, [game.phase, game.round_number, sendAction]);
+
+  const roundResult = useMemo(() => {
+    const latest = [...gameEvents].reverse().find(
+      (event) => event.event_type === "ROUND_RESULT" && isRoundResultValue(event.value),
+    );
+    return latest !== undefined && isRoundResultValue(latest.value) ? latest.value : null;
+  }, [gameEvents]);
+
+  const activeRoundResult = game.phase === "SHOWDOWN" || game.phase === "FINISHED" ? roundResult : null;
+  const potWon = activeRoundResult?.winners.reduce((total, winner) => total + winner.won_amount, 0) ?? 0;
+
   const submitRaise = (): void => {
     const amount = Number(betAmount);
     if (!Number.isInteger(amount) || amount <= game.current_bet || amount > maxRaise) {
@@ -185,8 +262,8 @@ export function YouOrMeBoard({
   };
 
   const selectCard = (cardId: string): void => {
-    if (game.phase !== "SELECT_CARD" || ownView?.selected_card !== null) return;
-    const card = ownView?.hand.find((handCard) => handCard.id === cardId);
+    if (game.phase !== "SELECT_CARD" || ownView === undefined || ownView.selected_card !== null) return;
+    const card = ownView.hand.find((handCard) => handCard.id === cardId);
     if (card) setPendingCard(card);
   };
 
@@ -208,6 +285,31 @@ export function YouOrMeBoard({
         currentPlayerId={playerId}
         onSend={sendChat}
       />
+
+      {activeRoundResult !== null && (
+        <div className="pointer-events-none fixed inset-0 z-[60] grid place-items-center p-4">
+          <section className="w-full max-w-xl rounded-[2rem] border border-amber-200/60 bg-slate-950/95 p-6 text-center shadow-[0_0_70px_rgba(251,191,36,0.35)] backdrop-blur-xl animate-[modal-pop_240ms_ease-out_both]">
+            <p className="text-xs font-black tracking-[0.25em] text-amber-300 uppercase">Round {String(activeRoundResult.round_number)} result</p>
+            <h2 className="mt-3 text-2xl font-black text-amber-50 sm:text-3xl">
+              {activeRoundResult.is_tie
+                ? `🤝 รอบนี้ ${activeRoundResult.winners.map((winner) => winner.name).join(" และ ")} เสมอกัน! แบ่งเหรียญคนละครึ่ง`
+                : `🏆 รอบนี้ ${activeRoundResult.winners[0]?.name ?? "ผู้เล่น"} ชนะ! กวาด Pot ${String(potWon)} เหรียญ`}
+            </h2>
+            {activeRoundResult.eliminated_players.length > 0 && (
+              <div className="mt-4 space-y-1 text-lg font-black text-rose-200">
+                {activeRoundResult.eliminated_players.map((player) => (
+                  <p key={player.id}>💀 รอบนี้ {player.name} เหรียญหมด พ่ายแพ้!</p>
+                ))}
+              </div>
+            )}
+            {activeRoundResult.is_game_over && activeRoundResult.overall_winner !== null && (
+              <p className="mt-5 border-t border-amber-200/20 pt-4 text-xl font-black text-amber-200 sm:text-2xl">
+                👑 จบเกม! {activeRoundResult.overall_winner.name} ได้รับชัยชนะด้วยเหรียญทั้งหมด {String(activeRoundResult.overall_winner.total_coins)} เหรียญ!
+              </p>
+            )}
+          </section>
+        </div>
+      )}
 
       <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
         <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#090d16] p-1 sm:p-2">

@@ -1,8 +1,8 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Fix JSX mismatched closing tags in `YouOrMeBoard.tsx`.
-* **State**: Ready for Test
+* **Active Task**: Refine You or me ante, showdown reveal timing, and round-result pop-ups.
+* **State**: Ready for Test (backend test environment unavailable)
 
 ## 2. Completed in this Session
 * [x] Added the pure `YouOrMeEngine` with a 52-card deck, seven rounds, antes, hidden-card views, betting actions, folds, showdown settlement, ties, and overall winner calculation.
@@ -58,6 +58,10 @@
 * [x] Closed the missing `<main>` element in `frontend/src/components/game/YouOrMeBoard.tsx`, resolving the reported JSX parser cascade; committed as `6ca47a2` (`fix(ui): close You or Me board main element`) in temporary Git metadata.
 * [x] Removed the remaining extra closing `<div>` that closed the outer board container before `</main>`, fixing the actual JSX nesting error; committed as `e537ffb` (`fix(ui): correct You or Me JSX container nesting`) in temporary Git metadata.
 
+* [x] Set the ante to 10 coins, preserved folded cards face-down while revealing active showdown cards, added the structured `ROUND_RESULT` event, and added the five-second showdown hold with centered Thai round/elimination/game-over announcements; committed as `0a73553` (`feat(rules): set ante to 10 coins, add 5s showdown card reveal, and show round result popups`) in temporary Git metadata.
+* [x] Updated You or Me regression tests for the 10-coin ante, folded-card privacy, showdown transitions, and last-player-standing completion.
+* [x] Verified `frontend/npm run build`, `frontend/npm run lint` (0 errors; one existing Fast Refresh warning), Python compilation, and `git diff --check`.
+
 ## 3. Pending & Next Steps
 * [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available; this session's `npm run build` reached `tsc -b` but `tsc` is unavailable because dependencies are not installed.
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
@@ -68,6 +72,7 @@
 * [ ] Install frontend dependencies when npm registry access is available, then rerun `npm run build` and `npm run lint` for the poker layout/chat update.
 * [ ] Perform a browser smoke test at desktop and tablet/mobile sizes, including table/hand viewport fit and chat send/receive between players.
 * [ ] Rerun `npm run build` from `frontend/` once dependencies are installed; the current attempt is blocked because `tsc` is unavailable.
+* [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
 * The new game is integrated through the existing `backend/app/rooms.py` room manager; this repository does not contain `backend/app/engine/room.py`.
@@ -91,3 +96,6 @@
 * The poker layout/chat update's required `frontend/npm run build` verification is currently blocked because `frontend/node_modules` is absent and `tsc` is unavailable; `git diff --check` passes.
 * The JSX fix passes `git diff --check`; the production build could not proceed because `frontend/node_modules/.bin/tsc` is absent.
 * The corrected JSX structure passes `git diff --check`; frontend build verification remains pending until dependencies are available.
+* The requested backend test command could not start in this session: `pytest` and `backend/venv/bin/pytest` are absent, and system Python has no `pydantic`; Python bytecode compilation succeeds.
+* Frontend dependencies are available now; the requested production build passes, and lint reports only the existing `react-refresh/only-export-components` warning in `YouOrMeCard.tsx`.
+* The new gameplay commit is recorded as `0a73553` in `/tmp/TheBoardGame-rematch-git/.git` because the workspace `.git` index is read-only.

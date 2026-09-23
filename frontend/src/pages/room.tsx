@@ -313,6 +313,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   playerId={profile.playerId}
                   sendAction={sendAction}
                   notify={setNotice}
+                  gameEvents={gameEvents}
                   chatMessages={chatMessages}
                   sendChat={sendChat}
                 />

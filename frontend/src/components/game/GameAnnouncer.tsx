@@ -40,6 +40,7 @@ function isMajorEvent(event: GameEvent): boolean {
     "TURN_END",
     "CENTER_CARD_REVEALED",
     "CENTER_REVEALED_FROM_GUESS",
+    "ROUND_RESULT",
   ].includes(event.event_type);
 }
 
@@ -84,6 +85,12 @@ function majorAnnouncementContent(event: GameEvent): Omit<MajorAnnouncement, "id
         icon: "",
         message: `🔍 เลข ${value} อยู่ในกองกลาง! ทำการเปิดการ์ดลงกองกลาง`,
         subtext: "การ์ดคำใบ้ถูกเปิดจากการทายผิด",
+      };
+    case "ROUND_RESULT":
+      return {
+        icon: "🏆",
+        message: "สรุปผลรอบแล้ว",
+        subtext: "ตรวจสอบผลการแข่งขันบนโต๊ะ",
       };
     default:
       return {
@@ -132,6 +139,8 @@ function eventMessage(event: GameEvent, currentPlayerId: string): string {
       return `🔍 เลข ${value} อยู่ในกองกลาง! ทำการเปิดการ์ดลงกองกลาง`;
     case "GUESS_HELD_BY_ANOTHER":
       return `🤫 เลข ${value} ไม่ได้อยู่ในกองกลาง! (มีผู้เล่นคนอื่นถืออยู่)`;
+    case "ROUND_RESULT":
+      return "สรุปผลรอบแล้ว";
   }
 }
 
@@ -157,6 +166,8 @@ function eventIcon(event: GameEvent): string {
       return "🔍";
     case "GUESS_HELD_BY_ANOTHER":
       return "🤫";
+    case "ROUND_RESULT":
+      return "🏆";
   }
 }
 
@@ -178,7 +189,7 @@ export function GameAnnouncer({ events, currentPlayerId }: GameAnnouncerProps) {
       return;
     }
 
-    const incoming = unseen.filter((event) => !isMajorEvent(event)).map((event) => ({
+    const incoming = unseen.filter((event) => event.event_type !== "ROUND_RESULT" && !isMajorEvent(event)).map((event) => ({
       id: nextIdRef.current++,
       icon: eventIcon(event),
       message: eventMessage(event, currentPlayerId),
@@ -208,7 +219,7 @@ export function GameAnnouncer({ events, currentPlayerId }: GameAnnouncerProps) {
 
     const now = Date.now();
     let availableAt = Math.max(now, majorAvailableAtRef.current);
-    const majorIncoming = unseen.filter(isMajorEvent).map((event) => {
+    const majorIncoming = unseen.filter((event) => event.event_type !== "ROUND_RESULT" && isMajorEvent(event)).map((event) => {
       const id = nextIdRef.current++;
       const startDelay = availableAt - now;
       const announcement: MajorAnnouncement = {

@@ -23,6 +23,7 @@ GameEventType = Literal[
     "CENTER_CARD_REVEALED",
     "CENTER_REVEALED_FROM_GUESS",
     "GUESS_HELD_BY_ANOTHER",
+    "ROUND_RESULT",
 ]
 
 

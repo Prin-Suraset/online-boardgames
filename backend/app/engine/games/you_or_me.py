@@ -12,7 +12,7 @@ from app.engine.base import BaseGame as BaseGameEngine, GameRuleError, MoveError
 
 YouOrMePhase: TypeAlias = Literal["SELECT_CARD", "BETTING", "SHOWDOWN", "FINISHED"]
 YouOrMeActionType: TypeAlias = Literal[
-    "SELECT_CARD", "CHECK", "BET", "CALL", "FOLD"
+    "SELECT_CARD", "CHECK", "BET", "CALL", "FOLD", "SHOWDOWN_COMPLETE"
 ]
 PlayerStatus: TypeAlias = Literal["ACTIVE", "ELIMINATED"]
 
@@ -184,7 +184,7 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
     MAX_PLAYERS = 4
     TOTAL_ROUNDS = 7
     STARTING_COINS = 50
-    ANTE = 20
+    ANTE = 10
 
     @classmethod
     def initial_state(cls, player_ids: tuple[str, ...]) -> YouOrMeState:
@@ -226,6 +226,12 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
         cls, state: YouOrMeState, player_id: str, action: YouOrMeAction
     ) -> YouOrMeState:
         cls._player(state, player_id)
+        if action.action_type == "SHOWDOWN_COMPLETE":
+            if state.phase == "SHOWDOWN":
+                return cls._advance_showdown(state)
+            if state.phase == "FINISHED":
+                raise GameRuleError(MoveErrorCode.GAME_OVER, "the game is already over")
+            return state
         if state.phase == "FINISHED":
             raise GameRuleError(MoveErrorCode.GAME_OVER, "the game is already over")
         if action.action_type == "SELECT_CARD":
@@ -258,9 +264,11 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
             selected = player.selected_card
             selected_view = None
             if selected is not None:
+                is_folded = player.player_id in state.folded_players
                 selected_view = cls._card_view(
                     selected,
-                    visible=is_own or selected.is_revealed or state.phase in {"SHOWDOWN", "FINISHED"},
+                    visible=selected.is_revealed
+                    or (is_own and not is_folded and state.phase not in {"SHOWDOWN", "FINISHED"}),
                 )
             views.append(
                 YouOrMePlayerView(
@@ -298,6 +306,8 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
         if action.card_id is None:
             raise GameRuleError(MoveErrorCode.INVALID_ACTION, "card_id is required")
         player = cls._player(state, player_id)
+        if player.status != "ACTIVE":
+            raise GameRuleError(MoveErrorCode.INVALID_ACTION, "eliminated players cannot select a card")
         if player.selected_card is not None:
             raise GameRuleError(MoveErrorCode.INVALID_ACTION, "this player already selected a card")
         card = next((item for item in player.hand if item.id == action.card_id), None)
@@ -307,8 +317,16 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
             update={"hand": tuple(item for item in player.hand if item.id != card.id), "selected_card": card}
         )
         players = cls._replace_player(state.players, updated_player)
-        if all(item.selected_card is not None for item in players):
-            first_player = next(item.player_id for item in players if item.player_id not in state.folded_players)
+        if all(
+            item.selected_card is not None
+            for item in players
+            if item.status == "ACTIVE" and item.player_id not in state.folded_players
+        ):
+            first_player = next(
+                item.player_id
+                for item in players
+                if item.status == "ACTIVE" and item.player_id not in state.folded_players
+            )
             return state.model_copy(
                 update={
                     "players": players,
@@ -377,10 +395,8 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
     @classmethod
     def _fold(cls, state: YouOrMeState, player_id: str) -> YouOrMeState:
         player = cls._player(state, player_id)
-        updated_player = player.model_copy(update={"selected_card": None})
         state_after = state.model_copy(
             update={
-                "players": cls._replace_player(state.players, updated_player),
                 "folded_players": state.folded_players + (player_id,),
             }
         )
@@ -398,6 +414,7 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
         eligible = [
             item.player_id
             for item in state_after.players
+            if item.status == "ACTIVE"
             if item.player_id not in state_after.folded_players
             and item.player_id not in acted
         ]
@@ -411,7 +428,7 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
     ) -> YouOrMeState:
         selected = {
             player.player_id: player.selected_card.rank
-            if player.selected_card is not None
+            if player.selected_card is not None and player.player_id not in state.folded_players
             else None
             for player in state.players
         }
@@ -431,7 +448,19 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
             for index, player_id in enumerate(winners)
         }
         players = tuple(
-            player.model_copy(update={"coins": player.coins + payouts.get(player.player_id, 0)})
+            player.model_copy(
+                update={
+                    "coins": player.coins + payouts.get(player.player_id, 0),
+                    "status": "ELIMINATED"
+                    if player.coins + payouts.get(player.player_id, 0) == 0
+                    else player.status,
+                    "selected_card": player.selected_card.model_copy(
+                        update={"is_revealed": player.player_id not in state.folded_players}
+                    )
+                    if player.selected_card is not None
+                    else None,
+                }
+            )
             for player in state.players
         )
         result = YouOrMeRoundResult(
@@ -442,37 +471,43 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
             payouts=payouts,
             selected_cards=selected,
         )
-        if state.round_number >= cls.TOTAL_ROUNDS:
-            final_players = tuple(
-                player.model_copy(
-                    update={
-                        "selected_card": player.selected_card.model_copy(update={"is_revealed": True})
-                        if player.selected_card is not None
-                        else None
-                    }
-                )
-                for player in players
-            )
-            overall_winner = max(final_players, key=lambda player: player.coins).player_id
+        active_players = tuple(player for player in players if player.status == "ACTIVE")
+        is_game_over = state.round_number >= cls.TOTAL_ROUNDS or len(active_players) <= 1
+        overall_winner = max(players, key=lambda player: player.coins).player_id if is_game_over else None
+        return state.model_copy(
+            update={
+                "players": players,
+                "phase": "SHOWDOWN",
+                "current_bet": 0,
+                "current_player_id": None,
+                "round_history": state.round_history + (result,),
+                "winner_id": overall_winner,
+                "event_log": state.event_log
+                + (f"Round {state.round_number} settled. Showdown revealed.",),
+            }
+        )
+
+    @classmethod
+    def _advance_showdown(cls, state: YouOrMeState) -> YouOrMeState:
+        if state.winner_id is not None or state.round_number >= cls.TOTAL_ROUNDS:
             return state.model_copy(
                 update={
-                    "players": final_players,
                     "phase": "FINISHED",
                     "pot": 0,
                     "current_player_id": None,
-                    "round_history": state.round_history + (result,),
-                    "winner_id": overall_winner,
-                    "event_log": state.event_log + (f"Round {state.round_number} settled.", "Game finished."),
+                    "event_log": state.event_log + ("Game finished.",),
                 }
             )
-        cleared_players = tuple(player.model_copy(update={"selected_card": None}) for player in players)
+        cleared_players = tuple(
+            player.model_copy(update={"selected_card": None}) for player in state.players
+        )
         return cls._begin_round(
             cleared_players,
             state.draw_pile,
             round_number=state.round_number + 1,
-            round_history=state.round_history + (result,),
+            round_history=state.round_history,
             seed=state.seed,
-            event_log=state.event_log + (f"Round {state.round_number} settled.",),
+            event_log=state.event_log,
         )
 
     @classmethod
@@ -488,7 +523,14 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
     ) -> YouOrMeState:
         ante_total = sum(min(cls.ANTE, player.coins) for player in players)
         ante_players = tuple(
-            player.model_copy(update={"coins": player.coins - min(cls.ANTE, player.coins)})
+            player.model_copy(
+                update={
+                    "coins": player.coins - min(cls.ANTE, player.coins),
+                    "status": "ELIMINATED"
+                    if player.coins - min(cls.ANTE, player.coins) == 0
+                    else player.status,
+                }
+            )
             for player in players
         )
         return YouOrMeState(
@@ -538,7 +580,7 @@ class YouOrMeEngine(BaseGameEngine[YouOrMeState, YouOrMeAction, YouOrMeView]):
         return [
             player.player_id
             for player in state.players
-            if player.player_id not in state.folded_players
+            if player.status == "ACTIVE" and player.player_id not in state.folded_players
         ]
 
     @staticmethod

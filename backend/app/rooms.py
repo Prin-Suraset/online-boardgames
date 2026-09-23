@@ -301,7 +301,9 @@ class RoomManager:
             self._run_bot_actions(room)
         elif isinstance(room.game_state, YouOrMeState):
             action = YouOrMeAction.model_validate({"action_type": action_type, **payload})
-            room.game_state = YouOrMeEngine.apply_action(room.game_state, player_id, action)
+            previous_state = room.game_state
+            room.game_state = YouOrMeEngine.apply_action(previous_state, player_id, action)
+            self._record_you_or_me_transition(room, previous_state, room.game_state)
             self._run_bot_actions(room)
         else:
             raise RoomError("GAME_NOT_ACTIVE", "The selected game is not active.")
@@ -418,9 +420,11 @@ class RoomManager:
                 return
             engine_player = next(item for item in state.players if item.player_id == bot.id)
             card = secrets.choice(engine_player.hand)
-            room.game_state = YouOrMeEngine.apply_action(
+            next_state = YouOrMeEngine.apply_action(
                 state, bot.id, YouOrMeAction(action_type="SELECT_CARD", card_id=card.id)
             )
+            room.game_state = next_state
+            self._record_you_or_me_transition(room, state, next_state)
             return
         if state.phase != "BETTING" or state.current_player_id is None:
             return
@@ -443,7 +447,63 @@ class RoomManager:
                 if difference <= 10 and difference <= engine_player.coins
                 else YouOrMeAction(action_type="FOLD")
             )
-        room.game_state = YouOrMeEngine.apply_action(state, actor.id, action)
+        next_state = YouOrMeEngine.apply_action(state, actor.id, action)
+        room.game_state = next_state
+        self._record_you_or_me_transition(room, state, next_state)
+
+    def _record_you_or_me_transition(
+        self,
+        room: Room,
+        before: YouOrMeState,
+        after: YouOrMeState,
+    ) -> None:
+        if (
+            after.phase != "SHOWDOWN"
+            or len(after.round_history) <= len(before.round_history)
+        ):
+            return
+        result = after.round_history[-1]
+        before_players = {player.player_id: player for player in before.players}
+        winners = [
+            {
+                "id": player_id,
+                "name": room.players[player_id].name,
+                "won_amount": result.payouts.get(player_id, 0),
+            }
+            for player_id in result.winner_ids
+        ]
+        eliminated_players = [
+            {"id": player.player_id, "name": room.players[player.player_id].name}
+            for player in after.players
+            if player.status == "ELIMINATED"
+            and before_players[player.player_id].status != "ELIMINATED"
+        ]
+        is_game_over = (
+            after.winner_id is not None
+            or after.round_number >= YouOrMeEngine.TOTAL_ROUNDS
+        )
+        overall_winner = None
+        if is_game_over and after.winner_id is not None:
+            winner = next(
+                player for player in after.players if player.player_id == after.winner_id
+            )
+            overall_winner = {
+                "id": winner.player_id,
+                "name": room.players[winner.player_id].name,
+                "total_coins": winner.coins,
+            }
+        self._emit_event(
+            room,
+            "ROUND_RESULT",
+            value={
+                "round_number": result.round_number,
+                "winners": winners,
+                "is_tie": len(winners) > 1,
+                "eliminated_players": eliminated_players,
+                "is_game_over": is_game_over,
+                "overall_winner": overall_winner,
+            },
+        )
 
     def _record_what_number_action(
         self,
@@ -543,7 +603,7 @@ class RoomManager:
             "VOLUNTEER", "TIMEOUT_PICK", "ATTACK_GUESS", "GUESS_CORRECT",
             "GUESS_WRONG", "TURN_END", "TURN_START", "SKILL_USED",
             "CENTER_CARD_REVEALED", "CENTER_REVEALED_FROM_GUESS",
-            "GUESS_HELD_BY_ANOTHER",
+            "GUESS_HELD_BY_ANOTHER", "ROUND_RESULT",
         ],
         *,
         actor_id: str | None = None,

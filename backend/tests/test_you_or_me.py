@@ -28,8 +28,8 @@ def test_deck_deal() -> None:
     assert len(state.draw_pile) == 24
     assert sum(len(player.hand) for player in state.players) + len(state.draw_pile) == 52
     assert all(len(player.hand) == 7 for player in state.players)
-    assert all(player.coins == 30 for player in state.players)
-    assert state.pot == 80
+    assert all(player.coins == 40 for player in state.players)
+    assert state.pot == 40
     assert state.phase == "SELECT_CARD"
 
 
@@ -48,8 +48,8 @@ def test_ante_deduction_and_all_in() -> None:
         event_log=(),
     )
 
-    assert restarted.pot == 27
-    assert [player.coins for player in restarted.players] == [0, 5]
+    assert restarted.pot == 17
+    assert [player.coins for player in restarted.players] == [0, 15]
 
 
 def test_card_hierarchy() -> None:
@@ -70,8 +70,9 @@ def test_betting_flow() -> None:
     state = YouOrMeEngine.apply_action(state, "p4", YouOrMeAction(action_type="FOLD"))
 
     assert state.round_history
-    assert state.round_history[-1].pot == 96
+    assert state.round_history[-1].pot == 56
     assert state.round_history[-1].selected_cards["p4"] is None
+    assert state.phase == "SHOWDOWN"
     with pytest.raises(ValueError):
         YouOrMeAction(action_type="BET", amount=0)
 
@@ -100,16 +101,22 @@ def test_split_pot_on_tie() -> None:
     result = finished.round_history[-1]
     assert result.winner_ids == ("p1", "p2")
     assert result.payouts == {"p1": 50, "p2": 50}
-    assert [player.coins for player in finished.players] == [80, 80]
+    assert [player.coins for player in finished.players] == [90, 90]
 
 
 def test_full_7_round_game() -> None:
     state = YouOrMeEngine.init_game(PLAYERS[:2], seed=23)
 
     for _ in range(7):
+        if state.phase == "FINISHED":
+            break
         state = select_cards(state)
         state = YouOrMeEngine.apply_action(state, "p1", YouOrMeAction(action_type="CHECK"))
         state = YouOrMeEngine.apply_action(state, "p2", YouOrMeAction(action_type="CHECK"))
+        if state.phase == "SHOWDOWN":
+            state = YouOrMeEngine.apply_action(
+                state, "p1", YouOrMeAction(action_type="SHOWDOWN_COMPLETE")
+            )
 
     assert state.phase == "FINISHED"
     assert len(state.round_history) == 7
@@ -129,3 +136,39 @@ def test_player_view_hides_opponent_hand_and_card_rank() -> None:
     assert opponent.hand == ()
     assert opponent.hand_count == 6
     assert opponent.selected_card is not None and opponent.selected_card.rank is None
+
+
+def test_showdown_reveals_active_cards_but_keeps_folded_card_hidden() -> None:
+    state = select_cards(YouOrMeEngine.init_game(PLAYERS[:2], seed=31))
+    state = YouOrMeEngine.apply_action(state, "p1", YouOrMeAction(action_type="CHECK"))
+    folded_card_id = next(
+        player.selected_card.id
+        for player in state.players
+        if player.player_id == "p2" and player.selected_card is not None
+    )
+    state = YouOrMeEngine.apply_action(state, "p2", YouOrMeAction(action_type="FOLD"))
+
+    assert state.phase == "SHOWDOWN"
+    folded = next(player for player in state.players if player.player_id == "p2")
+    active = next(player for player in state.players if player.player_id == "p1")
+    assert folded.selected_card is not None
+    assert folded.selected_card.id == folded_card_id
+    assert folded.selected_card.is_revealed is False
+    assert active.selected_card is not None and active.selected_card.is_revealed is True
+
+    folded_view = next(
+        player
+        for player in YouOrMeEngine.get_player_view(state, "p1").players
+        if player.player_id == "p2"
+    )
+    active_view = next(
+        player
+        for player in YouOrMeEngine.get_player_view(state, "p1").players
+        if player.player_id == "p1"
+    )
+    assert folded_view.selected_card is not None
+    assert folded_view.selected_card.rank is None
+    assert folded_view.selected_card.is_revealed is False
+    assert active_view.selected_card is not None
+    assert active_view.selected_card.rank is not None
+    assert active_view.selected_card.is_revealed is True

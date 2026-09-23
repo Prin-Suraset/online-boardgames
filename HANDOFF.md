@@ -1,7 +1,7 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Apply the cohesive Grand Tabletop Lounge theme across navigation, catalog, and the game arena.
+* **Active Task**: Add the custom Grand Tabletop Lounge favicon to the browser tab.
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
@@ -41,6 +41,7 @@
 * [x] Corrected the Tailwind desktop utility cascade so the explicit left-edge anchor overrides the previous variable anchor; the correction is included with this handoff update.
 * [x] Applied the Grand Tabletop Lounge visual system: radial indigo mesh, amber CTAs, glass panels, guest/member profile pills, tabletop catalog cards, felt arena, active-turn halos, and tactile number cards.
 * [x] Committed the final UI pass as `c6e5a64` (`style(ui): apply cohesive Grand Tabletop Lounge theme across navigation, catalog, and game arena`).
+* [x] Added the scalable golden die favicon at `frontend/public/favicon.svg` and linked it from `frontend/index.html`; committed as `b75cec5` (`feat(ui): add Grand Tabletop Lounge favicon`).
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
@@ -60,3 +61,4 @@
 * The current sandbox also rejects Vite dev-server socket binding with `EPERM` on both `0.0.0.0:5173` and `127.0.0.1:5173`, so live browser viewport verification could not be run here; production build and lint checks pass.
 * For the current theme pass, `frontend/node_modules` was absent. Both sandboxed and escalated `npm ci --no-audit --no-fund` attempts failed resolving `registry.npmjs.org` with `EAI_AGAIN`; the requested build therefore could not be executed in this session. `git diff --check` passes.
 * The main `.git` mount is read-only. The theme commit is recorded in `/tmp/TheBoardGame-rematch-git/.git` as `c6e5a64`; sync or push it when repository Git metadata is writable.
+* The current frontend dependency install is incomplete (`tsc` and `eslint` are unavailable), so the favicon change could only be verified with `git diff --check` in this session.

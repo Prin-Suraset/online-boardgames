@@ -48,9 +48,11 @@
 * [x] Committed the final UI pass as `c6e5a64` (`style(ui): apply cohesive Grand Tabletop Lounge theme across navigation, catalog, and game arena`).
 * [x] Added the scalable golden die favicon at `frontend/public/favicon.svg` and linked it from `frontend/index.html`; committed as `b75cec5` (`feat(ui): add Grand Tabletop Lounge favicon`).
 * [x] Added `getCardImagePath` and mapped You or me cards to the exact fantasy card assets, including numeric, animal-label, Thai-label, hidden-card, and fallback cases; committed as `a68833b` (`fix(ui): map You or me cards to fantasy assets`) in temporary Git metadata.
+* [x] Rebuilt `YouOrMeBoard.tsx` as an authentic oval casino poker table with padded amber rail, emerald felt, gold racetrack, radial 2–4 player seating, center pot/round display, hidden showdown cards, bottom hand dock, and floating casino betting controls; committed as `f393664` (`style(poker): transform You or me who more than? into authentic oval casino poker table`), with the requested Coins seat-label polish in `76c24f0`.
+* [x] Preserved `SELECT_CARD`, `CHECK`, `CALL`, `BET`, and `FOLD` dispatches, reused the existing fantasy card image resolver, and added face-down presentation plus deal/showdown animations without changing backend payload contracts.
 
 ## 3. Pending & Next Steps
-* [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available.
+* [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available; this session's `npm run build` reached `tsc -b` but `tsc` is unavailable because dependencies are not installed.
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
@@ -74,3 +76,4 @@
 * The main `.git` mount is read-only. The theme commit is recorded in `/tmp/TheBoardGame-rematch-git/.git` as `c6e5a64`; sync or push it when repository Git metadata is writable.
 * The current frontend dependency install is incomplete (`tsc` and `eslint` are unavailable), so the favicon change could only be verified with `git diff --check` in this session.
 * The fantasy card mapping change was verified with `git diff --check` and an exact asset filename inventory; frontend build/lint remain unavailable until dependencies are installed.
+* The oval poker table refactor is committed in temporary Git metadata as `f393664`. `git diff --check` passes; `npm ci --offline` cannot resolve uncached `zod-validation-error`, and the normal install was interrupted after registry access stalled.

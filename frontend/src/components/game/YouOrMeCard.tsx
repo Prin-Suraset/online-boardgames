@@ -8,6 +8,7 @@ interface YouOrMeCardProps {
   className?: string;
   selectable?: boolean;
   onClick?: () => void;
+  faceDown?: boolean;
 }
 
 export function getCardImagePath(rank: number | string, isFaceUp: boolean = true): string {
@@ -49,9 +50,9 @@ const rankLabel = (rank: number): string => {
   return String(rank);
 };
 
-export function YouOrMeCard({ card, className, selectable = false, onClick }: YouOrMeCardProps) {
+export function YouOrMeCard({ card, className, selectable = false, onClick, faceDown = false }: YouOrMeCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
-  const isFaceDown = card.rank === null || !card.is_revealed;
+  const isFaceDown = faceDown || card.rank === null || !card.is_revealed;
   const imagePath = getCardImagePath(
     isFaceDown ? "BACK" : card.card_key ?? card.rank ?? "BACK",
     !isFaceDown,

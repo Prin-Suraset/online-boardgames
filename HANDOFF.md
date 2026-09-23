@@ -1,7 +1,7 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Ship responsive What Number gameplay, target-side SWAP, private skill-result UX, and desktop notification refinements.
+* **Active Task**: Eliminate What Number chat-induced page jumping and lock the game viewport.
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
@@ -39,11 +39,15 @@
 * [x] Verified frontend `npm run build`, `npm run lint`, and `git diff --check`; committed as `ee63be2` (`refactor(responsive): implement full-width table with slide-over chat drawer and top HUD for tablet/mobile viewports`).
 * [x] Pinned the left opponent pod to the table edge at `xl`, preserved all tablet/mobile positioning rules, extended toast notifications to 5 seconds with a 300ms exit transition, verified `npm run build` and `git diff --check`, and committed the requested implementation as `27cc33f` (`fix(ui): align left player pod to table edge on desktop and extend notification duration to 5s`).
 * [x] Corrected the Tailwind desktop utility cascade so the explicit left-edge anchor overrides the previous variable anchor; the correction is included with this handoff update.
+* [x] Replaced chat sentinel `scrollIntoView()` with isolated message-list scrolling, preserved form submission prevention, locked the What Number session root against document scrolling, and verified `npm run build` plus `git diff --check`.
+* [x] Committed the chat viewport fix as `377b77c` (`fix(chat): eliminate screen jumping on message reception by isolating scroll to chat container`).
+* [x] Followed up with `5a68875` to retain the project-supported form event typing; `npm run lint` and `npm run build` pass.
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
+* [ ] Send and receive repeated chat messages in a browser and confirm only the inner message list scrolls while the game table remains stationary.
 
 ## 4. Known Issues & Notes
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.

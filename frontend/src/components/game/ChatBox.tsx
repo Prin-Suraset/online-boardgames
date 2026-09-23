@@ -12,10 +12,12 @@ interface ChatBoxProps {
 
 export function ChatBox({ messages, currentPlayerId, onSend }: ChatBoxProps) {
   const [text, setText] = useState("");
-  const latestMessageRef = useRef<HTMLDivElement | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    latestMessageRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    if (messagesContainerRef.current !== null) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   const submit = (event: SyntheticEvent<HTMLFormElement>): void => {
@@ -31,7 +33,7 @@ export function ChatBox({ messages, currentPlayerId, onSend }: ChatBoxProps) {
   return (
     <section className="flex min-h-0 flex-1 flex-col rounded-2xl border border-white/10 bg-slate-950/50 p-4">
       <h3 className="font-black text-white">💬 Room Chat</h3>
-      <div className="mt-3 min-h-24 flex-1 space-y-2 overflow-y-auto pr-1" aria-live="polite">
+      <div ref={messagesContainerRef} className="mt-3 min-h-24 flex-1 space-y-2 overflow-y-auto pr-1" aria-live="polite">
         {messages.length === 0 && (
           <p className="py-6 text-center text-xs text-slate-500">No messages yet. Say hello!</p>
         )}
@@ -56,7 +58,6 @@ export function ChatBox({ messages, currentPlayerId, onSend }: ChatBoxProps) {
             </div>
           );
         })}
-        <div ref={latestMessageRef} />
       </div>
       <form onSubmit={submit} className="mt-3 flex gap-2">
         <input

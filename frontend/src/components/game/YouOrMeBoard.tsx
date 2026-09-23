@@ -101,6 +101,11 @@ function phaseLabel(phase: YouOrMeView["phase"]): string {
   return "สรุปผลการแข่งขัน";
 }
 
+type ShowdownStage = "idle" | "inspection" | "winner" | "complete";
+
+const SHOWDOWN_INSPECTION_MS = 3000;
+const SHOWDOWN_WINNER_HOLD_MS = 4000;
+
 function PlayerPod({
   gamePlayer,
   player,
@@ -126,7 +131,6 @@ function PlayerPod({
           ? "border-amber-200 bg-amber-950/85 ring-2 ring-amber-300/80 ring-offset-2 ring-offset-emerald-950 shadow-[0_0_28px_rgba(251,191,36,0.42)]"
           : "border-amber-100/15 bg-slate-950/80",
         isLocal && "border-emerald-200/70",
-        gamePlayer.is_folded && "opacity-55 grayscale",
       )}
     >
       <div className="min-w-0 flex-1">
@@ -190,6 +194,7 @@ export function YouOrMeBoard({
 }: YouOrMeBoardProps) {
   const [betAmount, setBetAmount] = useState(String(Math.max(5, game.current_bet + 5)));
   const [pendingCard, setPendingCard] = useState<Card | null>(null);
+  const [showdownStage, setShowdownStage] = useState<ShowdownStage>("idle");
   const showdownRoundRef = useRef<number | null>(null);
   const ownView = game.players.find((player) => player.player_id === playerId);
   const playerMap = useMemo(
@@ -204,15 +209,25 @@ export function YouOrMeBoard({
 
   useEffect(() => {
     if (game.phase !== "SHOWDOWN") {
-      showdownRoundRef.current = null;
+      if (game.phase !== "FINISHED") {
+        showdownRoundRef.current = null;
+      }
       return;
     }
     if (showdownRoundRef.current === game.round_number) return;
     showdownRoundRef.current = game.round_number;
+    setShowdownStage("inspection");
+    const inspectionTimer = window.setTimeout(() => {
+      setShowdownStage("winner");
+    }, SHOWDOWN_INSPECTION_MS);
     const timer = window.setTimeout(() => {
+      setShowdownStage("complete");
       sendAction("SHOWDOWN_COMPLETE", {});
-    }, 5000);
-    return () => { window.clearTimeout(timer); };
+    }, SHOWDOWN_INSPECTION_MS + SHOWDOWN_WINNER_HOLD_MS);
+    return () => {
+      window.clearTimeout(inspectionTimer);
+      window.clearTimeout(timer);
+    };
   }, [game.phase, game.round_number, sendAction]);
 
   const roundResult = useMemo(() => {
@@ -222,7 +237,9 @@ export function YouOrMeBoard({
     return latest !== undefined && isRoundResultValue(latest.value) ? latest.value : null;
   }, [gameEvents]);
 
-  const activeRoundResult = game.phase === "SHOWDOWN" || game.phase === "FINISHED" ? roundResult : null;
+  const activeRoundResult = game.phase === "SHOWDOWN" && roundResult?.round_number === game.round_number
+    ? roundResult
+    : null;
   const potWon = activeRoundResult?.winners.reduce((total, winner) => total + winner.won_amount, 0) ?? 0;
 
   const submitRaise = (): void => {
@@ -259,7 +276,7 @@ export function YouOrMeBoard({
         onSend={sendChat}
       />
 
-      {activeRoundResult !== null && (
+      {activeRoundResult !== null && showdownStage === "winner" && (
         <div className="pointer-events-none fixed inset-0 z-[60] grid place-items-center p-4">
           <section className="w-full max-w-xl rounded-[2rem] border border-amber-200/60 bg-slate-950/95 p-6 text-center shadow-[0_0_70px_rgba(251,191,36,0.35)] backdrop-blur-xl animate-[modal-pop_240ms_ease-out_both]">
             <p className="text-xs font-black tracking-[0.25em] text-amber-300 uppercase">Round {String(activeRoundResult.round_number)} result</p>
@@ -290,6 +307,13 @@ export function YouOrMeBoard({
             <div className="w-full h-full rounded-[40px] md:rounded-[70px] border-4 md:border-8 border-amber-950 shadow-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 flex flex-col justify-between items-center p-3 sm:p-5 relative overflow-hidden">
               <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-amber-500/20 md:rounded-[120px]" />
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(52,211,153,0.15),transparent_35%),linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.03),transparent_80%)]" />
+              {showdownStage === "inspection" && (
+                <div className="pointer-events-none absolute top-1/2 left-1/2 z-40 w-[min(92%,34rem)] -translate-x-1/2 -translate-y-1/2 text-center">
+                  <div className="rounded-2xl border border-amber-200/70 bg-slate-950/95 px-4 py-3 text-base font-black text-amber-50 shadow-[0_0_42px_rgba(251,191,36,0.38)] sm:px-6 sm:py-4 sm:text-xl">
+                    🃏 จบเฟสเดิมพัน! กำลังเปิดเผยไพ่...
+                  </div>
+                </div>
+              )}
 
               <div className="w-full flex justify-center items-center flex-shrink-0 z-10">
                 <div className="flex w-full flex-wrap justify-center gap-2 sm:gap-3">

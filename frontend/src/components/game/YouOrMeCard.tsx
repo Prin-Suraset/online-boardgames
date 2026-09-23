@@ -65,7 +65,7 @@ export function YouOrMeCard({ card, className, selectable = false, onClick, face
       disabled={!selectable}
       aria-label={isFaceDown ? "Face-down card" : `Card ${String(card.rank)}`}
       className={cn(
-        "relative grid aspect-[2/3] w-16 shrink-0 overflow-hidden rounded-xl border-2 border-amber-300/80 bg-[#20162b] shadow-[0_8px_22px_rgba(0,0,0,0.35)] transition",
+        "relative grid aspect-[2/3] w-16 shrink-0 overflow-hidden rounded-xl border-2 border-amber-300/80 bg-[#20162b] opacity-100 brightness-100 contrast-100 shadow-[0_8px_22px_rgba(0,0,0,0.35)] transition",
         selectable && "cursor-pointer hover:-translate-y-3 hover:scale-105 hover:border-yellow-200 hover:shadow-[0_0_24px_rgba(250,204,21,0.55)]",
         !selectable && "cursor-default",
         className,
@@ -75,7 +75,7 @@ export function YouOrMeCard({ card, className, selectable = false, onClick, face
         <img
           src={imagePath}
           alt=""
-          className="absolute inset-0 size-full object-cover"
+          className="absolute inset-0 size-full object-cover opacity-100 brightness-100 contrast-100"
           onError={() => { setImageFailed(true); }}
         />
       )}

@@ -1,8 +1,8 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Verify the responsive You or me poker table layout on tablet viewports.
-* **State**: Ready for Test (production build passes; live browser viewport smoke test remains pending)
+* **Active Task**: Implement precise You or me showdown pacing and full card opacity.
+* **State**: Ready for Test (production build passes; live browser smoke test remains pending)
 
 ## 2. Completed in this Session
 * [x] Added the pure `YouOrMeEngine` with a 52-card deck, seven rounds, antes, hidden-card views, betting actions, folds, showdown settlement, ties, and overall winner calculation.
@@ -66,6 +66,9 @@
 * [x] Refactored `YouOrMeBoard.tsx` to use a full-width felt mat with non-overlapping opponent, center pot, and local player flex tiers; removed the absolute seat offsets and `max-w-5xl` desktop constraint.
 * [x] Verified `cd frontend && npm run build` (passes), `npm run lint` (0 errors; one existing Fast Refresh warning), and `git diff --check`; committed as `ecaa5bd` (`refactor(layout): switch poker table interior to 3-tier flexbox to eliminate overlaps and restore full desktop width`) in temporary Git metadata.
 * [x] Inspected the deployed room in Chrome at desktop size; it is still serving the older narrow-table build, so it does not validate this local refactor.
+* [x] Added the exact You or me showdown sequence: a card-reveal banner, 3000ms card inspection, 4000ms winner-result hold, then `SHOWDOWN_COMPLETE` transition; committed as `07fc77b` (`feat(poker): implement 3s showdown inspection delay, 4s winner hold, and enforce 100% card opacity`) in temporary Git metadata.
+* [x] Removed folded-player opacity/grayscale styling from the poker card pod and enforced `opacity-100 brightness-100 contrast-100` on card containers and artwork.
+* [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), and `git diff --check`.
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
@@ -73,6 +76,7 @@
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 * [ ] Perform a browser smoke test at desktop and tablet/mobile sizes, including table/hand viewport fit and chat send/receive between players.
 * [ ] Perform the requested live tablet landscape smoke test at 1024x768 and 1280x800 when a reachable local/deployed game session is available; the local Vite server is currently blocked by sandbox `listen EPERM` on `127.0.0.1:5173`.
+* [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 * [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
@@ -100,3 +104,4 @@
 * The requested backend test command could not start in this session: `pytest` and `backend/venv/bin/pytest` are absent, and system Python has no `pydantic`; Python bytecode compilation succeeds.
 * Frontend dependencies are available now; the requested production build passes, and lint reports only the existing `react-refresh/only-export-components` warning in `YouOrMeCard.tsx`.
 * The new gameplay commit is recorded as `0a73553` in `/tmp/TheBoardGame-rematch-git/.git` because the workspace `.git` index is read-only.
+* Browser smoke verification for the showdown pacing could not run in this session because the CUA browser kernel exited before exposing a tab; production build and static timing/style checks pass.

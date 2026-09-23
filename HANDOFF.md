@@ -47,6 +47,7 @@
 * [x] Applied the Grand Tabletop Lounge visual system: radial indigo mesh, amber CTAs, glass panels, guest/member profile pills, tabletop catalog cards, felt arena, active-turn halos, and tactile number cards.
 * [x] Committed the final UI pass as `c6e5a64` (`style(ui): apply cohesive Grand Tabletop Lounge theme across navigation, catalog, and game arena`).
 * [x] Added the scalable golden die favicon at `frontend/public/favicon.svg` and linked it from `frontend/index.html`; committed as `b75cec5` (`feat(ui): add Grand Tabletop Lounge favicon`).
+* [x] Added `getCardImagePath` and mapped You or me cards to the exact fantasy card assets, including numeric, animal-label, Thai-label, hidden-card, and fallback cases; committed as `a68833b` (`fix(ui): map You or me cards to fantasy assets`) in temporary Git metadata.
 
 ## 3. Pending & Next Steps
 * [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available.
@@ -72,3 +73,4 @@
 * For the current theme pass, `frontend/node_modules` was absent. Both sandboxed and escalated `npm ci --no-audit --no-fund` attempts failed resolving `registry.npmjs.org` with `EAI_AGAIN`; the requested build therefore could not be executed in this session. `git diff --check` passes.
 * The main `.git` mount is read-only. The theme commit is recorded in `/tmp/TheBoardGame-rematch-git/.git` as `c6e5a64`; sync or push it when repository Git metadata is writable.
 * The current frontend dependency install is incomplete (`tsc` and `eslint` are unavailable), so the favicon change could only be verified with `git diff --check` in this session.
+* The fantasy card mapping change was verified with `git diff --check` and an exact asset filename inventory; frontend build/lint remain unavailable until dependencies are installed.

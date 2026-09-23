@@ -10,6 +10,38 @@ interface YouOrMeCardProps {
   onClick?: () => void;
 }
 
+export function getCardImagePath(rank: number | string, isFaceUp: boolean = true): string {
+  if (!isFaceUp || rank === "BACK") {
+    return "/images/cards/fantasy-card-back.png";
+  }
+
+  const r = Number(rank);
+  if (r >= 1 && r <= 10) {
+    return `/images/cards/fantasy-card-number-${r}.png`;
+  }
+  if (
+    r === 11 ||
+    String(rank).toUpperCase().includes("ROOSTER") ||
+    String(rank).toUpperCase().includes("CHICKEN") ||
+    rank === "ไก่"
+  ) {
+    return "/images/cards/fantasy-card-number-Chicken.png";
+  }
+  if (
+    r === 12 ||
+    String(rank).toUpperCase().includes("BOAR") ||
+    String(rank).toUpperCase().includes("PIG") ||
+    rank === "หมู"
+  ) {
+    return "/images/cards/fantasy-card-number-Pig.png";
+  }
+  if (r === 13 || String(rank).toUpperCase().includes("DRAGON") || rank === "มังกรจีน") {
+    return "/images/cards/fantasy-card-number-ChineseDragon.png";
+  }
+
+  return "/images/cards/fantasy-card-back.png";
+}
+
 const rankLabel = (rank: number): string => {
   if (rank === 11) return "🐔";
   if (rank === 12) return "🐗";
@@ -20,8 +52,10 @@ const rankLabel = (rank: number): string => {
 export function YouOrMeCard({ card, className, selectable = false, onClick }: YouOrMeCardProps) {
   const [imageFailed, setImageFailed] = useState(false);
   const isFaceDown = card.rank === null || !card.is_revealed;
-  const imageKey = isFaceDown ? "card_back" : card.card_key ?? String(card.rank);
-  const imagePath = `/images/cards/${imageKey}.png`;
+  const imagePath = getCardImagePath(
+    isFaceDown ? "BACK" : card.card_key ?? card.rank ?? "BACK",
+    !isFaceDown,
+  );
 
   return (
     <button

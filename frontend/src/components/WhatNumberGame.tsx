@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { WhatNumberBoard } from "./game/WhatNumberBoard";
+import { WhatNumberBoard, type PeekGhost } from "./game/WhatNumberBoard";
 import { SkillConfirmModal } from "./game/SkillConfirmModal";
 import { TargetSelectionModal } from "./game/TargetSelectionModal";
 import type { ChatMessage, Player, SkillCardView, WhatNumberView } from "../types";
@@ -38,6 +38,13 @@ export function WhatNumberGame({
   const [selectedSkill, setSelectedSkill] = useState<SkillCardView | null>(null);
   const [skillTargetSelection, setSkillTargetSelection] = useState("");
   const [radarRange, setRadarRange] = useState<"LOW" | "HIGH">("LOW");
+  const [peekRequest, setPeekRequest] = useState<{
+    targetPlayerId: string;
+    cardId: string;
+    insightCount: number;
+  } | null>(null);
+  const [peekGhost, setPeekGhost] = useState<PeekGhost | null>(null);
+  const peekTimeoutRef = useRef<number | null>(null);
   const expiredTurnRef = useRef<number | null>(null);
 
   const ownView = game.players.find((player) => player.player_id === playerId);
@@ -65,13 +72,62 @@ export function WhatNumberGame({
     if (game.phase !== "THINKING" || game.turn_counter !== 1) {
       return;
     }
-    setTimerState({ turn: 1, secondsLeft: game.thinking_time_seconds });
-    setTargetSelection({ turn: 1, playerId: "" });
-    setGuessedNumber("");
-    setSelectedSkill(null);
-    setSkillTargetSelection("");
-    expiredTurnRef.current = null;
+    const resetTimer = window.setTimeout(() => {
+      setTimerState({ turn: 1, secondsLeft: game.thinking_time_seconds });
+      setTargetSelection({ turn: 1, playerId: "" });
+      setGuessedNumber("");
+      setSelectedSkill(null);
+      setSkillTargetSelection("");
+      setPeekRequest(null);
+      setPeekGhost(null);
+      if (peekTimeoutRef.current !== null) {
+        window.clearTimeout(peekTimeoutRef.current);
+        peekTimeoutRef.current = null;
+      }
+      expiredTurnRef.current = null;
+    }, 0);
+    return () => { window.clearTimeout(resetTimer); };
   }, [game.phase, game.thinking_time_seconds, game.turn_counter]);
+
+  useEffect(() => () => {
+    if (peekTimeoutRef.current !== null) {
+      window.clearTimeout(peekTimeoutRef.current);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      peekRequest === null
+      || game.private_insights.length <= peekRequest.insightCount
+    ) {
+      return;
+    }
+    const latestInsight = game.private_insights.at(-1) ?? "";
+    const numbers = latestInsight.match(/\d+/g);
+    const peekedNumber = Number(numbers?.at(-1));
+    if (!Number.isInteger(peekedNumber)) {
+      const clearRequest = window.setTimeout(() => {
+        setPeekRequest(null);
+      }, 0);
+      return () => { window.clearTimeout(clearRequest); };
+    }
+    const updateGhost = window.setTimeout(() => {
+      setPeekGhost({
+        targetPlayerId: peekRequest.targetPlayerId,
+        cardId: peekRequest.cardId,
+        number: peekedNumber,
+      });
+      setPeekRequest(null);
+      if (peekTimeoutRef.current !== null) {
+        window.clearTimeout(peekTimeoutRef.current);
+      }
+      peekTimeoutRef.current = window.setTimeout(() => {
+        setPeekGhost(null);
+        peekTimeoutRef.current = null;
+      }, 7500);
+    }, 0);
+    return () => { window.clearTimeout(updateGhost); };
+  }, [game.private_insights, peekRequest]);
 
   useEffect(() => {
     if (game.phase !== "THINKING") {
@@ -134,12 +190,16 @@ export function WhatNumberGame({
     if (selectedSkill.skill_type === "SHIELD" || selectedSkill.skill_type === "SAFE_EXIT") {
       sendAction("USE_SKILL", base);
     } else if (selectedSkill.skill_type === "SWAP") {
-      const card = ownView.cards.find((item) => !item.is_revealed);
-      if (card === undefined) {
-        notify("You have no face-down card to swap.");
+      const target = activeOpponents.find((item) => item.player_id === skillTargetId);
+      const card = target?.cards.find((item) => !item.is_revealed);
+      if (target === undefined || card === undefined) {
+        notify("The target has no face-down card to swap.");
         return;
       }
-      sendAction("USE_SKILL", { ...base, payload: { card_id: card.id } });
+      sendAction("USE_SKILL", {
+        ...base,
+        target_player_id: target.player_id,
+      });
     } else {
       const target = activeOpponents.find((item) => item.player_id === skillTargetId);
       if (target === undefined) {
@@ -152,6 +212,11 @@ export function WhatNumberGame({
           notify("That player has no face-down card to peek at.");
           return;
         }
+        setPeekRequest({
+          targetPlayerId: target.player_id,
+          cardId: card.id,
+          insightCount: game.private_insights.length,
+        });
         sendAction("USE_SKILL", {
           ...base,
           target_player_id: target.player_id,
@@ -181,6 +246,7 @@ export function WhatNumberGame({
         players={players}
         playerId={playerId}
         secondsLeft={secondsLeft}
+        peekGhost={peekGhost}
         selectedTargetId={selectedTargetId}
         guessedNumber={guessedNumber}
         isAttacker={isAttacker}
@@ -210,7 +276,12 @@ export function WhatNumberGame({
           players={players}
           targetPlayerId={skillTargetId}
           radarRange={radarRange}
-          hasFaceDownCard={ownView?.cards.some((card) => !card.is_revealed) ?? false}
+          hasFaceDownCard={selectedSkill.skill_type === "SWAP"
+            ? activeOpponents.some(
+              (opponent) => opponent.player_id === skillTargetId
+                && opponent.cards.some((card) => !card.is_revealed),
+            )
+            : ownView?.cards.some((card) => !card.is_revealed) ?? false}
           onTargetChange={setSkillTargetSelection}
           onRadarRangeChange={setRadarRange}
           onCancel={() => {

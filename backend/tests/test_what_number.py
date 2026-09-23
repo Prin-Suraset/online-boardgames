@@ -6,6 +6,7 @@ from app.engine.games.what_number import (
     WhatNumberAction,
     WhatNumberEngine,
     WhatNumberState,
+    SkillCard,
     WhatNumberView,
 )
 from app.rooms import RoomManager
@@ -108,6 +109,67 @@ def test_correct_guess_chain() -> None:
     assert state.active_player_id == "p1"
     assert state.successful_guess_chain is True
     assert state.players[1].cards[0].is_revealed is True
+
+
+def test_swap_replaces_an_unrevealed_target_card_and_returns_old_number() -> None:
+    state = WhatNumberEngine.create_state(PLAYERS, seed=31)
+    swap_skill = SkillCard(id="swap-test", skill_type="SWAP")
+    actor = state.players[0].model_copy(update={"skills": (swap_skill,)})
+    state = state.model_copy(update={"players": (actor, *state.players[1:])})
+    actor_before = state.players[0]
+    target_before = state.players[1]
+    target_card = next(card for card in target_before.cards if not card.is_revealed)
+    replacement_number = state.number_deck[0]
+
+    updated = WhatNumberEngine.apply_action(
+        state,
+        "p1",
+        WhatNumberAction(
+            action_type="USE_SKILL",
+            skill_id="swap-test",
+            target_player_id="p2",
+        ),
+    )
+
+    actor_after = updated.players[0]
+    target_after = updated.players[1]
+    swapped_card = next(card for card in target_after.cards if card.id == target_card.id)
+    assert tuple(card.number for card in actor_after.cards) == tuple(
+        card.number for card in actor_before.cards
+    )
+    assert swapped_card.number == replacement_number
+    assert target_card.number in updated.number_deck
+    assert replacement_number not in updated.number_deck
+    assert all(skill.id != "swap-test" for skill in actor_after.skills)
+
+
+def test_private_skill_results_use_display_names_without_guest_ids() -> None:
+    state = WhatNumberEngine.create_state(PLAYERS, seed=37)
+    peek_skill = SkillCard(id="peek-test", skill_type="PEEK")
+    actor = state.players[0].model_copy(update={"skills": (peek_skill,)})
+    state = state.model_copy(update={"players": (actor, *state.players[1:])})
+    target_card = next(card for card in state.players[1].cards if not card.is_revealed)
+
+    updated = WhatNumberEngine.apply_action(
+        state,
+        "p1",
+        WhatNumberAction(
+            action_type="USE_SKILL",
+            skill_id="peek-test",
+            target_player_id="p2",
+            payload={"card_id": target_card.id},
+        ),
+    )
+    view = WhatNumberEngine.get_player_view(
+        updated,
+        "p1",
+        display_names={"p2": "Guest_a1b2c3d4"},
+    )
+
+    result = view.private_insights[-1]
+    assert "Guest_a1b2c3d4" not in result
+    assert "ผู้เล่น" in result
+    assert str(target_card.number) in result
 
 
 def test_wrong_guess_penalty() -> None:

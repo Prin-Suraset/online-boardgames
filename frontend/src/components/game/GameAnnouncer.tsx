@@ -23,6 +23,15 @@ interface MajorAnnouncement {
   status: "waiting" | "visible" | "exiting";
 }
 
+function eventDisplayName(name: string | null, fallback: string): string {
+  const normalized = name?.trim() ?? "";
+  return normalized
+    && !normalized.toLowerCase().startsWith("guest_")
+    && !normalized.toLowerCase().startsWith("guest-")
+    ? normalized
+    : fallback;
+}
+
 function isMajorEvent(event: GameEvent): boolean {
   return [
     "TURN_START",
@@ -35,7 +44,7 @@ function isMajorEvent(event: GameEvent): boolean {
 }
 
 function majorAnnouncementContent(event: GameEvent): Omit<MajorAnnouncement, "id" | "status"> {
-  const actor = event.actor_name ?? "ผู้เล่น";
+  const actor = eventDisplayName(event.actor_name, "ผู้เล่น");
   const value = typeof event.value === "string" || typeof event.value === "number"
     ? String(event.value)
     : "";
@@ -86,8 +95,8 @@ function majorAnnouncementContent(event: GameEvent): Omit<MajorAnnouncement, "id
 }
 
 function eventMessage(event: GameEvent, currentPlayerId: string): string {
-  const actor = event.actor_name ?? "ผู้เล่น";
-  const target = event.target_name ?? "ผู้เล่นเป้าหมาย";
+  const actor = eventDisplayName(event.actor_name, "ผู้เล่น");
+  const target = eventDisplayName(event.target_name, "ผู้เล่นเป้าหมาย");
   const value = typeof event.value === "string" || typeof event.value === "number"
     ? String(event.value)
     : "";
@@ -111,6 +120,9 @@ function eventMessage(event: GameEvent, currentPlayerId: string): string {
     case "TURN_START":
       return `เริ่มเทิร์น ${value}`;
     case "SKILL_USED":
+      if (value === "SWAP") {
+        return `${actor} สลับการ์ดคว่ำของ ${target} แล้ว`;
+      }
       return event.target_name === null
         ? `${actor} ใช้การ์ด ${value}`
         : `${actor} ใช้การ์ด ${value} ใส่ ${target}`;

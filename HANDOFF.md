@@ -1,7 +1,7 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Verify and ship the Play Again / rematch lifecycle for What Number I Have.
+* **Active Task**: Ship responsive What Number gameplay, target-side SWAP, and private skill-result UX.
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
@@ -25,10 +25,18 @@
 * [x] Backend `pytest -v` equivalent (`backend/venv/bin/pytest -v`) passes all 36 tests; frontend `npm run build` passes.
 * [x] Committed the rematch implementation as `e34cef3` (`fix(gameplay): ensure Play Again completely resets engine and starts a fresh new match`) in temporary Git metadata because the workspace `.git` mount is read-only.
 * [x] Added WebSocket coverage for the `REMATCH` action as `665bef1` (`test(gameplay): cover rematch websocket action`).
+* [x] Applied responsive lobby containers and catalog grid rules to the Vite hub and navbar (`max-w-7xl`, `px-4 sm:px-6 lg:px-8`, and one/two/three-column breakpoints).
+* [x] Made the What Number table use a dynamic viewport-height shell, compact `lg`/`xl` table scaling, smaller player pods, a `w-72`/`lg:w-80` sidebar, and a `top-[42%]` center anchor to preserve hand clearance.
+* [x] Fixed SWAP to require an active target, replace the target's unrevealed card, and return the old number to the remaining deck; room events now carry the target display name.
+* [x] Formatted RADAR/PEEK private results with room display names and a safe fallback that never exposes raw guest IDs.
+* [x] Moved private skill results beside the local hand with larger glowing dismissible cards, added an 8-second auto-dismiss, and added a local-only 7.5-second holographic PEEK ghost card.
+* [x] Added SWAP target selection to the skill confirmation flow and regression coverage for target replacement and guest-ID-safe private results.
+* [x] Verified `backend/venv/bin/pytest -v` (38 passed), `backend/venv/bin/pytest -v backend/tests/test_what_number.py` (17 passed), `npm run lint`, `npm run build`, and `git diff --check`.
+* [x] Committed the gameplay implementation as `5f868b6` (`fix(gameplay): optimize responsive multi-device layout, fix swap skill target, relocate radar/peek results, and add peek ghost silhouette`).
 
 ## 3. Pending & Next Steps
-* [ ] Push `e34cef3` and the handoff update to `origin/main`.
-* [ ] Perform a live deployment smoke test: finish a What Number match, click Play Again, start the rematch, and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
+* [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
+* [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 
 ## 4. Known Issues & Notes
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.
@@ -36,3 +44,6 @@
 * Push to `origin/main` may be blocked because this environment cannot resolve `github.com`; the rematch commit `e34cef3` is ready to push.
 * The center event is emitted by the room adapter after `TURN_END` and before `TURN_START`, with the revealed number as a string value.
 * A wrong guess checks `WhatNumberState.number_deck` (the remaining center draw pile). Matches move immediately to `revealed_center_cards`; non-matches emit `GUESS_HELD_BY_ANOTHER` without exposing the holder.
+* The repository is Vite-based, so the requested `src/app/page.tsx` changes are implemented in `frontend/src/pages/index.tsx`; `Navbar.tsx` remains the shared shell.
+* Backend tests may update `data/boardgame.db` as a test artifact; it is not part of this gameplay change.
+* Push attempts (including escalated network access) are currently blocked by DNS resolution failure for `github.com`; commits `e34cef3`, `665bef1`, `5f868b6`, `238b8b3`, and `5f541b9` remain ready to push.

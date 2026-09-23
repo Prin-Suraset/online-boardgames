@@ -103,7 +103,7 @@ export function HubPage() {
   return (
     <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-slate-950">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[34rem] bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.17),transparent_60%)]" />
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-8 sm:py-20 lg:px-10">
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <section className="mx-auto max-w-3xl text-center">
           <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-400/10 px-4 py-2 text-xs font-bold tracking-wider text-indigo-200 uppercase">
             <Sparkles className="size-3.5" /> Your next game starts here
@@ -184,7 +184,7 @@ export function HubPage() {
             <p className="text-sm text-slate-500">More classics and custom games are on the way.</p>
           </div>
 
-          <div className="mt-7 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <article className="group overflow-hidden rounded-3xl border border-indigo-400/25 bg-gradient-to-b from-indigo-500/10 to-slate-900 p-6 transition duration-300 hover:-translate-y-1 hover:border-indigo-400/50 hover:shadow-2xl hover:shadow-indigo-950/40">
               <div className="flex items-center justify-between">
                 <div className="grid size-14 place-items-center rounded-2xl bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"><Grid3X3 className="size-7" /></div>

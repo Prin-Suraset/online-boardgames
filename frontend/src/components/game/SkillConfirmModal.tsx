@@ -42,7 +42,7 @@ const SKILL_DETAILS: Record<SkillType, {
   SWAP: {
     icon: "🔄",
     title: "SWAP / สลับการ์ด",
-    description: "เปลี่ยนการ์ดของคุณที่ยังคว่ำอยู่หนึ่งใบเป็นเลขใหม่จากกองกลาง",
+    description: "เปลี่ยนการ์ดคว่ำหนึ่งใบของผู้เล่นเป้าหมายเป็นเลขใหม่จากกองกลาง",
   },
   SAFE_EXIT: {
     icon: "🛑",
@@ -52,7 +52,7 @@ const SKILL_DETAILS: Record<SkillType, {
 };
 
 function needsTarget(skillType: SkillType): boolean {
-  return skillType === "PEEK" || skillType === "RADAR";
+  return skillType === "PEEK" || skillType === "RADAR" || skillType === "SWAP";
 }
 
 export function SkillConfirmModal({
@@ -152,7 +152,7 @@ export function SkillConfirmModal({
         )}
 
         {!hasFaceDownCard && skill.skill_type === "SWAP" && (
-          <p className="mt-4 text-sm font-bold text-rose-300">คุณไม่มีการ์ดคว่ำให้สลับแล้ว</p>
+          <p className="mt-4 text-sm font-bold text-rose-300">ผู้เล่นเป้าหมายไม่มีการ์ดคว่ำให้สลับแล้ว</p>
         )}
 
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row">

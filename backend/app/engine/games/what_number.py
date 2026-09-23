@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import random
-from typing import Literal, TypeAlias
+from typing import Literal, Mapping, TypeAlias
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
 
@@ -244,6 +244,7 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
         state: WhatNumberState,
         player_id: str,
         is_admin: bool = False,
+        display_names: Mapping[str, str] | None = None,
     ) -> WhatNumberView:
         cls._player(state, player_id)
         player_views: list[WhatNumberPlayerView] = []
@@ -289,11 +290,36 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
             winner_id=state.winner_id,
             event_log=state.event_log,
             private_insights=tuple(
-                insight.message
+                cls._format_private_insight(insight.message, display_names)
                 for insight in state.private_insights
                 if insight.player_id == player_id
             ),
         )
+
+    @staticmethod
+    def _format_private_insight(
+        message: str, display_names: Mapping[str, str] | None,
+    ) -> str:
+        """Turn the engine's private result token into a safe player-facing message."""
+        parts = message.split("|")
+        if parts[0] == "PEEK_RESULT" and len(parts) == 4:
+            target_name = WhatNumberEngine._safe_display_name(parts[1], display_names)
+            return f"ผล PEEK: {target_name} มีเลข {parts[3]} ในการ์ดที่เลือก"
+        if parts[0] == "RADAR_RESULT" and len(parts) == 5:
+            target_name = WhatNumberEngine._safe_display_name(parts[1], display_names)
+            result = "มีเลข" if parts[4] == "FOUND" else "ไม่มีเลข"
+            return f"ผลเรดาร์: {target_name} {result}ในช่วง {parts[2]}-{parts[3]}"
+        return message
+
+    @staticmethod
+    def _safe_display_name(
+        player_id: str, display_names: Mapping[str, str] | None,
+    ) -> str:
+        candidate = display_names.get(player_id, "") if display_names is not None else ""
+        normalized = candidate.strip()
+        if normalized and not normalized.lower().startswith(("guest_", "guest-")):
+            return normalized
+        return "ผู้เล่น"
 
     @classmethod
     def _volunteer(cls, state: WhatNumberState, player_id: str) -> WhatNumberState:
@@ -477,28 +503,33 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
             next_state = state
             message = f"{player_id} used Safe Exit."
         elif skill.skill_type == "SWAP":
-            card_id = cls._payload_string(action.payload, "card_id")
-            selected = next(
-                (card for card in player.cards if card.id == card_id), None
-            )
-            if selected is None or selected.is_revealed or not state.number_deck:
+            if action.target_player_id is None or action.target_player_id == player_id:
+                raise GameRuleError(
+                    MoveErrorCode.INVALID_ACTION, "Swap requires another player"
+                )
+            target = cls._player(state, action.target_player_id)
+            if target.status != "ACTIVE":
+                raise GameRuleError(MoveErrorCode.INVALID_ACTION, "target is eliminated")
+            selected = next((card for card in target.cards if not card.is_revealed), None)
+            if selected is None or not state.number_deck:
                 raise GameRuleError(
                     MoveErrorCode.INVALID_ACTION,
-                    "Swap requires an unrevealed own card and a non-empty deck",
+                    "Swap requires an unrevealed target card and a non-empty deck",
                 )
             replacement = selected.model_copy(update={"number": state.number_deck[0]})
-            updated = player.model_copy(
+            updated_target = target.model_copy(
                 update={
                     "cards": tuple(
                         replacement if card.id == selected.id else card
-                        for card in player.cards
+                        for card in target.cards
                     )
                 }
             )
-            next_state = cls._replace_player(state, updated).model_copy(
+            next_state = cls._replace_player(state, updated_target).model_copy(
                 update={"number_deck": state.number_deck[1:] + (selected.number,)}
             )
-            message = f"{player_id} swapped a face-down card."
+            updated = player
+            message = f"{target.player_id}'s face-down card was swapped."
         else:
             if action.target_player_id is None or action.target_player_id == player_id:
                 raise GameRuleError(
@@ -515,7 +546,7 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
                         MoveErrorCode.INVALID_ACTION,
                         "Peek requires a face-down target card",
                     )
-                insight = f"Peek: {target.player_id}'s selected card is {card.number}."
+                insight = f"PEEK_RESULT|{target.player_id}|{card.id}|{card.number}"
             else:
                 selected_range = cls._payload_string(action.payload, "range")
                 if selected_range not in {"LOW", "HIGH"}:
@@ -527,10 +558,7 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
                     not card.is_revealed and low <= card.number <= high
                     for card in target.cards
                 )
-                insight = (
-                    f"Radar: {target.player_id} "
-                    f"{'has' if found else 'does not have'} a face-down {low}-{high} card."
-                )
+                insight = f"RADAR_RESULT|{target.player_id}|{low}|{high}|{'FOUND' if found else 'EMPTY'}"
             next_state = state.model_copy(
                 update={
                     "private_insights": state.private_insights

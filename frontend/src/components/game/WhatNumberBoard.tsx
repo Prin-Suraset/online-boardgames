@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import {
   Clock3,
   Eye,
@@ -29,6 +29,7 @@ interface WhatNumberBoardProps {
   players: readonly Player[];
   playerId: string;
   secondsLeft: number;
+  peekGhost: PeekGhost | null;
   selectedTargetId: string;
   guessedNumber: string;
   isAttacker: boolean;
@@ -41,6 +42,12 @@ interface WhatNumberBoardProps {
   onSelectSkill: (skill: SkillCardView) => void;
   chatMessages: readonly ChatMessage[];
   onSendChat: (text: string) => void;
+}
+
+export interface PeekGhost {
+  targetPlayerId: string;
+  cardId: string;
+  number: number;
 }
 
 interface SeatStyle extends CSSProperties {
@@ -60,6 +67,15 @@ const SKILL_ICONS = {
   SWAP: Shuffle,
   SAFE_EXIT: Zap,
 } as const;
+
+function displayName(player: Player | undefined, fallback = "ผู้เล่น"): string {
+  const candidate = player?.display_name?.trim() || player?.name.trim() || "";
+  return candidate
+    && !candidate.toLowerCase().startsWith("guest_")
+    && !candidate.toLowerCase().startsWith("guest-")
+    ? candidate
+    : fallback;
+}
 
 function seatPlacement(index: number, seatCount: number): SeatPlacement {
   if (seatCount === 1) {
@@ -176,12 +192,14 @@ function OpponentSeat({
   isActive,
   isDense,
   placement,
+  peekGhost,
 }: {
   gamePlayer: WhatNumberPlayerView;
   player: Player | undefined;
   isActive: boolean;
   isDense: boolean;
   placement: SeatPlacement;
+  peekGhost: PeekGhost | null;
 }) {
   const isFlank = placement.orientation === "flank";
   return (
@@ -190,10 +208,10 @@ function OpponentSeat({
       className={cn(
         "relative z-20 rounded-2xl border bg-[#071713]/95 p-2.5 shadow-xl backdrop-blur-sm lg:absolute lg:left-[var(--seat-x)] lg:top-[var(--seat-y)] lg:-translate-x-1/2 lg:-translate-y-1/2",
         isFlank
-          ? "lg:w-36 xl:w-40"
+          ? "lg:w-32 xl:w-36 2xl:w-40"
           : isDense
-            ? "lg:w-44 xl:w-48"
-            : "lg:w-60",
+            ? "lg:w-40 xl:w-44 2xl:w-48"
+            : "lg:w-52 xl:w-56 2xl:w-60",
         isActive
           ? "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-2 ring-amber-300/20"
           : "animate-[seat-in_450ms_ease-out_both] border-emerald-100/15",
@@ -206,7 +224,7 @@ function OpponentSeat({
         </span>
         <div className="min-w-0 flex-1">
           <p className="truncate text-xs font-black text-white">
-            {player?.name ?? gamePlayer.player_id}
+            {displayName(player)}
           </p>
           <p className="text-[9px] font-bold tracking-wider text-emerald-100/45 uppercase">
             {gamePlayer.status}
@@ -224,15 +242,28 @@ function OpponentSeat({
           : "flex flex-row justify-center",
       )}>
         {gamePlayer.cards.map((card, index) => (
-          <NumberCard
-            key={card.id}
-            card={card}
-            isOwn={false}
-            canReveal={false}
-            index={index}
-            size={isDense ? "opponentDense" : "opponent"}
-            onReveal={() => undefined}
-          />
+          <div key={card.id} className="relative">
+            <NumberCard
+              card={card}
+              isOwn={false}
+              canReveal={false}
+              index={index}
+              size={isDense ? "opponentDense" : "opponent"}
+              onReveal={() => undefined}
+            />
+            {peekGhost?.targetPlayerId === gamePlayer.player_id
+              && peekGhost.cardId === card.id && (
+                <div
+                  className="pointer-events-none absolute bottom-[calc(100%+0.6rem)] left-1/2 z-40 flex h-24 w-16 -translate-x-1/2 animate-pulse items-center justify-center rounded-xl border-2 border-cyan-300 bg-gradient-to-br from-cyan-300/25 via-violet-500/25 to-slate-950/80 text-2xl font-black text-cyan-100 shadow-[0_0_20px_rgba(6,182,212,0.6)] backdrop-blur-md"
+                  role="status"
+                  aria-label={`Peeked number ${String(peekGhost.number)}`}
+                >
+                  <span className="drop-shadow-[0_0_8px_rgba(165,243,252,0.9)]">
+                    👁️ {String(peekGhost.number)}
+                  </span>
+                </div>
+              )}
+          </div>
         ))}
       </div>
     </article>
@@ -262,6 +293,7 @@ export function WhatNumberBoard({
   players,
   playerId,
   secondsLeft,
+  peekGhost,
   selectedTargetId,
   guessedNumber,
   isAttacker,
@@ -275,7 +307,8 @@ export function WhatNumberBoard({
   chatMessages,
   onSendChat,
 }: WhatNumberBoardProps) {
-  const playerNames = new Map(players.map((player) => [player.id, player.name]));
+  const [visibleInsight, setVisibleInsight] = useState<string | null>(null);
+  const playerNames = new Map(players.map((player) => [player.id, displayName(player)]));
   const ownView = game.players.find((player) => player.player_id === playerId);
   const opponents = game.players.filter((player) => player.player_id !== playerId);
   const activeOpponents = opponents.filter((player) => player.status === "ACTIVE");
@@ -295,13 +328,30 @@ export function WhatNumberBoard({
   const announcement = game.phase === "THINKING"
     ? "The table is choosing an attacker"
     : game.phase === "PENALTY"
-      ? `${playerNames.get(game.pending_penalty_player_id ?? "") ?? "Attacker"} must reveal a card`
-      : `${playerNames.get(game.active_player_id ?? "") ?? "Player"} is targeting ${playerNames.get(selectedTargetId) ?? "an opponent"}`;
+      ? `${playerNames.get(game.pending_penalty_player_id ?? "") ?? "ผู้เล่น"} must reveal a card`
+      : `${playerNames.get(game.active_player_id ?? "") ?? "ผู้เล่น"} is targeting ${playerNames.get(selectedTargetId) ?? "ผู้เล่นเป้าหมาย"}`;
+  const latestInsight = game.private_insights.at(-1);
+
+  useEffect(() => {
+    if (latestInsight === undefined) {
+      return;
+    }
+    const showTimer = window.setTimeout(() => {
+      setVisibleInsight(latestInsight);
+    }, 0);
+    const hideTimer = window.setTimeout(() => {
+      setVisibleInsight(null);
+    }, 8000);
+    return () => {
+      window.clearTimeout(showTimer);
+      window.clearTimeout(hideTimer);
+    };
+  }, [game.private_insights, latestInsight]);
 
   return (
-    <div className="flex h-auto min-h-[44rem] animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl lg:h-[calc(100vh-9rem)] lg:min-h-[42rem] lg:flex-row">
+    <div className="flex h-screen h-[100dvh] min-h-[600px] animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl lg:flex-row">
       <section className="min-h-0 flex-1 overflow-y-auto bg-[#050c0b] p-3 sm:p-5 lg:overflow-hidden">
-        <div className="relative min-h-[62rem] overflow-hidden rounded-[100px] border-8 border-amber-950/70 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-5 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] lg:size-full lg:min-h-0 lg:p-8">
+        <div className="relative min-h-[62rem] overflow-visible rounded-[100px] border-8 border-amber-950/70 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-5 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] lg:size-full lg:min-h-0 lg:scale-90 lg:p-8 lg:origin-center xl:scale-95 2xl:scale-100">
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
           <div className="pointer-events-none absolute inset-3 rounded-[86px] border border-emerald-200/10" />
 
@@ -316,12 +366,13 @@ export function WhatNumberBoard({
                   isActive={game.active_player_id === gamePlayer.player_id}
                   isDense={opponents.length > 5}
                   placement={placement}
+                  peekGhost={peekGhost}
                 />
               );
             })}
           </div>
 
-          <div className="relative z-10 mx-auto mt-6 w-fit rounded-[2rem] border border-emerald-200/10 bg-black/20 px-6 py-4 text-center shadow-inner lg:absolute lg:top-1/2 lg:left-1/2 lg:mt-0 lg:-translate-x-1/2 lg:-translate-y-1/2">
+          <div className="relative z-10 mx-auto mt-6 w-fit rounded-[2rem] border border-emerald-200/10 bg-black/20 px-6 py-4 text-center shadow-inner lg:absolute lg:top-[42%] lg:left-1/2 lg:mt-0 lg:-translate-x-1/2 lg:-translate-y-1/2">
             <div className="flex items-end justify-center gap-5">
               <DeckPile label="Number deck" accent="amber" />
               <DeckPile label="Skill deck" accent="violet" />
@@ -336,7 +387,7 @@ export function WhatNumberBoard({
             <div className="relative z-30 mx-auto mt-6 flex w-fit max-w-full animate-[action-rise_300ms_ease-out_both] flex-wrap items-center justify-center gap-2 rounded-2xl border border-amber-400/30 bg-slate-950/95 p-3 shadow-2xl backdrop-blur-md lg:absolute lg:bottom-44 lg:left-1/2 lg:mt-0 lg:-translate-x-1/2">
               <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm font-bold text-rose-100">
                 <Target className="size-4 text-rose-300" />
-                🎯 เป้าหมาย: {playerNames.get(selectedTarget.player_id) ?? selectedTarget.player_id}
+                🎯 เป้าหมาย: {playerNames.get(selectedTarget.player_id) ?? "ผู้เล่นเป้าหมาย"}
               </div>
               <button
                 type="button"
@@ -399,7 +450,7 @@ export function WhatNumberBoard({
                   </span>
                   <div>
                     <p className="text-sm font-black text-white">
-                      {players.find((player) => player.id === playerId)?.name ?? "You"} · You
+                      {displayName(players.find((player) => player.id === playerId), "You")} · You
                     </p>
                     <p className="text-[9px] font-bold tracking-wider text-cyan-100/50 uppercase">
                       {hasPenalty ? "Choose a card to reveal" : ownView.status}
@@ -451,12 +502,26 @@ export function WhatNumberBoard({
                   })}
                 </div>
               )}
+              {visibleInsight !== null && (
+                <div className="absolute right-2 bottom-[calc(100%+0.75rem)] z-50 flex w-[min(78vw,24rem)] items-center gap-3 rounded-2xl border-2 border-cyan-400/70 bg-slate-900/95 p-4 text-base font-bold tracking-wide text-amber-200 shadow-2xl backdrop-blur-md md:text-lg lg:top-1/2 lg:right-auto lg:bottom-auto lg:left-[calc(100%+0.75rem)] lg:-translate-y-1/2">
+                  <Sparkles className="size-5 shrink-0 text-cyan-300" aria-hidden="true" />
+                  <p className="min-w-0 flex-1">{visibleInsight}</p>
+                  <button
+                    type="button"
+                    onClick={() => { setVisibleInsight(null); }}
+                    className="rounded-lg px-2 py-1 text-lg leading-none text-cyan-200 transition hover:bg-cyan-300/10 hover:text-white"
+                    aria-label="Dismiss private skill result"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
             </article>
           )}
         </div>
       </section>
 
-      <aside className="flex max-h-[42rem] w-full shrink-0 flex-col gap-4 border-t border-slate-800 bg-slate-900/90 p-4 lg:max-h-none lg:w-80 lg:border-t-0 lg:border-l xl:w-96">
+      <aside className="flex max-h-[42rem] w-72 max-w-full shrink-0 flex-col gap-4 border-t border-slate-800 bg-slate-900/90 p-4 lg:max-h-none lg:w-80 lg:border-t-0 lg:border-l">
         <section className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
@@ -487,12 +552,6 @@ export function WhatNumberBoard({
           </button>
         )}
 
-        {game.private_insights.length > 0 && (
-          <div className="rounded-xl border border-cyan-400/20 bg-cyan-400/10 p-3 text-xs leading-5 text-cyan-100">
-            <strong className="block text-cyan-300">Private intel</strong>
-            {game.private_insights.at(-1)}
-          </div>
-        )}
         <ChatBox
           messages={chatMessages}
           currentPlayerId={playerId}

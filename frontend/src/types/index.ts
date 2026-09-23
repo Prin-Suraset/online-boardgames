@@ -6,6 +6,7 @@ export type ConnectionStatus = "CONNECTING" | "CONNECTED" | "DISCONNECTED" | "ER
 export interface Player {
   id: string;
   name: string;
+  display_name?: string;
   avatar: string;
   is_ready: boolean;
   is_host: boolean;

@@ -318,7 +318,14 @@ class RoomManager:
                     winner_id=room.game_state.winner,
                 )
         elif isinstance(room.game_state, WhatNumberState):
-            game_view = WhatNumberEngine.get_player_view(room.game_state, player_id)
+            game_view = WhatNumberEngine.get_player_view(
+                room.game_state,
+                player_id,
+                display_names={
+                    player.id: player.name
+                    for player in room.players.values()
+                },
+            )
             if room.status == "FINISHED" and result is None:
                 result = GameOverResult(outcome="WIN", winner_id=room.game_state.winner_id)
         return RoomStateView(

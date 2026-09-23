@@ -7,14 +7,20 @@ import {
   Crown,
   HandCoins,
   PhoneCall,
-  ShieldAlert,
   ShieldCheck,
-  Sparkles,
   Trophy,
 } from "lucide-react";
 
 import { cn } from "../../lib/styles";
-import type { Player, YouOrMeCardView as Card, YouOrMePlayerView, YouOrMeView } from "../../types";
+import type {
+  ChatMessage,
+  Player,
+  YouOrMeCardView as Card,
+  YouOrMePlayerView,
+  YouOrMeView,
+} from "../../types";
+import { ChatBox } from "./ChatBox";
+import { ChatDrawer } from "./ChatDrawer";
 import { YouOrMeCard } from "./YouOrMeCard";
 
 interface YouOrMeBoardProps {
@@ -23,6 +29,8 @@ interface YouOrMeBoardProps {
   playerId: string;
   sendAction: (actionType: string, payload: object) => void;
   notify: (message: string) => void;
+  chatMessages: readonly ChatMessage[];
+  sendChat: (text: string) => void;
 }
 
 type SeatPosition = "top" | "top-left" | "top-right" | "left" | "right" | "local";
@@ -145,7 +153,15 @@ function PlayerPod({
   );
 }
 
-export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: YouOrMeBoardProps) {
+export function YouOrMeBoard({
+  game,
+  players,
+  playerId,
+  sendAction,
+  notify,
+  chatMessages,
+  sendChat,
+}: YouOrMeBoardProps) {
   const [betAmount, setBetAmount] = useState(String(Math.max(5, game.current_bet + 5)));
   const [pendingCard, setPendingCard] = useState<Card | null>(null);
   const ownView = game.players.find((player) => player.player_id === playerId);
@@ -186,20 +202,18 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
   };
 
   return (
-    <section className="relative min-h-[calc(100vh-7rem)] overflow-hidden rounded-[2rem] bg-[#090d16] px-1 py-2 sm:px-3 sm:py-4">
-      <div className="relative z-10 mb-3 flex items-center justify-between gap-3 px-2 sm:px-4">
-        <div>
-          <p className="text-[10px] font-black tracking-[0.25em] text-amber-200/65 uppercase">You or me who more than?</p>
-          <h1 className="mt-1 text-lg font-black text-white sm:text-2xl">The Golden Bluff Table</h1>
-        </div>
-        <div className="rounded-xl border border-amber-200/25 bg-slate-950/70 px-3 py-2 text-right shadow-lg">
-          <p className="text-[9px] font-black tracking-[0.18em] text-amber-200/65 uppercase">Round</p>
-          <p className="text-lg font-black text-amber-100">{String(game.round_number)} / {String(game.total_rounds)}</p>
-        </div>
-      </div>
+    <>
+      <ChatDrawer
+        messages={chatMessages}
+        currentPlayerId={playerId}
+        onSend={sendChat}
+      />
 
-      <div className="relative mx-auto w-full max-w-[1180px] rounded-[100px] border-[12px] border-amber-950 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_2px_8px_rgba(255,255,255,0.15)] md:rounded-[140px] md:border-[16px]">
-        <div className="relative flex h-[620px] w-full items-center justify-center overflow-hidden rounded-[88px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 p-6 md:h-[680px] md:rounded-[124px]">
+      <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
+        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#090d16] p-1 sm:p-2">
+          <div className="relative min-h-0 flex-1 overflow-hidden rounded-[2rem]">
+            <div className="relative h-full w-full overflow-hidden rounded-[100px] border-[12px] border-amber-950 shadow-[0_20px_50px_rgba(0,0,0,0.8),inset_0_2px_8px_rgba(255,255,255,0.15)] md:rounded-[140px] md:border-[16px]">
+              <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-[88px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 p-3 md:rounded-[124px] md:p-6">
           <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-amber-500/20 md:rounded-[120px]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(52,211,153,0.15),transparent_35%),linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.03),transparent_80%)]" />
 
@@ -310,44 +324,44 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
               <Trophy className="size-4 text-amber-300" /> Winner: {nameOf(playerMap.get(game.winner_id ?? ""))}
             </div>
           )}
-        </div>
-      </div>
-
-      <div className="relative z-20 mx-auto mt-3 w-full max-w-[1180px] rounded-2xl border border-amber-200/20 bg-slate-950/85 p-3 shadow-[0_14px_30px_rgba(0,0,0,0.45)] backdrop-blur-md sm:p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-black tracking-wider text-amber-100 uppercase">
-              <Coins className="size-4 text-amber-300" /> Your hand · {String(ownView?.hand_count ?? 0)} cards left
-            </p>
-            {game.phase === "SELECT_CARD" && <p className="mt-1 text-xs text-amber-200/70">คลิกเลือกไพ่ 1 ใบเพื่อวางคว่ำลงกระดาน</p>}
+              </div>
+            </div>
           </div>
-          {ownView?.selected_card !== null && ownView?.selected_card !== undefined && (
-            <span className="flex items-center gap-1 text-xs font-bold text-emerald-200"><Check className="size-4" /> Card selected</span>
-          )}
-        </div>
-        <div className="mt-3 flex min-h-24 gap-2 overflow-x-auto pb-1">
-          {ownView?.hand.map((card) => (
-            <YouOrMeCard
-              key={card.id}
-              card={card}
-              selectable={game.phase === "SELECT_CARD" && ownView.selected_card === null}
-              onClick={() => { selectCard(card.id); }}
-              className="w-14 hover:-translate-y-4 hover:scale-105 transition-all shadow-2xl sm:w-16"
-            />
-          ))}
-        </div>
-      </div>
 
-      {game.phase === "FINISHED" && (
-        <p className="relative z-10 mt-3 flex items-center justify-center gap-2 text-sm font-black text-amber-200">
-          <ShieldAlert className="size-4" /> {nameOf(playerMap.get(game.winner_id ?? ""))} takes the table
-        </p>
-      )}
-      {game.phase === "SELECT_CARD" && (
-        <p className="relative z-10 mt-2 flex items-center justify-center gap-2 text-[10px] font-bold text-emerald-100/50">
-          <Sparkles className="size-3" /> Secret cards stay hidden until showdown
-        </p>
-      )}
+          <div className="relative z-20 mx-1 mt-2 shrink-0 rounded-2xl border border-amber-200/20 bg-slate-950/85 p-2 shadow-[0_14px_30px_rgba(0,0,0,0.45)] backdrop-blur-md sm:mx-2 sm:mt-3 sm:p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p className="flex items-center gap-2 text-xs font-black tracking-wider text-amber-100 uppercase">
+                  <Coins className="size-4 text-amber-300" /> Your hand · {String(ownView?.hand_count ?? 0)} cards left
+                </p>
+                {game.phase === "SELECT_CARD" && <p className="mt-1 text-xs text-amber-200/70">คลิกเลือกไพ่ 1 ใบเพื่อวางคว่ำลงกระดาน</p>}
+              </div>
+              {ownView?.selected_card !== null && ownView?.selected_card !== undefined && (
+                <span className="flex items-center gap-1 text-xs font-bold text-emerald-200"><Check className="size-4" /> Card selected</span>
+              )}
+            </div>
+            <div className="mt-2 flex min-h-20 gap-2 overflow-x-auto pb-1 sm:mt-3 sm:min-h-24">
+              {ownView?.hand.map((card) => (
+                <YouOrMeCard
+                  key={card.id}
+                  card={card}
+                  selectable={game.phase === "SELECT_CARD" && ownView.selected_card === null}
+                  onClick={() => { selectCard(card.id); }}
+                  className="w-14 shadow-2xl transition-all hover:-translate-y-4 hover:scale-105 sm:w-16"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <aside className="hidden w-80 flex-shrink-0 flex-col border-l border-slate-800 bg-slate-900/90 p-3 xl:flex">
+          <ChatBox
+            messages={chatMessages}
+            currentPlayerId={playerId}
+            onSend={sendChat}
+          />
+        </aside>
+      </div>
 
       {pendingCard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm" role="presentation">
@@ -369,6 +383,6 @@ export function YouOrMeBoard({ game, players, playerId, sendAction, notify }: Yo
           </section>
         </div>
       )}
-    </section>
+    </>
   );
 }

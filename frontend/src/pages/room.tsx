@@ -289,10 +289,10 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
             "relative z-10",
             isWhatNumberSession || isYouOrMeSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
           )}>
-            {!isWhatNumberSession && <div className="mb-8 text-center">
+            {!isWhatNumberSession && !isYouOrMeSession && <div className="mb-8 text-center">
               <p className="eyebrow">Room {room.room_code}</p>
               <h1 className="mt-3 font-display text-3xl font-black text-white sm:text-5xl">
-                {room.game_type === "what_number" ? "Read the table. Hide your hand." : room.game_type === "you_or_me" ? "Bluff boldly. Bet wisely." : "Three in a row wins."}
+                Three in a row wins.
               </h1>
             </div>}
 
@@ -313,6 +313,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   playerId={profile.playerId}
                   sendAction={sendAction}
                   notify={setNotice}
+                  chatMessages={chatMessages}
+                  sendChat={sendChat}
                 />
               ) : (
                 <WhatNumberGame

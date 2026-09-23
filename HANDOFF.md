@@ -1,7 +1,7 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Add card placement confirmation and spinner-free bet input to "You or me who more than?".
+* **Active Task**: Remove oversized poker banners, fit the table and hand inside one viewport, and integrate live room chat in "You or me who more than?".
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
@@ -52,6 +52,9 @@
 * [x] Preserved `SELECT_CARD`, `CHECK`, `CALL`, `BET`, and `FOLD` dispatches, reused the existing fantasy card image resolver, and added face-down presentation plus deal/showdown animations without changing backend payload contracts.
 * [x] Added a card placement confirmation modal with enlarged artwork, Thai/English confirm and cancel actions, and deferred `SELECT_CARD` dispatch; replaced the betting number input with a sanitized spinner-free numeric text field.
 * [x] Committed as `4cd4c8c` (`feat(gameplay): confirm card placement and sanitize bet input`) in temporary Git metadata because the workspace `.git` mount is read-only.
+* [x] Removed the poker slogan and oversized table title, moved the round indicator into the center pot badge, and rebuilt the poker board as a bounded flex viewport with the table and local hand visible together.
+* [x] Added the existing live room `ChatBox` to the `xl` desktop sidebar and the existing `ChatDrawer` to tablet/mobile, wired through the established `CHAT_MESSAGE` and `SEND_CHAT` WebSocket flow.
+* [x] Committed as `34da4e6` (`refactor(poker): remove oversized title banner to fit table on screen and integrate live room chat`) and `4be4f14` (`fix(poker): remove remaining slogan and tighten mobile arena height`) in temporary Git metadata.
 
 ## 3. Pending & Next Steps
 * [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available; this session's `npm run build` reached `tsc -b` but `tsc` is unavailable because dependencies are not installed.
@@ -60,6 +63,8 @@
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 * [ ] Install frontend dependencies when npm registry access is available, then run `npm run build` and `npm run lint` from `frontend/`.
 * [ ] Run the frontend production build and lint for the card-confirmation/bet-input update once `frontend/node_modules` is available.
+* [ ] Install frontend dependencies when npm registry access is available, then rerun `npm run build` and `npm run lint` for the poker layout/chat update.
+* [ ] Perform a browser smoke test at desktop and tablet/mobile sizes, including table/hand viewport fit and chat send/receive between players.
 
 ## 4. Known Issues & Notes
 * The new game is integrated through the existing `backend/app/rooms.py` room manager; this repository does not contain `backend/app/engine/room.py`.
@@ -80,3 +85,4 @@
 * The current frontend dependency install is incomplete (`tsc` and `eslint` are unavailable), so the favicon change could only be verified with `git diff --check` in this session.
 * The fantasy card mapping change was verified with `git diff --check` and an exact asset filename inventory; frontend build/lint remain unavailable until dependencies are installed.
 * The oval poker table refactor is committed in temporary Git metadata as `f393664`. `git diff --check` passes; `npm ci --offline` cannot resolve uncached `zod-validation-error`, and the normal install was interrupted after registry access stalled.
+* The poker layout/chat update's required `frontend/npm run build` verification is currently blocked because `frontend/node_modules` is absent and `tsc` is unavailable; `git diff --check` passes.

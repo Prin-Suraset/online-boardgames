@@ -10,6 +10,7 @@ interface WhatNumberGameProps {
   players: readonly Player[];
   playerId: string;
   isTimerAuthority: boolean;
+  onTimerChange: (secondsLeft: number) => void;
   sendAction: (actionType: string, payload: object) => void;
   notify: (message: string) => void;
   chatMessages: readonly ChatMessage[];
@@ -21,6 +22,7 @@ export function WhatNumberGame({
   players,
   playerId,
   isTimerAuthority,
+  onTimerChange,
   sendAction,
   notify,
   chatMessages,
@@ -67,6 +69,10 @@ export function WhatNumberGame({
     : activeOpponents[0]?.player_id || "";
   const isAttacker = game.phase === "ATTACK" && game.active_player_id === playerId;
   const hasPenalty = game.phase === "PENALTY" && game.pending_penalty_player_id === playerId;
+
+  useEffect(() => {
+    onTimerChange(secondsLeft);
+  }, [onTimerChange, secondsLeft]);
 
   useEffect(() => {
     if (game.phase !== "THINKING" || game.turn_counter !== 1) {
@@ -245,13 +251,11 @@ export function WhatNumberGame({
         game={game}
         players={players}
         playerId={playerId}
-        secondsLeft={secondsLeft}
         peekGhost={peekGhost}
         selectedTargetId={selectedTargetId}
         guessedNumber={guessedNumber}
         isAttacker={isAttacker}
         hasPenalty={hasPenalty}
-        onVolunteer={() => { sendAction("VOLUNTEER", {}); }}
         onRevealCard={(cardId) => { sendAction("REVEAL_OWN", { card_id: cardId }); }}
         onTargetChange={selectTarget}
         onGuessChange={setGuessedNumber}

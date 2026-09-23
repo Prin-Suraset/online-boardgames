@@ -1,6 +1,5 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import {
-  Clock3,
   Eye,
   Layers3,
   RadioTower,
@@ -13,7 +12,6 @@ import {
 
 import { FlipCard } from "./FlipCard";
 import { ChatBox } from "./ChatBox";
-import { ChatDrawer } from "./ChatDrawer";
 import { CenterTable } from "./CenterTable";
 import { cn } from "../../lib/styles";
 import type {
@@ -29,13 +27,11 @@ interface WhatNumberBoardProps {
   game: WhatNumberView;
   players: readonly Player[];
   playerId: string;
-  secondsLeft: number;
   peekGhost: PeekGhost | null;
   selectedTargetId: string;
   guessedNumber: string;
   isAttacker: boolean;
   hasPenalty: boolean;
-  onVolunteer: () => void;
   onRevealCard: (cardId: string) => void;
   onTargetChange: (playerId: string) => void;
   onGuessChange: (value: string) => void;
@@ -225,8 +221,8 @@ function OpponentSeat({
       style={placement.style}
       className={cn(
         "absolute z-20 rounded-2xl border bg-[#071713]/95 p-2 shadow-xl backdrop-blur-sm xl:p-2.5",
-        placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:left-6 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
-        placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
+        placement.edge === "left" && "left-3 top-1/2 -translate-y-1/2 sm:left-5 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
+        placement.edge === "right" && "right-3 top-1/2 -translate-y-1/2 sm:right-5 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         isFlank
           ? "w-28 sm:w-32 xl:w-36 2xl:w-40"
@@ -313,13 +309,11 @@ export function WhatNumberBoard({
   game,
   players,
   playerId,
-  secondsLeft,
   peekGhost,
   selectedTargetId,
   guessedNumber,
   isAttacker,
   hasPenalty,
-  onVolunteer,
   onRevealCard,
   onTargetChange,
   onGuessChange,
@@ -341,17 +335,11 @@ export function WhatNumberBoard({
     && Number.isInteger(parsedGuess)
     && parsedGuess >= 1
     && parsedGuess <= 40;
-  const isUrgent = secondsLeft <= Math.min(10, Math.ceil(game.thinking_time_seconds / 3));
-  const timePercent = Math.max(
-    0,
-    Math.min(100, (secondsLeft / game.thinking_time_seconds) * 100),
-  );
   const announcement = game.phase === "THINKING"
     ? "The table is choosing an attacker"
     : game.phase === "PENALTY"
       ? `${playerNames.get(game.pending_penalty_player_id ?? "") ?? "ผู้เล่น"} must reveal a card`
       : `${playerNames.get(game.active_player_id ?? "") ?? "ผู้เล่น"} is targeting ${playerNames.get(selectedTargetId) ?? "ผู้เล่นเป้าหมาย"}`;
-  const activePlayerName = playerNames.get(game.active_player_id ?? "") ?? "Waiting for player";
   const latestInsight = game.private_insights.at(-1);
 
   useEffect(() => {
@@ -372,45 +360,9 @@ export function WhatNumberBoard({
 
   return (
     <>
-      <div className="absolute top-6 left-1/2 z-30 flex max-w-[calc(100%-7rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/90 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
-        <span className="rounded-full bg-emerald-400/15 px-2 py-1 text-[10px] font-black tracking-wide text-emerald-200 sm:text-xs">
-          T{game.turn_counter}
-        </span>
-        <span className="max-w-[7rem] truncate text-xs font-bold text-slate-200 sm:max-w-[10rem]">
-          {game.phase === "THINKING" ? "Waiting for volunteer" : activePlayerName}
-        </span>
-        <span className={cn(
-          "flex shrink-0 items-center gap-1 font-mono text-sm font-black",
-          isUrgent ? "animate-pulse text-rose-300" : "text-emerald-200",
-        )}>
-          <Clock3 className="size-3.5" /> {secondsLeft}s
-        </span>
-        <div className="hidden h-1.5 w-12 overflow-hidden rounded-full bg-black/50 sm:block" aria-label={`${String(secondsLeft)} seconds remaining`}>
-          <div
-            className={cn("h-full rounded-full transition-[width,background-color] duration-500", isUrgent ? "bg-rose-400" : "bg-cyan-400")}
-            style={{ width: `${String(timePercent)}%` }}
-          />
-        </div>
-        {game.phase === "THINKING" && (
-          <button
-            type="button"
-            onClick={onVolunteer}
-            className="animate-pulse rounded-full bg-indigo-600 px-2.5 py-1.5 text-[10px] font-black text-white transition hover:bg-indigo-500 sm:px-3 sm:text-xs"
-          >
-            Volunteer!
-          </button>
-        )}
-      </div>
-
-      <ChatDrawer
-        messages={chatMessages}
-        currentPlayerId={playerId}
-        onSend={onSendChat}
-      />
-
-      <div className="relative flex h-full min-h-0 w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
-      <section className="relative box-border h-full min-h-0 w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-4">
-        <div className="relative box-border h-full w-full overflow-hidden rounded-[3rem] border-4 border-amber-950/70 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] sm:rounded-[5rem] sm:p-4 xl:rounded-[100px] xl:border-8">
+      <div className="what-number-board relative flex h-full min-h-0 w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
+      <section className="relative box-border flex h-full min-h-0 w-full min-w-0 flex-1 items-center justify-center overflow-hidden bg-[#050c0b] p-2 sm:p-3">
+        <div className="relative box-border flex h-full w-full flex-col justify-between overflow-hidden rounded-[40px] border-4 border-amber-950/80 bg-gradient-to-b from-emerald-800 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_90px_rgba(0,0,0,0.7),0_25px_70px_rgba(0,0,0,0.5)] sm:rounded-[50px] sm:border-6 sm:p-3">
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
           <div className="pointer-events-none absolute inset-3 rounded-[86px] border border-emerald-200/10" />
 
@@ -431,7 +383,7 @@ export function WhatNumberBoard({
             })}
           </div>
 
-          <div className="absolute top-[36%] left-1/2 z-10 w-fit max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2 scale-85 rounded-[2rem] border border-emerald-200/10 bg-black/20 px-2 py-2 text-center shadow-inner sm:scale-90 sm:px-4 sm:py-3 md:top-[38%] md:scale-100 xl:top-[42%] xl:px-6 xl:py-4">
+          <div className="absolute top-[36%] left-1/2 z-10 w-fit max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2 scale-85 rounded-[2rem] border border-emerald-200/10 bg-black/20 px-2 py-2 text-center shadow-inner sm:top-[37%] sm:scale-90 sm:px-4 sm:py-3 md:scale-100 xl:px-6 xl:py-4">
             <div className="flex items-end justify-center gap-3 sm:gap-5">
               <DeckPile label="Number deck" accent="amber" />
               <DeckPile label="Skill deck" accent="violet" />
@@ -493,7 +445,7 @@ export function WhatNumberBoard({
           {ownView !== undefined && (
             <article
               className={cn(
-                "absolute bottom-2 left-1/2 z-20 flex max-h-[35%] max-w-[95%] -translate-x-1/2 flex-col items-center gap-1.5 overflow-visible rounded-2xl border bg-slate-900/90 px-4 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3 sm:max-w-none",
+                "absolute bottom-2 left-1/2 z-20 flex max-h-[35%] max-w-[95%] -translate-x-1/2 flex-col items-center gap-1.5 overflow-visible rounded-2xl border bg-slate-900/90 px-3 py-1.5 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3 sm:max-w-none sm:px-4 sm:py-2",
                 hasPenalty
                   ? "z-40 -translate-y-8 scale-110 border-rose-500 bg-slate-900/95 ring-4 ring-rose-500/70 shadow-2xl"
                   : "z-20 border-slate-700/60",
@@ -574,36 +526,6 @@ export function WhatNumberBoard({
       </section>
 
       <aside className="hidden h-full min-h-0 w-80 max-w-full shrink-0 flex-col gap-4 overflow-hidden border-l border-slate-800 bg-slate-900/90 p-4 xl:flex">
-        <section className="shrink-0 rounded-2xl border border-white/10 bg-slate-950/60 p-4">
-          <div className="flex items-center justify-between gap-3">
-            <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
-              Turn {game.turn_counter}
-            </span>
-            <span className={cn(
-              "flex items-center gap-1.5 font-mono text-xl font-black",
-              isUrgent ? "animate-pulse text-rose-300" : "text-emerald-200",
-            )}>
-              <Clock3 className="size-4" /> {secondsLeft}s
-            </span>
-          </div>
-          <h2 className="mt-3 text-lg font-black text-white">{announcement}</h2>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-black/50 shadow-inner">
-            <div
-              className={cn(
-                "h-full rounded-full transition-[width,background-color] duration-500",
-                isUrgent ? "bg-rose-400" : "bg-gradient-to-r from-emerald-300 to-cyan-400",
-              )}
-              style={{ width: `${String(timePercent)}%` }}
-            />
-          </div>
-        </section>
-
-        {game.phase === "THINKING" && (
-          <button type="button" onClick={onVolunteer} className="primary-button w-full shrink-0 py-4 text-base">
-            <Zap className="size-5" /> Volunteer to Attack!
-          </button>
-        )}
-
         <ChatBox
           messages={chatMessages}
           currentPlayerId={playerId}

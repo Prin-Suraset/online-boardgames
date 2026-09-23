@@ -38,11 +38,11 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
           setReadMessageCount(messages.length);
           setIsOpen(true);
         }}
-        className="absolute top-6 right-6 z-40 flex items-center justify-center rounded-full bg-indigo-600 p-3 text-white shadow-xl transition-transform hover:scale-105 hover:bg-indigo-500 focus-visible:outline-indigo-300 xl:hidden"
+        className="absolute top-1/2 right-3 z-40 flex size-7 -translate-y-1/2 items-center justify-center rounded-full bg-indigo-600 text-white shadow-xl transition-transform hover:scale-105 hover:bg-indigo-500 focus-visible:outline-indigo-300 xl:hidden"
         aria-label={unreadCount > 0 ? `Open chat, ${String(unreadCount)} unread messages` : "Open chat"}
         aria-expanded={isOpen}
       >
-        <MessageCircle className="size-5" />
+          <MessageCircle className="size-4" />
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 grid min-w-5 place-items-center rounded-full border-2 border-slate-950 bg-rose-500 px-1 text-[10px] font-black leading-4 text-white">
             {unreadCount > 9 ? "9+" : unreadCount}

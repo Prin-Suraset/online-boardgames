@@ -28,6 +28,12 @@ body {
     linear-gradient(160deg, #020617 0%, #0f172a 55%, #020617 100%);
 }
 
+@media (max-height: 700px) {
+  .what-number-board {
+    min-height: 34rem;
+  }
+}
+
 button,
 input,
 select {

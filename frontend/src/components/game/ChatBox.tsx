@@ -32,8 +32,8 @@ export function ChatBox({ messages, currentPlayerId, onSend }: ChatBoxProps) {
 
   return (
     <section className="flex min-h-0 flex-1 flex-col rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-      <h3 className="shrink-0 font-black text-white">💬 Room Chat</h3>
-      <div ref={messagesContainerRef} className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1" aria-live="polite">
+      <h3 className="font-black text-white">💬 Room Chat</h3>
+      <div ref={messagesContainerRef} className="mt-3 min-h-24 flex-1 space-y-2 overflow-y-auto pr-1" aria-live="polite">
         {messages.length === 0 && (
           <p className="py-6 text-center text-xs text-slate-500">No messages yet. Say hello!</p>
         )}
@@ -59,7 +59,7 @@ export function ChatBox({ messages, currentPlayerId, onSend }: ChatBoxProps) {
           );
         })}
       </div>
-      <form onSubmit={submit} className="mt-3 flex shrink-0 gap-2">
+      <form onSubmit={submit} className="mt-3 flex gap-2">
         <input
           aria-label="Chat message"
           className="text-input min-w-0 flex-1 text-sm"

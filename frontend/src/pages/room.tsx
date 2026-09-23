@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
   Bot,
   Check,
-  Clock3,
   CircleDashed,
   Clipboard,
   Crown,
@@ -17,179 +16,16 @@ import {
 
 import { TicTacToeBoard } from "../components/TicTacToeBoard";
 import { WhatNumberGame } from "../components/WhatNumberGame";
-import { ChatDrawer } from "../components/game/ChatDrawer";
 import { GameAnnouncer } from "../components/game/GameAnnouncer";
 import { Toast } from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
 import { useRoomSocket } from "../hooks/useRoomSocket";
 import { navigate } from "../lib/navigation";
 import { cn } from "../lib/styles";
-import type { AuthUser, ConnectionStatus, Player, TicTacToeView, WhatNumberView } from "../types";
+import type { AuthUser, Player, TicTacToeView, WhatNumberView } from "../types";
 
 function isTicTacToeView(game: TicTacToeView | WhatNumberView): game is TicTacToeView {
   return "board" in game;
-}
-
-interface RoomHeaderProps {
-  code: string;
-  isWhatNumberSession: boolean;
-  game: WhatNumberView | null;
-  players: readonly Player[];
-  connectionStatus: ConnectionStatus;
-  secondsLeft: number;
-  canForceEnd: boolean;
-  isAdmin: boolean;
-  onExit: () => void;
-  onForceEnd: () => void;
-  onCopyInvite: () => Promise<void>;
-  onVolunteer: () => void;
-}
-
-function RoomHeader({
-  code,
-  isWhatNumberSession,
-  game,
-  players,
-  connectionStatus,
-  secondsLeft,
-  canForceEnd,
-  isAdmin,
-  onExit,
-  onForceEnd,
-  onCopyInvite,
-  onVolunteer,
-}: RoomHeaderProps) {
-  const activePlayerName = players.find((player) => player.id === game?.active_player_id)?.display_name
-    ?? players.find((player) => player.id === game?.active_player_id)?.name
-    ?? "Waiting for player";
-  const isUrgent = game !== null
-    && secondsLeft <= Math.min(10, Math.ceil(game.thinking_time_seconds / 3));
-  const statusText = game?.phase === "THINKING"
-    ? "Waiting for volunteer"
-    : `Active turn · ${activePlayerName}`;
-
-  return (
-    <header className={cn(
-      "relative z-10 flex shrink-0 items-center justify-between",
-      isWhatNumberSession
-        ? "h-10 gap-2 overflow-hidden border-b border-slate-800 bg-slate-950/90 px-3 text-xs sm:h-11 sm:px-6 sm:text-sm"
-        : "gap-4 rounded-2xl border border-white/10 bg-slate-950/60 px-4 backdrop-blur-xl sm:px-5",
-    )}>
-      {isWhatNumberSession ? (
-        <>
-          <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-3">
-            <button
-              type="button"
-              onClick={onExit}
-              className="inline-flex shrink-0 items-center gap-1 rounded-lg px-1.5 py-1 text-xs font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
-            >
-              <ArrowLeft className="size-3.5" /> <span>Exit</span>
-            </button>
-            <div className="flex min-w-0 items-center gap-1.5 rounded-lg border border-slate-700/80 bg-slate-900/80 px-2 py-1 font-mono text-[10px] font-black tracking-wider text-slate-100 sm:text-xs">
-              <span className="text-slate-500">ROOM:</span>
-              <span className="truncate">{code.toUpperCase()}</span>
-              <button
-                type="button"
-                onClick={() => { void onCopyInvite(); }}
-                className="grid size-5 shrink-0 place-items-center rounded text-slate-400 transition hover:bg-slate-700 hover:text-white"
-                aria-label="Copy room code"
-              >
-                <Clipboard className="size-3" />
-              </button>
-            </div>
-          </div>
-
-          {game !== null && (
-            <div className="flex min-w-0 shrink items-center justify-center gap-1.5 sm:gap-2">
-              <span className="rounded-full bg-emerald-400/15 px-2 py-1 text-[10px] font-black tracking-wide text-emerald-200 sm:text-xs">
-                T{game.turn_counter}
-              </span>
-              <span className={cn(
-                "flex shrink-0 items-center gap-1 rounded-full bg-slate-900/90 px-2 py-1 font-mono text-xs font-black",
-                isUrgent ? "animate-pulse text-rose-300" : "text-emerald-200",
-              )}>
-                <Clock3 className="size-3" /> {secondsLeft}s
-              </span>
-              <span className="hidden max-w-40 truncate text-[10px] font-semibold text-slate-400 sm:inline">
-                {statusText}
-              </span>
-              {game.phase === "THINKING" && (
-                <button
-                  type="button"
-                  onClick={onVolunteer}
-                  className="animate-pulse rounded-full bg-indigo-600 px-3 py-1 text-xs font-bold text-white transition hover:bg-indigo-500"
-                >
-                  Volunteer!
-                </button>
-              )}
-            </div>
-          )}
-
-          <div className="flex shrink-0 items-center gap-1.5 pr-8 sm:gap-2 sm:pr-9">
-            {canForceEnd && isAdmin && (
-              <button
-                type="button"
-                onClick={onForceEnd}
-                className="inline-flex items-center gap-1 rounded-lg border border-red-400/40 bg-red-500/15 px-2 py-1 text-[10px] font-black text-red-200 transition hover:bg-red-500/25 sm:text-xs"
-              >
-                <OctagonX className="size-3.5" /> <span className="hidden sm:inline">Force End</span>
-              </button>
-            )}
-            <div
-              className={cn(
-                "flex items-center gap-1 rounded-full px-1.5 py-1 text-[10px] font-bold sm:px-2 sm:text-xs",
-                connectionStatus === "CONNECTED" ? "bg-mint/10 text-mint" : "bg-white/5 text-slate-400",
-              )}
-            >
-              {connectionStatus === "CONNECTING" ? (
-                <LoaderCircle className="size-3 animate-spin" />
-              ) : (
-                <Radio className="size-3" />
-              )}
-              <span>{connectionStatus.toLowerCase()}</span>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          <button type="button" onClick={onExit} className="ghost-button">
-            <ArrowLeft className="size-4" /> Exit room
-          </button>
-          <div className="flex items-center gap-3">
-            {canForceEnd && isAdmin && (
-              <button
-                type="button"
-                onClick={onForceEnd}
-                className="inline-flex items-center gap-2 rounded-xl border border-red-400/40 bg-red-500/15 px-3 py-2 text-xs font-black text-red-200 transition hover:bg-red-500/25"
-              >
-                <OctagonX className="size-4" /> Force End Game (Admin)
-              </button>
-            )}
-            <div className="text-right">
-              <p className="text-[10px] font-bold tracking-[0.18em] text-slate-500 uppercase">Room code</p>
-              <p className="font-mono text-lg font-black tracking-[0.2em] text-white">{code.toUpperCase()}</p>
-            </div>
-            <button type="button" onClick={() => { void onCopyInvite(); }} className="icon-button size-10" aria-label="Copy room code">
-              <Clipboard className="size-4" />
-            </button>
-          </div>
-          <div
-            className={cn(
-              "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold",
-              connectionStatus === "CONNECTED" ? "bg-mint/10 text-mint" : "bg-white/5 text-slate-400",
-            )}
-          >
-            {connectionStatus === "CONNECTING" ? (
-              <LoaderCircle className="size-3.5 animate-spin" />
-            ) : (
-              <Radio className="size-3.5" />
-            )}
-            {connectionStatus.toLowerCase()}
-          </div>
-        </>
-      )}
-    </header>
-  );
 }
 
 function PlayerSlot({ player, label }: { player: Player | undefined; label: string }) {
@@ -233,7 +69,7 @@ export function RoomPage({ code }: RoomPageProps) {
 
   if (user === null || token === null) {
     return (
-      <main className="grid min-h-0 flex-1 place-items-center bg-slate-950 px-5 text-center">
+      <main className="grid min-h-[calc(100vh-4rem)] place-items-center bg-slate-950 px-5 text-center">
         <div>
           <LoaderCircle className="mx-auto size-8 animate-spin text-indigo-300" />
           <p className="mt-4 font-bold text-slate-300">Choose a player profile to join this room.</p>
@@ -260,7 +96,6 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     [user.display_name, user.id],
   );
   const [notice, setNotice] = useState<string | null>(null);
-  const [whatNumberSecondsLeft, setWhatNumberSecondsLeft] = useState<number | null>(null);
   const {
     room,
     connectionStatus,
@@ -300,13 +135,6 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     room.game.current_player === profile.playerId;
   const wasForceEnded = room?.result?.details.forced === true;
   const isWhatNumberSession = room?.game_type === "what_number" && room.status !== "LOBBY";
-  const currentGame = room?.game;
-  const whatNumberGame = currentGame !== null && currentGame !== undefined && !isTicTacToeView(currentGame)
-    ? currentGame
-    : null;
-  const handleTimerChange = useCallback((secondsLeft: number): void => {
-    setWhatNumberSecondsLeft(secondsLeft);
-  }, []);
 
   const forceEndGame = (): void => {
     if (window.confirm("Are you sure you want to force terminate this game?")) {
@@ -337,36 +165,51 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
   return (
     <main className={cn(
-      "relative min-h-0 flex-1",
-      isWhatNumberSession ? "flex flex-col overflow-y-auto px-2 pt-2 pb-4 sm:px-3 sm:pt-3" : "overflow-y-auto px-4 py-5 sm:px-7 sm:py-7",
+      "min-h-screen",
+      isWhatNumberSession && "h-screen overflow-hidden",
+      isWhatNumberSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
     )}>
       <div className="ambient ambient-one" />
       <div className={cn(
-        "relative mx-auto w-full",
-        isWhatNumberSession ? "flex min-h-0 max-w-[120rem] flex-1 flex-col" : "max-w-5xl",
+        "mx-auto w-full",
+        isWhatNumberSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
-        {isWhatNumberSession && (
-          <ChatDrawer
-            messages={chatMessages}
-            currentPlayerId={profile.playerId}
-            onSend={sendChat}
-          />
-        )}
-
-        <RoomHeader
-          code={code}
-          isWhatNumberSession={isWhatNumberSession}
-          game={whatNumberGame}
-          players={room?.players ?? []}
-          connectionStatus={connectionStatus}
-          secondsLeft={whatNumberSecondsLeft ?? whatNumberGame?.thinking_time_seconds ?? 0}
-          canForceEnd={room?.status === "PLAYING"}
-          isAdmin={user.is_admin}
-          onExit={exitRoom}
-          onForceEnd={forceEndGame}
-          onCopyInvite={copyInvite}
-          onVolunteer={() => { sendAction("VOLUNTEER", {}); }}
-        />
+        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl sm:px-5">
+          <button type="button" onClick={exitRoom} className="ghost-button">
+            <ArrowLeft className="size-4" /> Exit room
+          </button>
+          <div className="flex items-center gap-3">
+            {room?.status === "PLAYING" && user.is_admin && (
+              <button
+                type="button"
+                onClick={forceEndGame}
+                className="inline-flex items-center gap-2 rounded-xl border border-red-400/40 bg-red-500/15 px-3 py-2 text-xs font-black text-red-200 transition hover:bg-red-500/25"
+              >
+                <OctagonX className="size-4" /> Force End Game (Admin)
+              </button>
+            )}
+            <div className="text-right">
+              <p className="text-[10px] font-bold tracking-[0.18em] text-slate-500 uppercase">Room code</p>
+              <p className="font-mono text-lg font-black tracking-[0.2em] text-white">{code.toUpperCase()}</p>
+            </div>
+            <button type="button" onClick={() => void copyInvite()} className="icon-button size-10" aria-label="Copy room code">
+              <Clipboard className="size-4" />
+            </button>
+          </div>
+          <div
+            className={cn(
+              "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold",
+              connectionStatus === "CONNECTED" ? "bg-mint/10 text-mint" : "bg-white/5 text-slate-400",
+            )}
+          >
+            {connectionStatus === "CONNECTING" ? (
+              <LoaderCircle className="size-3.5 animate-spin" />
+            ) : (
+              <Radio className="size-3.5" />
+            )}
+            {connectionStatus.toLowerCase()}
+          </div>
+        </header>
 
         {room === null ? (
           <section className="relative z-10 grid min-h-[70vh] place-items-center text-center">
@@ -439,7 +282,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         ) : (
           <section className={cn(
             "relative z-10",
-            isWhatNumberSession ? "flex min-h-0 flex-1 overflow-hidden pt-2 sm:pt-3" : "pt-10 pb-20 sm:pt-14",
+            isWhatNumberSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
           )}>
             {!isWhatNumberSession && <div className="mb-8 text-center">
               <p className="eyebrow">Room {room.room_code}</p>
@@ -463,7 +306,6 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                 players={room.players}
                 playerId={profile.playerId}
                 isTimerAuthority={room.host_id === profile.playerId}
-                onTimerChange={handleTimerChange}
                 sendAction={sendAction}
                 notify={setNotice}
                 chatMessages={chatMessages}

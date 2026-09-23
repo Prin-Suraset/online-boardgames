@@ -12,7 +12,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="relative z-50 shrink-0 border-b border-slate-800/80 bg-slate-950/75 backdrop-blur-xl">
+    <nav className="relative z-50 border-b border-slate-800/80 bg-slate-950/75 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="/" className="flex items-center gap-3 text-white">
           <span className="grid size-9 place-items-center rounded-xl bg-indigo-500 shadow-lg shadow-indigo-500/20">

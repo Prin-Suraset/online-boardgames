@@ -1,8 +1,8 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Unify and slim the What Number top header and restore tablet board spacing.
-* **State**: Ready for Test (production gates pass; live browser check is environment-blocked)
+* **Active Task**: Eliminate What Number chat-induced page jumping and lock the game viewport.
+* **State**: Ready for Test
 
 ## 2. Completed in this Session
 * [x] Added a typed `VITE_WS_URL` resolver with `wss://boardgames-backend-pzln.onrender.com` as its fallback.
@@ -42,28 +42,16 @@
 * [x] Replaced chat sentinel `scrollIntoView()` with isolated message-list scrolling, preserved form submission prevention, locked the What Number session root against document scrolling, and verified `npm run build` plus `git diff --check`.
 * [x] Committed the chat viewport fix as `377b77c` (`fix(chat): eliminate screen jumping on message reception by isolating scroll to chat container`).
 * [x] Followed up with `5a68875` to retain the project-supported form event typing; `npm run lint` and `npm run build` pass.
-* [x] Replaced the room-route viewport shell with a bounded flex column, propagated `flex-1 min-h-0` through the room/main/arena hierarchy, and removed the board’s nested viewport height.
-* [x] Compacted the local player dock and skill row, tightened tablet flank pod spacing, and made the desktop chat messages/input flex-safe so the bottom controls remain inside the viewport.
-* [x] Verified `frontend/npm run build`, `frontend/npm run lint`, and `git diff --check` pass.
-* [x] Committed the layout implementation as `4c8eb1b` (`fix(layout): resolve bottom viewport cutoff by using flex-1 min-h-0 and compacting player docks`) in the writable temporary Git metadata because the workspace `.git` mount is read-only.
-* [x] Consolidated the room exit/code/timer/turn/volunteer/admin/connection controls into one compact `h-10 sm:h-11` bar, moved the tablet chat trigger into that bar, and removed the duplicate board HUD and desktop timer panel.
-* [x] Applied the requested full-height felt mat, `top-[36%] sm:top-[37%]` center anchor, bottom player dock, flank pod offsets, and small-viewport `overflow-y-auto` room shell behavior.
-* [x] Verified `frontend/npm run lint`, `frontend/npm run build`, and `git diff --check` pass.
-* [x] Committed the refactor as `ccd88fb` (`refactor(ui): consolidate top header into ultra-slim bar to maximize board area and spacing on tablet`) in the writable temporary Git metadata.
-* [x] Added a height-based `34rem` board minimum below 700px so the room’s scroll shell can preserve dock clearance on unusually short viewports; committed as `7f49a67` (`fix(ui): preserve What Number board height on short viewports`).
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 * [ ] Send and receive repeated chat messages in a browser and confirm only the inner message list scrolls while the game table remains stationary.
-* [ ] Run the live viewport smoke test at 1920x1080, 1366x768, and iPad 1024x768 once a Vite server can bind successfully; confirm local skills, flank cards, and chat input/send controls are fully visible.
-* [ ] Run the requested browser checks at 1024x768 and 1280x800: confirm the single-row header, spacious center/dock clearance, and no overlap.
 
 ## 4. Known Issues & Notes
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.
 * The local `.git` directory is read-only; commits are stored in `/tmp/TheBoardGame-rematch-git` until pushed.
-* This session’s layout commits are stored in `/tmp/TheBoardGame-layout-git` on branch `layout-fix` because the existing temporary metadata tracks a different snapshot.
 * Push to `origin/main` may be blocked because this environment cannot resolve `github.com`; the rematch commit `e34cef3` is ready to push.
 * The center event is emitted by the room adapter after `TURN_END` and before `TURN_START`, with the revealed number as a string value.
 * A wrong guess checks `WhatNumberState.number_deck` (the remaining center draw pile). Matches move immediately to `revealed_center_cards`; non-matches emit `GUESS_HELD_BY_ANOTHER` without exposing the holder.
@@ -71,4 +59,3 @@
 * Backend tests may update `data/boardgame.db` as a test artifact; it is not part of this gameplay change.
 * Push attempts (including escalated network access) are currently blocked by DNS resolution failure for `github.com`; commits `e34cef3`, `665bef1`, `5f868b6`, `238b8b3`, and `5f541b9` remain ready to push.
 * The current sandbox also rejects Vite dev-server socket binding with `EPERM` on both `0.0.0.0:5173` and `127.0.0.1:5173`, so live browser viewport verification could not be run here; production build and lint checks pass.
-* The live viewport attempt for this refactor also failed immediately with `listen EPERM: operation not permitted 127.0.0.1:5173`; no browser-resolution claim is made from this environment.

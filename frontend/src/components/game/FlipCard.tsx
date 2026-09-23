@@ -31,7 +31,7 @@ export function FlipCard({
       aria-label={ariaLabel}
       aria-pressed={isRevealed}
       className={cn(
-        "group relative aspect-[2/3] w-full [perspective:1000px] disabled:opacity-100",
+        "group relative aspect-[2/3] w-full select-none rounded-xl [perspective:1000px] drop-shadow-[0_12px_18px_rgba(0,0,0,0.35)] disabled:opacity-100",
         className,
       )}
       disabled={disabled}

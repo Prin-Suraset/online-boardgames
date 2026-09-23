@@ -1,7 +1,7 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Eliminate What Number chat-induced page jumping and lock the game viewport.
+* **Active Task**: Apply the Grand Tabletop Lounge visual system across the navigation, catalog, and game arena.
 * **State**: Ready for Test
 
 ## 2. Completed in this Session
@@ -42,12 +42,16 @@
 * [x] Replaced chat sentinel `scrollIntoView()` with isolated message-list scrolling, preserved form submission prevention, locked the What Number session root against document scrolling, and verified `npm run build` plus `git diff --check`.
 * [x] Committed the chat viewport fix as `377b77c` (`fix(chat): eliminate screen jumping on message reception by isolating scroll to chat container`).
 * [x] Followed up with `5a68875` to retain the project-supported form event typing; `npm run lint` and `npm run build` pass.
+* [x] Applied the Grand Tabletop Lounge theme: amber CTA system, slate glass panels, radial night backdrop, profile/status pill, catalog showcase cards, luxury felt table, active-turn halos, and tactile number cards.
+* [x] Verified `frontend/npm run build`, `frontend/npm run lint`, and `git diff --check` pass.
+* [x] Committed the UI theme as `11e4f69` (`style(ui): apply cohesive Grand Tabletop Lounge theme across navigation, catalog, and game arena`) in the temporary Git metadata because the workspace `.git` mount is read-only.
 
 ## 3. Pending & Next Steps
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
 * [ ] Send and receive repeated chat messages in a browser and confirm only the inner message list scrolls while the game table remains stationary.
+* [ ] Run the Grand Tabletop Lounge visual smoke test at desktop and tablet breakpoints; confirm contrast, card readability, and no clipped table controls.
 
 ## 4. Known Issues & Notes
 * Backend tests pass with `backend/venv/bin/pytest`; the plain `pytest` command and `backend/.venv` do not contain pytest.

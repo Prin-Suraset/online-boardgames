@@ -352,7 +352,6 @@ export function YouOrMeBoard({
               ))}
             </div>
           </div>
-        </div>
 
         </main>
 

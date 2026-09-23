@@ -56,6 +56,7 @@
 * [x] Added the existing live room `ChatBox` to the `xl` desktop sidebar and the existing `ChatDrawer` to tablet/mobile, wired through the established `CHAT_MESSAGE` and `SEND_CHAT` WebSocket flow.
 * [x] Committed as `34da4e6` (`refactor(poker): remove oversized title banner to fit table on screen and integrate live room chat`) and `4be4f14` (`fix(poker): remove remaining slogan and tighten mobile arena height`) in temporary Git metadata.
 * [x] Closed the missing `<main>` element in `frontend/src/components/game/YouOrMeBoard.tsx`, resolving the reported JSX parser cascade; committed as `6ca47a2` (`fix(ui): close You or Me board main element`) in temporary Git metadata.
+* [x] Removed the remaining extra closing `<div>` that closed the outer board container before `</main>`, fixing the actual JSX nesting error; committed as `e537ffb` (`fix(ui): correct You or Me JSX container nesting`) in temporary Git metadata.
 
 ## 3. Pending & Next Steps
 * [ ] Run the frontend production build and resolve any TypeScript or layout issues once frontend dependencies are available; this session's `npm run build` reached `tsc -b` but `tsc` is unavailable because dependencies are not installed.
@@ -89,3 +90,4 @@
 * The oval poker table refactor is committed in temporary Git metadata as `f393664`. `git diff --check` passes; `npm ci --offline` cannot resolve uncached `zod-validation-error`, and the normal install was interrupted after registry access stalled.
 * The poker layout/chat update's required `frontend/npm run build` verification is currently blocked because `frontend/node_modules` is absent and `tsc` is unavailable; `git diff --check` passes.
 * The JSX fix passes `git diff --check`; the production build could not proceed because `frontend/node_modules/.bin/tsc` is absent.
+* The corrected JSX structure passes `git diff --check`; frontend build verification remains pending until dependencies are available.

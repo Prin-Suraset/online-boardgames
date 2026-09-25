@@ -161,7 +161,7 @@ export function WhatNumberGame({
 
   const submitGuess = (): void => {
     if (!isAttacker || selectedTargetId === "") {
-      notify("Wait until you are the active attacker.");
+      notify("รอให้ถึงตาคุณบุก แล้วเลือกคนที่อยากทายก่อนนะ");
       return;
     }
     const normalizedGuess = guessedNumber.trim();
@@ -172,7 +172,7 @@ export function WhatNumberGame({
       parsedGuess < 1 ||
       parsedGuess > 40
     ) {
-      notify("Enter a whole number from 1 to 40.");
+      notify("ใส่เลขจำนวนเต็มตั้งแต่ 1 ถึง 40 นะ");
       return;
     }
     sendAction("GUESS", {
@@ -193,7 +193,7 @@ export function WhatNumberGame({
       const target = activeOpponents.find((item) => item.player_id === skillTargetId);
       const card = target?.cards.find((item) => !item.is_revealed);
       if (target === undefined || card === undefined) {
-        notify("The target has no face-down card to swap.");
+        notify("คนนี้ไม่มีการ์ดคว่ำให้สลับแล้ว ลองเลือกคนอื่นนะ");
         return;
       }
       sendAction("USE_SKILL", {
@@ -203,13 +203,13 @@ export function WhatNumberGame({
     } else {
       const target = activeOpponents.find((item) => item.player_id === skillTargetId);
       if (target === undefined) {
-        notify("Choose an active opponent first.");
+        notify("เลือกเพื่อนที่ยังอยู่ในเกมก่อนนะ");
         return;
       }
       if (selectedSkill.skill_type === "PEEK") {
         const card = target.cards.find((item) => !item.is_revealed);
         if (card === undefined) {
-          notify("That player has no face-down card to peek at.");
+          notify("คนนี้ไม่มีการ์ดคว่ำให้ส่องแล้ว");
           return;
         }
         setPeekRequest({

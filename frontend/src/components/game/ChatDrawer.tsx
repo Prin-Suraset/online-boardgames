@@ -39,7 +39,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
           setIsOpen(true);
         }}
         className="fixed top-3 right-3 z-40 flex items-center justify-center rounded-full bg-indigo-600 p-3 text-white shadow-xl transition-transform hover:scale-105 hover:bg-indigo-500 focus-visible:outline-indigo-300 xl:hidden"
-        aria-label={unreadCount > 0 ? `Open chat, ${String(unreadCount)} unread messages` : "Open chat"}
+        aria-label={unreadCount > 0 ? `เปิดแชต มีข้อความใหม่ ${String(unreadCount)} ข้อความ` : "เปิดแชต"}
         aria-expanded={isOpen}
       >
         <MessageCircle className="size-5" />
@@ -61,15 +61,15 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
             setReadMessageCount(messages.length);
             setIsOpen(false);
           }}
-          aria-label="Close chat drawer"
+          aria-label="ปิดแชต"
           tabIndex={isOpen ? 0 : -1}
         />
         <aside
           className={`absolute inset-y-0 right-0 flex w-80 max-w-[calc(100vw-3.5rem)] flex-col border-l border-slate-800 bg-slate-900/95 p-4 shadow-2xl backdrop-blur-xl transition-transform duration-300 sm:w-96 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-          aria-label="Room chat"
+          aria-label="แชตในห้อง"
         >
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-lg font-black text-white">Room Chat</h2>
+            <h2 className="text-lg font-black text-white">คุยกันในห้อง</h2>
             <button
               type="button"
               onClick={() => {
@@ -77,7 +77,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
                 setIsOpen(false);
               }}
               className="grid size-10 place-items-center rounded-full border border-slate-700 bg-slate-800 text-xl text-slate-200 transition hover:bg-slate-700 hover:text-white"
-              aria-label="Close chat drawer"
+              aria-label="ปิดแชต"
             >
               ✕
             </button>

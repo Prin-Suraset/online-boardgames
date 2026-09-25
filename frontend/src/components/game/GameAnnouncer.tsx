@@ -53,44 +53,44 @@ function majorAnnouncementContent(event: GameEvent): Omit<MajorAnnouncement, "id
     case "TURN_START":
       return {
         icon: "🎲",
-        message: `เริ่มเทิร์น ${value}`,
-        subtext: "เตรียมตัวให้พร้อมสำหรับรอบใหม่",
+        message: `เทิร์นที่ ${value} เริ่มแล้ว!`,
+        subtext: "ดูไพ่บนโต๊ะให้ดี ใครพร้อมก็กดขอเล่นได้เลย",
       };
     case "VOLUNTEER":
       return {
         icon: "✋",
-        message: `${actor} ขอเล่น!`,
-        subtext: "ผู้เล่นอาสาเป็นฝ่ายโจมตี",
+        message: `${actor} ขอเป็นคนบุก!`,
+        subtext: "มาดูกันว่าจะทายเลขใคร",
       };
     case "TIMEOUT_PICK":
       return {
         icon: "⏱️",
-        message: `${actor} ถูกสุ่มให้ออกมาเล่น`,
-        subtext: "หมดเวลาเลือกผู้เล่น ระบบได้สุ่มผู้โจมตี",
+        message: `หมดเวลา! ${actor} ได้บุก`,
+        subtext: "ไม่มีใครอาสา รอบนี้ระบบเลยสุ่มให้",
       };
     case "TURN_END":
       return {
         icon: "🏁",
-        message: "จบเทิร์น",
-        subtext: "กำลังส่งต่อไปยังเทิร์นถัดไป",
+        message: "จบเทิร์นนี้แล้ว",
+        subtext: "เตรียมลุยเทิร์นต่อไป",
       };
     case "CENTER_CARD_REVEALED":
       return {
         icon: "",
-        message: `🔍 กองกลางเปิดการ์ดเลข ${value} เพิ่มแล้ว!`,
-        subtext: "การ์ดคำใบ้ใบใหม่เปิดให้ทุกคนเห็นแล้ว",
+        message: `กองกลางเปิดเลข ${value} เพิ่ม!`,
+        subtext: "ได้เบาะแสใหม่แล้ว ลองตัดเลขนี้ออกดู",
       };
     case "CENTER_REVEALED_FROM_GUESS":
       return {
         icon: "",
-        message: `🔍 เลข ${value} อยู่ในกองกลาง! ทำการเปิดการ์ดลงกองกลาง`,
-        subtext: "การ์ดคำใบ้ถูกเปิดจากการทายผิด",
+        message: `อ้าว เลข ${value} อยู่ในกองกลาง!`,
+        subtext: "ทายพลาดครั้งนี้ แต่ทุกคนได้เบาะแสเพิ่ม",
       };
     case "ROUND_RESULT":
       return {
         icon: "🏆",
-        message: "สรุปผลรอบแล้ว",
-        subtext: "ตรวจสอบผลการแข่งขันบนโต๊ะ",
+        message: "รู้ผลรอบนี้แล้ว!",
+        subtext: "ดูว่าใครได้เหรียญจากกองกลาง",
       };
     default:
       return {
@@ -109,38 +109,38 @@ function eventMessage(event: GameEvent, currentPlayerId: string): string {
     : "";
   switch (event.event_type) {
     case "TIMEOUT_PICK":
-      return `${actor} ถูกสุ่มให้ออกมาเล่น`;
+      return `หมดเวลา! ${actor} ได้เป็นคนบุก`;
     case "VOLUNTEER":
-      return `${actor} ขอเล่น`;
+      return `${actor} ขอเป็นคนบุก!`;
     case "ATTACK_GUESS":
-      return `${actor} เลือก ${target} โดยทายเลข ${value}`;
+      return `${actor} ทายว่า ${target} มีเลข ${value}`;
     case "GUESS_CORRECT":
       return event.actor_id === currentPlayerId
-        ? "คุณทายถูก จงทายต่อ"
-        : `${actor} ทายถูก! ได้สิทธิ์ทายต่อ`;
+        ? "ทายถูกแล้ว! จะทายใครต่อดี?"
+        : `${actor} ทายถูก! ได้ทายต่ออีก`;
     case "GUESS_WRONG":
       return event.actor_id === currentPlayerId
-        ? "คุณทายผิด ต้องเลือกเปิดการ์ดตัวเอง 1 ใบ"
-        : `${actor} ทายผิด! ต้องเลือกเปิดการ์ดตัวเอง`;
+        ? "ทายพลาด! เลือกหงายการ์ดตัวเอง 1 ใบได้เลย"
+        : `${actor} ทายพลาด ต้องหงายการ์ดตัวเอง 1 ใบ`;
     case "TURN_END":
-      return "จบเทิร์น";
+      return "จบเทิร์นแล้ว เตรียมเล่นต่อ!";
     case "TURN_START":
-      return `เริ่มเทิร์น ${value}`;
+      return `เทิร์นที่ ${value} เริ่มแล้ว!`;
     case "SKILL_USED":
       if (value === "SWAP") {
-        return `${actor} สลับการ์ดคว่ำของ ${target} แล้ว`;
+        return `${actor} สลับการ์ดคว่ำของ ${target} แล้ว!`;
       }
       return event.target_name === null
-        ? `${actor} ใช้การ์ด ${value}`
-        : `${actor} ใช้การ์ด ${value} ใส่ ${target}`;
+        ? `${actor} ใช้การ์ด ${value} แล้ว!`
+        : `${actor} ใช้การ์ด ${value} กับ ${target}`;
     case "CENTER_CARD_REVEALED":
-      return `🔍 กองกลางเปิดการ์ดเลข ${value} เพิ่มแล้ว!`;
+      return `กองกลางเปิดเลข ${value} เพิ่มแล้ว!`;
     case "CENTER_REVEALED_FROM_GUESS":
-      return `🔍 เลข ${value} อยู่ในกองกลาง! ทำการเปิดการ์ดลงกองกลาง`;
+      return `เลข ${value} อยู่ในกองกลาง! ได้เบาะแสเพิ่มแล้ว`;
     case "GUESS_HELD_BY_ANOTHER":
-      return `🤫 เลข ${value} ไม่ได้อยู่ในกองกลาง! (มีผู้เล่นคนอื่นถืออยู่)`;
+      return `เลข ${value} ไม่อยู่ในกองจั่วแล้ว ลองตัดช้อยส์ใหม่!`;
     case "ROUND_RESULT":
-      return "สรุปผลรอบแล้ว";
+      return "รู้ผลรอบนี้แล้ว!";
   }
 }
 

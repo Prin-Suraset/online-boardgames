@@ -164,13 +164,13 @@ function NumberCard({
         canReveal && "cursor-pointer hover:-translate-y-2 hover:rotate-1 hover:scale-105 hover:ring-2 hover:ring-amber-300",
       )}
       style={{ animationDelay: `${String(index * 70)}ms` }}
-      {...(canReveal ? { title: "คลิกเพื่อเปิดการ์ดนี้" } : {})}
+      {...(canReveal ? { title: "เลือกใบนี้เพื่อหงาย" } : {})}
       ariaLabel={
         canReveal
-          ? "คลิกเพื่อเปิดการ์ดนี้"
+          ? "เลือกใบนี้เพื่อหงาย"
           : card.is_revealed
-            ? `Revealed card ${String(card.number ?? "unknown")}`
-            : "Face-down number card"
+            ? `การ์ดที่หงายแล้ว เลข ${String(card.number ?? "ไม่ทราบ")}`
+            : "การ์ดตัวเลขคว่ำหน้า"
       }
       back={
         <span
@@ -253,13 +253,13 @@ function OpponentSeat({
             {displayName(player)}
           </p>
           <p className="text-[9px] font-bold tracking-wider text-emerald-100/45 uppercase">
-            {gamePlayer.status}
+            {gamePlayer.status === "ACTIVE" ? "ยังอยู่ในเกม" : "ตกรอบแล้ว"}
           </p>
         </div>
         <span className="rounded-full bg-violet-400/15 px-1.5 py-0.5 text-[9px] font-bold text-violet-200">
-          {gamePlayer.skill_count} skill
+          สกิล {gamePlayer.skill_count} ใบ
         </span>
-        {gamePlayer.shield_active && <Shield className="size-4 text-cyan-300" aria-label="Shield active" />}
+        {gamePlayer.shield_active && <Shield className="size-4 text-cyan-300" aria-label="มีโล่ป้องกัน" />}
       </div>
       <div className={cn(
         "mt-2 gap-1",
@@ -282,7 +282,7 @@ function OpponentSeat({
                 <div
                   className="pointer-events-none absolute bottom-[calc(100%+0.6rem)] left-1/2 z-40 flex h-24 w-16 -translate-x-1/2 animate-pulse items-center justify-center rounded-xl border-2 border-cyan-300 bg-gradient-to-br from-cyan-300/25 via-violet-500/25 to-slate-950/80 text-2xl font-black text-cyan-100 shadow-[0_0_20px_rgba(6,182,212,0.6)] backdrop-blur-md"
                   role="status"
-                  aria-label={`Peeked number ${String(peekGhost.number)}`}
+                  aria-label={`แอบเห็นเลข ${String(peekGhost.number)}`}
                 >
                   <span className="drop-shadow-[0_0_8px_rgba(165,243,252,0.9)]">
                     👁️ {String(peekGhost.number)}
@@ -352,11 +352,11 @@ export function WhatNumberBoard({
     Math.min(100, (secondsLeft / game.thinking_time_seconds) * 100),
   );
   const announcement = game.phase === "THINKING"
-    ? "The table is choosing an attacker"
+    ? "ใครพร้อมบุก กดขอเล่นได้เลย!"
     : game.phase === "PENALTY"
-      ? `${playerNames.get(game.pending_penalty_player_id ?? "") ?? "ผู้เล่น"} must reveal a card`
-      : `${playerNames.get(game.active_player_id ?? "") ?? "ผู้เล่น"} is targeting ${playerNames.get(selectedTargetId) ?? "ผู้เล่นเป้าหมาย"}`;
-  const activePlayerName = playerNames.get(game.active_player_id ?? "") ?? "Waiting for player";
+      ? `${playerNames.get(game.pending_penalty_player_id ?? "") ?? "ผู้เล่น"} ต้องหงายการ์ด 1 ใบ`
+      : `${playerNames.get(game.active_player_id ?? "") ?? "ผู้เล่น"} กำลังบุกทายเลข`;
+  const activePlayerName = playerNames.get(game.active_player_id ?? "") ?? "รอคนบุก";
   const latestInsight = game.private_insights.at(-1);
 
   useEffect(() => {
@@ -382,7 +382,7 @@ export function WhatNumberBoard({
           T{game.turn_counter}
         </span>
         <span className="max-w-[7rem] truncate text-xs font-bold text-slate-200 sm:max-w-[10rem]">
-          {game.phase === "THINKING" ? "Waiting for volunteer" : activePlayerName}
+          {game.phase === "THINKING" ? "รอคนขอเล่น" : activePlayerName}
         </span>
         <span className={cn(
           "flex shrink-0 items-center gap-1 font-mono text-sm font-black",
@@ -390,7 +390,7 @@ export function WhatNumberBoard({
         )}>
           <Clock3 className="size-3.5" /> {secondsLeft}s
         </span>
-        <div className="hidden h-1.5 w-12 overflow-hidden rounded-full bg-black/50 sm:block" aria-label={`${String(secondsLeft)} seconds remaining`}>
+        <div className="hidden h-1.5 w-12 overflow-hidden rounded-full bg-black/50 sm:block" aria-label={`เหลือเวลา ${String(secondsLeft)} วินาที`}>
           <div
             className={cn("h-full rounded-full transition-[width,background-color] duration-500", isUrgent ? "bg-rose-400" : "bg-cyan-400")}
             style={{ width: `${String(timePercent)}%` }}
@@ -402,7 +402,7 @@ export function WhatNumberBoard({
             onClick={onVolunteer}
             className="animate-pulse rounded-full bg-indigo-600 px-2.5 py-1.5 text-[10px] font-black text-white transition hover:bg-indigo-500 sm:px-3 sm:text-xs"
           >
-            Volunteer!
+            ขอเล่น!
           </button>
         )}
       </div>
@@ -438,8 +438,8 @@ export function WhatNumberBoard({
 
           <div className="absolute top-[36%] left-1/2 z-10 w-fit max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2 scale-85 rounded-[2rem] border border-emerald-200/10 bg-black/20 px-2 py-2 text-center shadow-inner sm:scale-90 sm:px-4 sm:py-3 md:top-[38%] md:scale-100 xl:top-[42%] xl:px-6 xl:py-4">
             <div className="flex items-end justify-center gap-3 sm:gap-5">
-              <DeckPile label="Number deck" accent="amber" />
-              <DeckPile label="Skill deck" accent="violet" />
+              <DeckPile label="กองเลข" accent="amber" />
+              <DeckPile label="กองสกิล" accent="violet" />
             </div>
             <CenterTable cards={game.revealed_center_cards} />
             <div className="mt-3 flex max-w-64 items-center justify-center gap-2 rounded-full border border-emerald-200/10 bg-emerald-950/80 px-3 py-1.5 text-[10px] font-bold text-emerald-100 sm:mt-4 sm:max-w-72 sm:px-4 sm:py-2 sm:text-xs">
@@ -465,7 +465,7 @@ export function WhatNumberBoard({
                 inputMode="numeric"
                 pattern="[0-9]*"
                 maxLength={2}
-                aria-label="Guess number from 1 to 40"
+                aria-label="ทายเลขตั้งแต่ 1 ถึง 40"
                 placeholder="ใส่เลข 1 - 40"
                 value={guessedNumber}
                 onChange={(event) => {
@@ -484,14 +484,14 @@ export function WhatNumberBoard({
                 disabled={!canSubmitGuess}
                 className="primary-button border-amber-400/60 bg-amber-600 px-4 hover:bg-amber-500"
               >
-                โจมตี (Attack)
+                ทายเลขนี้!
               </button>
             </div>
           )}
 
           {hasPenalty && (
             <div className="absolute top-[38%] left-1/2 z-30 w-[min(90%,38rem)] -translate-x-1/2 -translate-y-1/2 animate-pulse rounded-2xl border-2 border-rose-500 bg-slate-900/95 px-6 py-4 text-center text-lg font-black text-rose-200 shadow-2xl backdrop-blur-md">
-              คุณทายผิด! ต้องเลือกเปิดการ์ดของตัวเอง 1 ใบ
+              ทายพลาด! เลือกหงายการ์ดตัวเอง 1 ใบเลย
             </div>
           )}
 
@@ -514,16 +514,16 @@ export function WhatNumberBoard({
                   </span>
                   <div>
                     <p className="text-sm font-black text-white">
-                      {displayName(players.find((player) => player.id === playerId), "You")} · You
+                      {displayName(players.find((player) => player.id === playerId), "คุณ")} · คุณ
                     </p>
                     <p className="text-[9px] font-bold tracking-wider text-cyan-100/50 uppercase">
-                      {hasPenalty ? "Choose a card to reveal" : ownView.status}
+                      {hasPenalty ? "เลือกการ์ดที่จะหงาย" : ownView.status === "ACTIVE" ? "ยังอยู่ในเกม" : "ตกรอบแล้ว"}
                     </p>
                   </div>
                 </div>
                 {ownView.shield_active && (
                   <span className="flex items-center gap-1 rounded-full bg-cyan-300/15 px-2 py-1 text-[9px] font-black text-cyan-200 uppercase">
-                    <Shield className="size-3" /> Shielded
+                    <Shield className="size-3" /> มีโล่ป้องกัน
                   </span>
                 )}
               </div>
@@ -558,7 +558,7 @@ export function WhatNumberBoard({
                             {skill.skill_type.replace("_", " ")}
                           </span>
                           <span className="block text-[8px] font-bold tracking-wider text-violet-300/60 uppercase group-hover:text-violet-200">
-                            Activate
+                            กดใช้การ์ด
                           </span>
                         </span>
                       </button>
@@ -574,7 +574,7 @@ export function WhatNumberBoard({
                     type="button"
                     onClick={() => { setVisibleInsight(null); }}
                     className="rounded-lg px-2 py-1 text-lg leading-none text-cyan-200 transition hover:bg-cyan-300/10 hover:text-white"
-                    aria-label="Dismiss private skill result"
+                    aria-label="ปิดผลสกิลส่วนตัว"
                   >
                     ✕
                   </button>
@@ -589,7 +589,7 @@ export function WhatNumberBoard({
         <section className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
-              Turn {game.turn_counter}
+              เทิร์นที่ {game.turn_counter}
             </span>
             <span className={cn(
               "flex items-center gap-1.5 font-mono text-xl font-black",
@@ -612,7 +612,7 @@ export function WhatNumberBoard({
 
         {game.phase === "THINKING" && (
           <button type="button" onClick={onVolunteer} className="primary-button w-full py-4 text-base">
-            <Zap className="size-5" /> Volunteer to Attack!
+            <Zap className="size-5" /> ขอเป็นคนบุก!
           </button>
         )}
 

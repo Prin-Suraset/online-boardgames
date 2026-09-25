@@ -26,9 +26,9 @@ export function TargetSelectionModal({
             <Target className="size-6" />
           </span>
           <h2 id="target-selection-title" className="mt-4 text-2xl font-black text-white">
-            เลือกผู้เล่นที่ต้องการโจมตี
+            จะทายเลขของใครดี?
           </h2>
-          <p className="mt-2 text-sm text-slate-400">เลือกเป้าหมายจากผู้เล่นที่ยังอยู่ในเกม</p>
+          <p className="mt-2 text-sm text-slate-400">เลือกเพื่อนที่ยังอยู่ในเกม แล้วเตรียมทายเลขได้เลย</p>
         </div>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -50,7 +50,7 @@ export function TargetSelectionModal({
                     {player?.name ?? opponent.player_id}
                   </span>
                   <span className="mt-1 block text-xs font-semibold text-slate-400">
-                    การ์ดที่ยังไม่เปิด {unrevealedCards} ใบ
+                    ยังมีการ์ดคว่ำ {unrevealedCards} ใบ
                   </span>
                 </span>
                 <Target className="size-6 shrink-0 text-slate-600 transition group-hover:scale-110 group-hover:text-rose-300" />

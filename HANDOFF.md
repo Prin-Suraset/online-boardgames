@@ -1,10 +1,14 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Ensure the game catalog carousel fills all three desktop slots and uses responsive page navigation.
-* **State**: Ready for Test (production build and lint pass; local browser smoke test is blocked by environment policy)
+* **Active Task**: Humanize Thai game rules and in-game messages for all three playable games.
+* **State**: Ready for Test (production build and lint pass; live copy review remains pending)
 
 ## 2. Completed in this Session
+* [x] Added `frontend/src/data/gameRules.ts` with conversational Thai rulebooks for Tic-Tac-Toe, What Number, and You or Me. Kept player counts, available center cards, ties, and early game endings aligned with the current engines.
+* [x] Humanized game announcements, action prompts, skill and target dialogs, chat labels, room lobby and finish messages, connection notices, and card accessibility labels without changing action or payload contracts.
+* [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning in `YouOrMeCard.tsx`), and `git diff --check`.
+* [x] Committed the copy changes as `762841e` (`feat(copy): humanize Thai game rules and in-game messages`) in `/tmp/TheBoardGame-thai-copy-git.10frzG/.git` because workspace Git metadata is read-only.
 * [x] Grouped catalog cards into full-width carousel pages: three games on desktop, two cards on tablet, and one card on mobile. The next desktop page contains Custom Games, with page-based arrows and pagination dots.
 * [x] Verified `cd frontend && npm run build` (0 errors), `npm run lint` (0 errors; one existing Fast Refresh warning), and `git diff --check`.
 * [x] Committed the carousel fix as `a23c86b` (`fix(carousel): ensure 3 cards fill the carousel row on desktop viewports`) in `/tmp/TheBoardGame-carousel-git.axmTNY/.git` because the workspace `.git` index is read-only.
@@ -81,6 +85,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] Sync commit `762841e` and this handoff update from `/tmp/TheBoardGame-thai-copy-git.10frzG/.git` into writable repository Git metadata before pushing.
+* [ ] Review Thai copy in a live room at desktop and mobile widths, especially long announcement banners and the betting controls.
 * [ ] On a reachable local or deployed build, verify the first desktop page shows Tic-Tac-Toe, What number I have?, and You or me who more than? side-by-side; `>` reveals Custom Games and `<` returns to the first page. Check the two-card tablet and one-card mobile layouts.
 * [ ] Sync the carousel commit and handoff update from `/tmp/TheBoardGame-carousel-git.axmTNY/.git` into writable repository Git metadata before pushing.
 * [ ] Browser-smoke the new hub UI on a reachable build: open/close the modal, choose each playable game, confirm the Create a room trigger updates, and use carousel arrows, dots, and touch/trackpad scrolling at desktop and mobile widths.
@@ -94,6 +100,8 @@
 * [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
+* `frontend/src/data/gameRules.ts` is a new exported data file; the current UI does not render rulebooks yet. This copy task does not add a rules screen.
+* The repository `.git` index is mounted read-only even with escalation, so the copy commit and handoff commit are stored in temporary Git metadata.
 * The local Vite server fails with `listen EPERM` on `127.0.0.1:5173` even after escalation. Chrome's browser URL policy blocks opening the local `file://` production build, so the requested live browser verification could not be completed here.
 * For this UI task, local Vite startup failed with `listen EPERM` even after an approved escalation. Browser security policy also blocked opening the local `file://` production build, so live interaction checks remain pending.
 * The requested `page.tsx` is `frontend/src/pages/index.tsx` in this Vite repository; no Next.js app directory exists.

@@ -29,22 +29,22 @@ export function TicTacToeBoard({
 }: TicTacToeBoardProps) {
   const attemptMove = (position: number): void => {
     if (game.board[position] !== null) {
-      onInvalidAttempt("That square is already occupied.");
+      onInvalidAttempt("ช่องนี้มีคนลงแล้ว ลองช่องอื่นนะ");
       return;
     }
     if (!canMove) {
-      onInvalidAttempt("Hold on — it is not your turn yet.");
+      onInvalidAttempt("รออีกนิด ยังไม่ถึงตาคุณนะ");
       return;
     }
     onMove(position);
   };
 
   return (
-    <section aria-label="Tic-Tac-Toe board" className="mx-auto w-full max-w-xl">
+    <section aria-label="กระดานโอเอกซ์" className="mx-auto w-full max-w-xl">
       <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
         <div>
-          <p className="eyebrow">Your mark</p>
-          <p className="mt-1 text-lg font-bold text-white">You play {game.your_mark}</p>
+          <p className="eyebrow">สัญลักษณ์ของคุณ</p>
+          <p className="mt-1 text-lg font-bold text-white">คุณเล่นเป็น {game.your_mark}</p>
         </div>
         <div className="text-right">
           <span
@@ -61,7 +61,7 @@ export function TicTacToeBoard({
                 canMove ? "animate-pulse bg-mint" : "bg-slate-500",
               )}
             />
-            {canMove ? "Your turn" : "Opponent's turn"}
+            {canMove ? "ตาคุณแล้ว!" : "รอเพื่อนลงก่อน"}
           </span>
         </div>
       </div>
@@ -72,7 +72,7 @@ export function TicTacToeBoard({
             type="button"
             key={index}
             onClick={() => { attemptMove(index); }}
-            aria-label={`Board position ${String(index + 1)}${cell === null ? ", empty" : `, ${cell}`}`}
+            aria-label={`ช่องที่ ${String(index + 1)}${cell === null ? " ยังว่าง" : ` เป็น ${cell}`}`}
             className={cn(
               "aspect-square rounded-2xl border text-center transition duration-200",
               "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-cyan/35 hover:bg-cyan/8",

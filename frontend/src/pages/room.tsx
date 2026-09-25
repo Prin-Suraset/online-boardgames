@@ -46,7 +46,7 @@ function PlayerSlot({ player, label }: { player: Player | undefined; label: stri
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <p className="truncate font-bold text-white">{player?.name ?? "Waiting for player"}</p>
+          <p className="truncate font-bold text-white">{player?.name ?? "รอเพื่อนเข้าห้อง"}</p>
           {player?.is_host === true && <Crown className="size-3.5 shrink-0 text-amber-300" />}
         </div>
         <p className="mt-1 text-xs font-semibold tracking-wider text-slate-500 uppercase">{label}</p>
@@ -58,7 +58,7 @@ function PlayerSlot({ player, label }: { player: Player | undefined; label: stri
             player.is_ready ? "bg-mint/15 text-mint" : "bg-white/5 text-slate-500",
           )}
         >
-          {player.is_ready ? "Ready" : "Not ready"}
+          {player.is_ready ? "พร้อมแล้ว" : "ยังไม่พร้อม"}
         </span>
       )}
     </div>
@@ -77,7 +77,7 @@ export function RoomPage({ code }: RoomPageProps) {
       <main className="grid min-h-[calc(100vh-4rem)] place-items-center bg-slate-950 px-5 text-center">
         <div>
           <LoaderCircle className="mx-auto size-8 animate-spin text-indigo-300" />
-          <p className="mt-4 font-bold text-slate-300">Choose a player profile to join this room.</p>
+          <p className="mt-4 font-bold text-slate-300">เลือกโปรไฟล์ก่อน แล้วเข้ามาเล่นด้วยกันนะ</p>
         </div>
       </main>
     );
@@ -143,7 +143,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
   const isYouOrMeSession = room?.game_type === "you_or_me" && room.status !== "LOBBY";
 
   const forceEndGame = (): void => {
-    if (window.confirm("Are you sure you want to force terminate this game?")) {
+    if (window.confirm("จะจบเกมนี้ทันทีเลยไหม?")) {
       sendAction("FORCE_END_GAME", {});
     }
   };
@@ -181,7 +181,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
       )}>
         <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
           <button type="button" onClick={exitRoom} className="ghost-button">
-            <ArrowLeft className="size-4" /> Exit room
+            <ArrowLeft className="size-4" /> ออกจากห้อง
           </button>
           <div className="flex items-center gap-3">
             {room?.status === "PLAYING" && user.is_admin && (
@@ -190,14 +190,14 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                 onClick={forceEndGame}
                 className="inline-flex items-center gap-2 rounded-xl border border-red-400/40 bg-red-500/15 px-3 py-2 text-xs font-black text-red-200 transition hover:bg-red-500/25"
               >
-                <OctagonX className="size-4" /> Force End Game (Admin)
+                <OctagonX className="size-4" /> จบเกมทันที (แอดมิน)
               </button>
             )}
             <div className="text-right">
-              <p className="text-[10px] font-bold tracking-[0.18em] text-amber-300/70 uppercase">Room code</p>
+              <p className="text-[10px] font-bold tracking-[0.18em] text-amber-300/70 uppercase">รหัสห้อง</p>
               <p className="font-mono text-lg font-black tracking-[0.2em] text-amber-100">{code.toUpperCase()}</p>
             </div>
-            <button type="button" onClick={() => void copyInvite()} className="icon-button size-10" aria-label="Copy room code">
+            <button type="button" onClick={() => void copyInvite()} className="icon-button size-10" aria-label="คัดลอกรหัสห้อง">
               <Clipboard className="size-4" />
             </button>
           </div>
@@ -212,7 +212,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
             ) : (
               <Radio className="size-3.5" />
             )}
-            {connectionStatus.toLowerCase()}
+            {connectionStatus === "CONNECTED" ? "เชื่อมต่อแล้ว" : connectionStatus === "CONNECTING" ? "กำลังเชื่อมต่อ" : connectionStatus === "ERROR" ? "เชื่อมต่อไม่สำเร็จ" : "หลุดจากห้อง"}
           </div>
         </header>
 
@@ -220,16 +220,16 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
           <section className="relative z-10 grid min-h-[70vh] place-items-center text-center">
             <div>
               <LoaderCircle className="mx-auto size-8 animate-spin text-cyan" />
-              <h1 className="mt-5 font-display text-3xl font-black text-white">Joining the table…</h1>
-              <p className="mt-2 text-sm text-slate-500">Connecting you to room {code.toUpperCase()}</p>
+              <h1 className="mt-5 font-display text-3xl font-black text-white">กำลังพาเข้าห้องเกม…</h1>
+              <p className="mt-2 text-sm text-slate-500">รอสักครู่ กำลังเข้าห้อง {code.toUpperCase()}</p>
             </div>
           </section>
         ) : room.status === "LOBBY" ? (
           <section className="relative z-10 mx-auto max-w-3xl pt-16 pb-14 sm:pt-24">
             <div className="text-center">
-              <p className="eyebrow">Private {room.game_type === "what_number" ? "What number I have?" : room.game_type === "you_or_me" ? "You or me who more than?" : "Tic-Tac-Toe"} room</p>
-              <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-white sm:text-6xl">Gather your players.</h1>
-              <p className="mx-auto mt-4 max-w-lg text-slate-400">All players need to mark themselves ready. The host starts when at least {minPlayers} players are seated.</p>
+              <p className="eyebrow">ห้องเกม {room.game_type === "what_number" ? "What number I have?" : room.game_type === "you_or_me" ? "You or me who more than?" : "Tic-Tac-Toe"}</p>
+              <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-white sm:text-6xl">ชวนเพื่อนมานั่งโต๊ะกัน!</h1>
+              <p className="mx-auto mt-4 max-w-lg text-slate-400">ทุกคนกดพร้อมก่อนนะ พอมีอย่างน้อย {minPlayers} คน โฮสต์ก็เริ่มเกมได้เลย</p>
             </div>
 
             <div className="mt-10 grid gap-3 sm:grid-cols-2">
@@ -239,7 +239,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   <PlayerSlot
                     key={player?.id ?? `empty-${String(index)}`}
                     player={player}
-                    label={player?.is_host === true ? "Host" : player?.is_bot === true ? "Test bot" : `Player ${String(index + 1)}`}
+                    label={player?.is_host === true ? "โฮสต์" : player?.is_bot === true ? "บอททดสอบ" : `ผู้เล่นคนที่ ${String(index + 1)}`}
                   />
                 );
               })}
@@ -253,8 +253,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   <CircleDashed className="size-5 text-slate-500" />
                 )}
                 <div>
-                  <p className="font-bold text-white">{currentPlayer?.is_ready === true ? "You're ready" : "Ready to play?"}</p>
-                  <p className="text-xs text-slate-500">You can change this until the game starts.</p>
+                  <p className="font-bold text-white">{currentPlayer?.is_ready === true ? "พร้อมลุยแล้ว!" : "พร้อมเล่นหรือยัง?"}</p>
+                  <p className="text-xs text-slate-500">เปลี่ยนใจได้จนกว่าเกมจะเริ่มนะ</p>
                 </div>
               </div>
               <button
@@ -262,7 +262,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                 onClick={() => { toggleReady(currentPlayer?.is_ready !== true); }}
                 className={currentPlayer?.is_ready === true ? "secondary-button" : "primary-button"}
               >
-                {currentPlayer?.is_ready === true ? "Unready" : "I'm ready"}
+                {currentPlayer?.is_ready === true ? "ยังไม่พร้อม" : "พร้อมแล้ว!"}
               </button>
             </div>
 
@@ -274,12 +274,12 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                     onClick={() => { sendAction("ADD_TEST_BOTS", { count: minPlayers - room.players.length }); }}
                     className="secondary-button py-4 text-base"
                   >
-                    <Bot className="size-5" /> Add Test Bots (Fill to 3)
+                    <Bot className="size-5" /> เพิ่มบอททดสอบ
                   </button>
                 )}
                 <button type="button" onClick={startGame} disabled={!canStart} className="primary-button py-4 text-base">
                   <Play className="size-5 fill-current" />
-                  {canStart ? "Start game" : `Waiting for ${String(minPlayers)} ready players`}
+                  {canStart ? "เริ่มเกมเลย!" : `รอผู้เล่นพร้อมอย่างน้อย ${String(minPlayers)} คน`}
                 </button>
               </div>
             )}
@@ -290,9 +290,9 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
             isWhatNumberSession || isYouOrMeSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
           )}>
             {!isWhatNumberSession && !isYouOrMeSession && <div className="mb-8 text-center">
-              <p className="eyebrow">Room {room.room_code}</p>
+              <p className="eyebrow">ห้อง {room.room_code}</p>
               <h1 className="mt-3 font-display text-3xl font-black text-white sm:text-5xl">
-                Three in a row wins.
+                เรียงให้ครบ 3 ก่อน ชนะเลย!
               </h1>
             </div>}
 
@@ -335,22 +335,22 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               <div className="fixed inset-0 z-40 grid place-items-center bg-slate-950/75 p-5 backdrop-blur-sm">
                 <div className="panel w-full max-w-md p-7 text-center sm:p-9">
                   <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-coral/15 text-2xl text-coral">{isTicTacToeView(room.game) && room.game.status === "draw" ? "=" : "★"}</div>
-                  <p className="eyebrow mt-6">Game complete</p>
+                  <p className="eyebrow mt-6">จบเกมแล้ว!</p>
                   <h2 className="mt-2 font-display text-4xl font-black text-white">
                     {wasForceEnded
-                      ? "Game terminated by Admin"
+                      ? "แอดมินจบเกมนี้แล้ว"
                       : isTicTacToeView(room.game) && room.game.status === "draw"
-                      ? "It's a draw."
+                      ? "เสมอกัน!"
                       : (isTicTacToeView(room.game) ? room.game.winner : room.game.winner_id) === profile.playerId
-                        ? "You won!"
-                        : "Good game."}
+                        ? "คุณชนะ!"
+                        : "เกมสนุกมาก ไว้เล่นกันใหม่!"}
                   </h2>
                   <p className="mt-3 text-sm leading-6 text-slate-400">
                     {wasForceEnded
-                      ? "This game was ended immediately and no winner was recorded."
+                      ? "เกมนี้จบทันที เลยยังไม่มีผู้ชนะนะ"
                       : isTicTacToeView(room.game) && room.game.status === "draw"
-                        ? "A perfectly balanced board."
-                        : "The table is ready whenever you are."}
+                        ? "สูสีกันจนเต็มกระดานเลย"
+                        : "ถ้าพร้อมแล้ว ชวนกันเล่นอีกรอบได้เลย"}
                   </p>
                   {(currentPlayer?.is_host === true || user.is_admin) && (
                     <button
@@ -358,11 +358,11 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                       onClick={() => { sendAction("REMATCH", {}); }}
                       className="primary-button mt-7 w-full"
                     >
-                      <Play className="size-4" /> 🔄 เล่นใหม่อีกรอบ (Play Again)
+                      <Play className="size-4" /> 🔄 เล่นอีกตา!
                     </button>
                   )}
                   <button type="button" onClick={exitRoom} className="secondary-button mt-3 w-full">
-                    <LogOut className="size-4" /> กลับสู่ห้องพัก (Back to Lobby)
+                    <LogOut className="size-4" /> กลับไปห้องรอเพื่อน
                   </button>
                 </div>
               </div>

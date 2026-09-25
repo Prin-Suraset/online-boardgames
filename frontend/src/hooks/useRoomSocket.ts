@@ -304,7 +304,7 @@ export function useRoomSocket(
     (envelope: ClientEnvelope): void => {
       const socket = socketRef.current;
       if (socket?.readyState !== WebSocket.OPEN) {
-        setError("The room connection is not ready yet. Please try again.");
+        setError("ยังเชื่อมต่อห้องไม่สำเร็จ รออีกนิดแล้วลองใหม่นะ");
         return;
       }
       socket.send(JSON.stringify(envelope));
@@ -345,7 +345,7 @@ export function useRoomSocket(
       }
       const envelope = parseServerEnvelope(event.data);
       if (envelope === null) {
-        setNotification("The server sent an unsupported room message.");
+        setNotification("ห้องส่งข้อมูลที่เราอ่านไม่ได้ ลองเข้าใหม่อีกทีนะ");
       } else if ("type" in envelope && envelope.type === "GAME_STATE_UPDATE") {
         if (envelope.payload.status === "LOBBY") {
           setError(null);
@@ -366,7 +366,7 @@ export function useRoomSocket(
         return;
       }
       setConnectionStatus("ERROR");
-      setError("Unable to connect to the room server.");
+      setError("เข้าห้องเกมไม่สำเร็จ ลองเชื่อมต่อใหม่อีกทีนะ");
     };
     socket.onclose = (event: CloseEvent) => {
       if (!isMounted || event.code === 1000) {
@@ -402,7 +402,7 @@ export function useRoomSocket(
   const sendChat = useCallback((text: string): void => {
     const socket = socketRef.current;
     if (socket?.readyState !== WebSocket.OPEN) {
-      setError("The room connection is not ready yet. Please try again.");
+      setError("ยังเชื่อมต่อห้องไม่สำเร็จ รออีกนิดแล้วลองใหม่นะ");
       return;
     }
     socket.send(JSON.stringify({ action: "SEND_CHAT", payload: { text } }));

@@ -27,27 +27,27 @@ const SKILL_DETAILS: Record<SkillType, {
   PEEK: {
     icon: "👁️",
     title: "PEEK / สอดแนม",
-    description: "เลือกผู้เล่นหนึ่งคนเพื่อดูเลขของการ์ดที่ยังคว่ำอยู่หนึ่งใบแบบส่วนตัว",
+    description: "เลือกเพื่อน 1 คน แล้วแอบดูเลขบนการ์ดคว่ำของเขา 1 ใบ เห็นแค่เราคนเดียวนะ",
   },
   SHIELD: {
     icon: "🛡️",
     title: "SHIELD / โล่ป้องกัน",
-    description: "เปิดโล่เพื่อบล็อกการทายถูกครั้งถัดไปที่พุ่งเป้ามายังคุณ",
+    description: "กางโล่ไว้กันการทายถูกที่พุ่งมาหาเราได้ 1 ครั้ง",
   },
   RADAR: {
     icon: "📡",
     title: "RADAR / เรดาร์",
-    description: "ตรวจสอบแบบส่วนตัวว่าผู้เล่นที่เลือกมีการ์ดคว่ำอยู่ในช่วงเลขที่กำหนดหรือไม่",
+    description: "เลือกเพื่อนกับช่วงเลข แล้วแอบเช็กว่าเขามีการ์ดคว่ำในช่วงนั้นไหม",
   },
   SWAP: {
     icon: "🔄",
     title: "SWAP / สลับการ์ด",
-    description: "เปลี่ยนการ์ดคว่ำหนึ่งใบของผู้เล่นเป้าหมายเป็นเลขใหม่จากกองกลาง",
+    description: "เอาการ์ดคว่ำของเพื่อน 1 ใบคืนกอง แล้วให้เขาจั่วเลขใหม่",
   },
   SAFE_EXIT: {
     icon: "🛑",
     title: "SAFE EXIT / หยุดพัก",
-    description: "จบเทิร์นของคุณทันทีอย่างปลอดภัย หลังจากทายถูกอย่างน้อยหนึ่งครั้ง",
+    description: "ทายถูกแล้วพอแค่นี้? ใช้ใบนี้จบเทิร์นได้เลย ไม่ต้องเสี่ยงทายต่อ",
   },
 };
 
@@ -84,7 +84,7 @@ export function SkillConfirmModal({
             {detail.icon}
           </span>
           <div>
-            <p className="eyebrow">Confirm skill card</p>
+            <p className="eyebrow">จะใช้การ์ดใบนี้ไหม?</p>
             <h2 id="skill-confirm-title" className="mt-1 text-2xl font-black text-white">
               {detail.title}
             </h2>
@@ -157,7 +157,7 @@ export function SkillConfirmModal({
 
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row">
           <button type="button" onClick={onCancel} className="secondary-button flex-1">
-            ❌ ยกเลิก (Cancel)
+            ❌ ไว้ก่อน
           </button>
           <button
             type="button"
@@ -165,7 +165,7 @@ export function SkillConfirmModal({
             disabled={!canConfirm}
             className="primary-button flex-1 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            ✅ ยืนยันใช้การ์ด (Confirm)
+            ✅ ใช้การ์ดเลย
           </button>
         </div>
       </section>

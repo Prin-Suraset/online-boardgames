@@ -88,17 +88,17 @@ function nameOf(player: Player | undefined): string {
 }
 
 function rankName(rank: number | null): string {
-  if (rank === 11) return "ROOSTER";
-  if (rank === 12) return "BOAR";
-  if (rank === 13) return "DRAGON";
+  if (rank === 11) return "ไก่";
+  if (rank === 12) return "หมู";
+  if (rank === 13) return "มังกรจีน";
   return rank === null ? "—" : String(rank);
 }
 
 function phaseLabel(phase: YouOrMeView["phase"]): string {
-  if (phase === "SELECT_CARD") return "วางไพ่คว่ำหน้าของคุณ";
-  if (phase === "BETTING") return "ตานี้ใครได้มากกว่า?";
-  if (phase === "SHOWDOWN") return "เปิดไพ่ตัดสิน!";
-  return "สรุปผลการแข่งขัน";
+  if (phase === "SELECT_CARD") return "เลือกไพ่ 1 ใบลงคว่ำหน้า";
+  if (phase === "BETTING") return "ถึงช่วงวัดใจ ลงเดิมพันกัน!";
+  if (phase === "SHOWDOWN") return "หงายไพ่ ดูแต้มกัน!";
+  return "จบเกมแล้ว!";
 }
 
 type ShowdownStage = "idle" | "inspection" | "winner" | "complete";
@@ -146,7 +146,7 @@ function PlayerPod({
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs font-black text-white">{nameOf(player)}</p>
             <p className="truncate text-[9px] font-bold tracking-[0.12em] text-amber-200/65 uppercase">
-              {isLocal ? "You · Dealer seat" : gamePlayer.is_folded ? "Folded" : isTurn ? "Active turn" : "Player"}
+              {isLocal ? "ที่นั่งของคุณ" : gamePlayer.is_folded ? "หมอบแล้ว" : isTurn ? "ถึงตาเล่น" : "กำลังรอ"}
             </p>
           </div>
           {isTurn && <Crown className="size-4 shrink-0 text-amber-300" />}
@@ -154,10 +154,10 @@ function PlayerPod({
 
         <div className="mt-1.5 flex items-center justify-between gap-1 text-[9px] font-black sm:mt-2 sm:gap-2 sm:text-[10px]">
           <span className="rounded-full border border-rose-300/20 bg-rose-950/70 px-2 py-1 text-rose-100">
-            ❤️ {String(gamePlayer.coins)} Coins
+            ❤️ {String(gamePlayer.coins)} เหรียญ
           </span>
           <span className="rounded-full border border-amber-300/20 bg-amber-950/65 px-2 py-1 text-amber-100">
-            BET: {String(gamePlayer.round_bet)}
+            ลงแล้ว: {String(gamePlayer.round_bet)}
           </span>
         </div>
       </div>
@@ -243,7 +243,7 @@ export function YouOrMeBoard({
   const submitRaise = (): void => {
     const amount = Number(betAmount);
     if (!Number.isInteger(amount) || amount <= game.current_bet || amount > maxRaise) {
-      notify(`Raise must be a whole number from ${String(game.current_bet + 1)} to ${String(maxRaise)}.`);
+      notify(`ใส่จำนวนเหรียญเป็นเลขเต็มตั้งแต่ ${String(game.current_bet + 1)} ถึง ${String(maxRaise)} นะ`);
       return;
     }
     sendAction("BET", { amount });
@@ -277,22 +277,22 @@ export function YouOrMeBoard({
       {activeRoundResult !== null && showdownStage === "winner" && (
         <div className="pointer-events-none fixed inset-0 z-[60] grid place-items-center p-4">
           <section className="w-full max-w-xl rounded-[2rem] border border-amber-200/60 bg-slate-950/95 p-6 text-center shadow-[0_0_70px_rgba(251,191,36,0.35)] backdrop-blur-xl animate-[modal-pop_240ms_ease-out_both]">
-            <p className="text-xs font-black tracking-[0.25em] text-amber-300 uppercase">Round {String(activeRoundResult.round_number)} result</p>
+            <p className="text-xs font-black tracking-[0.25em] text-amber-300 uppercase">ผลรอบที่ {String(activeRoundResult.round_number)}</p>
             <h2 className="mt-3 text-2xl font-black text-amber-50 sm:text-3xl">
               {activeRoundResult.is_tie
-                ? `🤝 รอบนี้ ${activeRoundResult.winners.map((winner) => winner.name).join(" และ ")} เสมอกัน! แบ่งเหรียญคนละครึ่ง`
-                : `🏆 รอบนี้ ${activeRoundResult.winners[0]?.name ?? "ผู้เล่น"} ชนะ! กวาด Pot ${String(potWon)} เหรียญ`}
+                ? `🤝 ${activeRoundResult.winners.map((winner) => winner.name).join(" และ ")} แต้มเท่ากัน! แบ่งเหรียญในกองกลางกันไป`
+                : `🏆 ${activeRoundResult.winners[0]?.name ?? "ผู้เล่น"} ชนะรอบนี้! รับไป ${String(potWon)} เหรียญ`}
             </h2>
             {activeRoundResult.eliminated_players.length > 0 && (
               <div className="mt-4 space-y-1 text-lg font-black text-rose-200">
                 {activeRoundResult.eliminated_players.map((player) => (
-                  <p key={player.id}>💀 รอบนี้ {player.name} เหรียญหมด พ่ายแพ้!</p>
+                  <p key={player.id}>💀 {player.name} เหรียญหมด ตกรอบแล้ว!</p>
                 ))}
               </div>
             )}
             {activeRoundResult.is_game_over && activeRoundResult.overall_winner !== null && (
               <p className="mt-5 border-t border-amber-200/20 pt-4 text-xl font-black text-amber-200 sm:text-2xl">
-                👑 จบเกม! {activeRoundResult.overall_winner.name} ได้รับชัยชนะด้วยเหรียญทั้งหมด {String(activeRoundResult.overall_winner.total_coins)} เหรียญ!
+                👑 จบเกม! {activeRoundResult.overall_winner.name} คว้าแชมป์ด้วย {String(activeRoundResult.overall_winner.total_coins)} เหรียญ!
               </p>
             )}
           </section>
@@ -308,7 +308,7 @@ export function YouOrMeBoard({
               {showdownStage === "inspection" && (
                 <div className="pointer-events-none absolute top-1/2 left-1/2 z-40 w-[min(92%,34rem)] -translate-x-1/2 -translate-y-1/2 text-center">
                   <div className="rounded-2xl border border-amber-200/70 bg-slate-950/95 px-4 py-3 text-base font-black text-amber-50 shadow-[0_0_42px_rgba(251,191,36,0.38)] sm:px-6 sm:py-4 sm:text-xl">
-                    🃏 จบเฟสเดิมพัน! กำลังเปิดเผยไพ่...
+                    🃏 ปิดเดิมพันแล้ว! มาหงายไพ่กัน...
                   </div>
                 </div>
               )}
@@ -332,23 +332,23 @@ export function YouOrMeBoard({
                 <div className="flex w-[min(100%,22rem)] flex-col items-center gap-1 rounded-[2rem] border border-amber-200/30 bg-slate-950/55 px-3 py-2 text-center shadow-[0_0_42px_rgba(251,191,36,0.17)] backdrop-blur-sm sm:px-5 sm:py-3">
                   <div className="flex items-center justify-center gap-2 text-rose-100">
                     <HandCoins className="size-4 text-amber-300 sm:size-5" />
-                    <span className="text-sm font-black sm:text-lg">❤️ POT: {String(game.pot)} เหรียญ</span>
+                    <span className="text-sm font-black sm:text-lg">❤️ กองกลาง: {String(game.pot)} เหรียญ</span>
                   </div>
                   <div className="flex justify-center -space-x-2 text-xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" aria-label="stacked gold and ruby coins">
                     <span>🪙</span><span>🪙</span><span>🔴</span><span>🪙</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
                     <span className="rounded-full border border-amber-300/50 bg-amber-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-amber-100 uppercase">
-                      ROUND {String(game.round_number)} / {String(game.total_rounds)}
+                      รอบที่ {String(game.round_number)} / {String(game.total_rounds)}
                     </span>
                   </div>
                   <p className="text-[10px] font-black text-emerald-100 sm:text-xs">{phaseLabel(game.phase)}</p>
                   {game.phase === "BETTING" && (
-                    <p className="text-[9px] font-bold text-amber-200/60">Current table bet: {String(game.current_bet)} ❤️</p>
+                    <p className="text-[9px] font-bold text-amber-200/60">เดิมพันตอนนี้: {String(game.current_bet)} ❤️</p>
                   )}
                   {lastRound && game.phase !== "BETTING" && (
                     <p className="text-[9px] font-bold text-amber-100/70">
-                      Last winner: {lastRound.winner_ids.map((id) => nameOf(playerMap.get(id))).join(", ")} · {rankName(lastRound.winning_rank)}
+                      รอบก่อน {lastRound.winner_ids.map((id) => nameOf(playerMap.get(id))).join(", ")} ชนะด้วยไพ่ {rankName(lastRound.winning_rank)}
                     </p>
                   )}
                 </div>
@@ -394,30 +394,30 @@ export function YouOrMeBoard({
             <div className="absolute right-3 bottom-3 z-30 w-[calc(100%-1.5rem)] max-w-[20rem] rounded-2xl border border-amber-200/35 bg-slate-950/95 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:right-5 sm:bottom-5 sm:p-4 lg:right-7 lg:w-80">
               <div className="flex items-center justify-between gap-2">
                 <p className="flex items-center gap-2 text-xs font-black tracking-[0.16em] text-amber-100 uppercase">
-                  <CircleDollarSign className="size-4 text-amber-300" /> Your move
+                  <CircleDollarSign className="size-4 text-amber-300" /> ถึงตาคุณแล้ว!
                 </p>
-                <span className="text-[10px] font-bold text-emerald-200">{String(ownView?.coins ?? 0)} coins</span>
+                <span className="text-[10px] font-bold text-emerald-200">มี {String(ownView?.coins ?? 0)} เหรียญ</span>
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {game.current_bet === 0 ? (
                   <button type="button" onClick={() => { sendAction("CHECK", {}); }} className="secondary-button min-h-10 px-2 text-xs">
-                    <ShieldCheck className="size-4 text-emerald-300" /> CHECK
+                    <ShieldCheck className="size-4 text-emerald-300" /> ผ่าน (Check)
                   </button>
                 ) : (
                   <button type="button" onClick={() => { sendAction("CALL", {}); }} className="min-h-10 rounded-xl border border-emerald-300/40 bg-emerald-700/80 px-2 text-xs font-black text-emerald-50 transition hover:bg-emerald-600">
-                    <PhoneCall className="mr-1 inline size-4" /> CALL {String(callAmount)}
+                    <PhoneCall className="mr-1 inline size-4" /> สู้ (Call) {String(callAmount)}
                   </button>
                 )}
-                <button type="button" onClick={() => { if (window.confirm("Fold this round?")) sendAction("FOLD", {}); }} className="min-h-10 rounded-xl border border-red-300/35 bg-red-700/70 px-2 text-xs font-black text-red-50 transition hover:bg-red-600">
-                  🛑 FOLD
+                <button type="button" onClick={() => { if (window.confirm("หมอบรอบนี้เลยไหม?")) sendAction("FOLD", {}); }} className="min-h-10 rounded-xl border border-red-300/35 bg-red-700/70 px-2 text-xs font-black text-red-50 transition hover:bg-red-600">
+                  🛑 หมอบ (Fold)
                 </button>
               </div>
               <div className="mt-3 rounded-xl border border-amber-300/15 bg-amber-950/35 p-2.5">
                 <div className="flex items-center justify-between gap-2">
                   <label htmlFor="you-or-me-raise" className="flex items-center gap-1 text-[10px] font-black tracking-wider text-amber-100/75 uppercase">
-                    <ChevronUp className="size-3" /> {game.current_bet === 0 ? "BET" : "RAISE"}
+                    <ChevronUp className="size-3" /> {game.current_bet === 0 ? "ลงเดิมพัน" : "เกทับ"}
                   </label>
-                  <span className="text-[10px] text-amber-200/55">min {String(game.current_bet + 1)}</span>
+                  <span className="text-[10px] text-amber-200/55">อย่างน้อย {String(game.current_bet + 1)}</span>
                 </div>
                 <div className="mt-2 flex gap-2">
                   <input
@@ -433,13 +433,13 @@ export function YouOrMeBoard({
                     }}
                     className="w-32 px-4 py-2 bg-slate-900 border border-amber-500/50 rounded-xl text-center text-lg font-bold text-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <button type="button" onClick={submitRaise} className="primary-button min-h-10 shrink-0 px-3 text-xs">CONFIRM</button>
+                  <button type="button" onClick={submitRaise} className="primary-button min-h-10 shrink-0 px-3 text-xs">ยืนยัน</button>
                 </div>
                 <div className="mt-2 grid grid-cols-4 gap-1">
                   {[5, 10, 20].map((increment) => (
                     <button key={increment} type="button" onClick={() => { setQuickRaise(increment); }} className="rounded-lg border border-amber-200/15 bg-white/5 px-1 py-1.5 text-[10px] font-black text-amber-100 transition hover:border-amber-300/50 hover:bg-amber-300/10">+{String(increment)}</button>
                   ))}
-                  <button type="button" onClick={() => { setBetAmount(String(maxRaise)); }} className="rounded-lg border border-rose-300/25 bg-rose-950/50 px-1 py-1.5 text-[10px] font-black text-rose-100 transition hover:bg-rose-800/70">ALL-IN</button>
+                  <button type="button" onClick={() => { setBetAmount(String(maxRaise)); }} className="rounded-lg border border-rose-300/25 bg-rose-950/50 px-1 py-1.5 text-[10px] font-black text-rose-100 transition hover:bg-rose-800/70">หมดหน้าตัก</button>
                 </div>
               </div>
             </div>
@@ -447,7 +447,7 @@ export function YouOrMeBoard({
 
           {game.phase === "FINISHED" && (
             <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full border border-amber-300/45 bg-amber-950/90 px-4 py-2 text-xs font-black text-amber-100 shadow-xl">
-              <Trophy className="size-4 text-amber-300" /> Winner: {nameOf(playerMap.get(game.winner_id ?? ""))}
+              <Trophy className="size-4 text-amber-300" /> แชมป์โต๊ะนี้: {nameOf(playerMap.get(game.winner_id ?? ""))}
             </div>
           )}
             </div>
@@ -474,11 +474,11 @@ export function YouOrMeBoard({
             <div className="mx-auto w-fit rounded-2xl bg-amber-300/10 p-2 shadow-[0_0_32px_rgba(251,191,36,0.2)]">
               <YouOrMeCard card={pendingCard} className="w-44 sm:w-52" />
             </div>
-            <h2 id="confirm-card-title" className="mt-5 text-xl font-black text-amber-100 sm:text-2xl">ยืนยันการวางไพ่ใบนี้?</h2>
-            <p className="mt-2 text-sm font-medium leading-6 text-amber-100/65">ไพ่ใบนี้จะถูกวางคว่ำหน้าลงบนโต๊ะและไม่สามารถเปลี่ยนได้</p>
+            <h2 id="confirm-card-title" className="mt-5 text-xl font-black text-amber-100 sm:text-2xl">ลงไพ่ใบนี้เลยไหม?</h2>
+            <p className="mt-2 text-sm font-medium leading-6 text-amber-100/65">ยืนยันแล้วไพ่จะลงคว่ำหน้า เปลี่ยนทีหลังไม่ได้นะ</p>
             <div className="mt-6 flex flex-col gap-2 sm:flex-row-reverse">
-              <button type="button" onClick={confirmCardSelection} className="primary-button min-h-11 flex-1">✅ ยืนยันลงไพ่ (Confirm)</button>
-              <button type="button" onClick={() => { setPendingCard(null); }} className="secondary-button min-h-11 flex-1">❌ ยกเลิก (Cancel)</button>
+              <button type="button" onClick={confirmCardSelection} className="primary-button min-h-11 flex-1">✅ ลงใบนี้เลย</button>
+              <button type="button" onClick={() => { setPendingCard(null); }} className="secondary-button min-h-11 flex-1">❌ เลือกใหม่</button>
             </div>
           </section>
         </div>

@@ -1,21 +1,18 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ArrowRight,
-  Bot,
-  Clock3,
   Gamepad2,
-  Grid3X3,
-  Hash,
   LoaderCircle,
   LockKeyhole,
   Plus,
   Sparkles,
-  Swords,
-  Users,
 } from "lucide-react";
 
+import { GameCatalogCarousel } from "../components/GameCatalogCarousel";
+import { GameSelectModal } from "../components/GameSelectModal";
 import { Toast } from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
+import { catalogGames } from "../lib/gameCatalog";
 import { navigate } from "../lib/navigation";
 import type { GameType } from "../types";
 
@@ -36,8 +33,11 @@ export function HubPage() {
   const { user, openAuthModal } = useAuth();
   const [roomCode, setRoomCode] = useState("");
   const [selectedGame, setSelectedGame] = useState<GameType>("tictactoe");
+  const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [busyAction, setBusyAction] = useState<"create" | "join" | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const gameTriggerRef = useRef<HTMLButtonElement>(null);
+  const selectedGameDetails = catalogGames.find((game) => game.id === selectedGame) ?? catalogGames[0];
 
   const requireUser = (): boolean => {
     if (user !== null) {
@@ -128,18 +128,25 @@ export function HubPage() {
             </div>
             <h2 className="mt-6 text-2xl font-black text-white">Create a room</h2>
             <p className="mt-2 text-sm leading-6 text-slate-400">Choose a game and get a shareable code for your table.</p>
-            <label className="form-label mt-6 block">
-              Game
-              <select
-                className="text-input mt-2 w-full appearance-none border-amber-500/20"
-                value={selectedGame}
-                onChange={(event) => { setSelectedGame(event.target.value as GameType); }}
+            <div className="mt-6">
+              <span className="form-label">Game</span>
+              <button
+                ref={gameTriggerRef}
+                type="button"
+                onClick={() => { setIsGameModalOpen(true); }}
+                aria-haspopup="dialog"
+                className="group mt-2 flex w-full items-center justify-between rounded-xl border border-slate-700 bg-slate-800/80 p-3.5 text-left transition-all hover:border-amber-400/40 hover:bg-slate-700/80"
               >
-                <option value="tictactoe">Tic-Tac-Toe · 2 players</option>
-                <option value="what_number">What number I have? · 3–8 players</option>
-                <option value="you_or_me">You or me who more than? · 2–4 players</option>
-              </select>
-            </label>
+                <span className="flex items-center gap-3">
+                  <span className="rounded-lg bg-amber-500/10 p-2 text-xl font-bold text-amber-400" aria-hidden="true">{selectedGameDetails?.icon}</span>
+                  <span>
+                    <span className="block font-semibold text-slate-100">{selectedGameDetails?.title}</span>
+                    <span className="block text-xs text-slate-400">{selectedGameDetails?.players}</span>
+                  </span>
+                </span>
+                <span className="text-xs font-semibold text-amber-400 transition-transform group-hover:translate-x-0.5">เปลี่ยน ▾</span>
+              </button>
+            </div>
             <button type="button" onClick={() => { void createRoom(); }} disabled={busyAction !== null} className="primary-button mt-5 w-full py-3">
               {busyAction === "create" ? <LoaderCircle className="size-4 animate-spin" /> : <Gamepad2 className="size-4" />}
               Enter the lounge
@@ -186,63 +193,17 @@ export function HubPage() {
             <p className="text-sm text-slate-500">More classics and custom games are on the way.</p>
           </div>
 
-          <div className="mt-7 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <article className="group overflow-hidden rounded-3xl border border-amber-400/25 bg-gradient-to-b from-amber-500/10 to-slate-900 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-300/60 hover:shadow-2xl hover:shadow-amber-500/10">
-              <div className="flex items-center justify-between">
-                <div className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20"><Grid3X3 className="size-7" /></div>
-                <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-[10px] font-bold text-emerald-300 uppercase">Available</span>
-              </div>
-              <h3 className="mt-7 text-2xl font-black text-white">Tic-Tac-Toe</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-400">The essential three-in-a-row duel. Simple rules, sharp decisions.</p>
-              <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-bold tracking-wide text-slate-400 uppercase">
-                <span className="game-tag"><Users className="size-3 text-amber-300" /> 2 players</span>
-                <span className="game-tag"><Clock3 className="size-3 text-amber-300" /> ~5m</span>
-                <span className="game-tag"><Swords className="size-3 text-amber-300" /> Strategy</span>
-              </div>
-              <button type="button" onClick={() => { void createRoom("tictactoe"); }} className="primary-button mt-6 w-full">Play now</button>
-            </article>
-
-            <article className="group overflow-hidden rounded-3xl border border-emerald-400/25 bg-gradient-to-b from-emerald-500/10 to-slate-900 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-300/50 hover:shadow-2xl hover:shadow-amber-500/10">
-              <div className="flex items-center justify-between">
-                <div className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-300 to-emerald-700 text-slate-950 shadow-lg shadow-emerald-500/20"><Hash className="size-7" /></div>
-                <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-[10px] font-bold text-emerald-300 uppercase">Available</span>
-              </div>
-              <h3 className="mt-7 text-2xl font-black text-white">What number I have?</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-400">Read the table, manage powerful skills, and expose every rival card.</p>
-              <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-bold tracking-wide text-slate-400 uppercase">
-                <span className="game-tag"><Users className="size-3 text-amber-300" /> 3–8 players</span>
-                <span className="game-tag"><Swords className="size-3 text-amber-300" /> Deduction</span>
-                <span className="game-tag"><Clock3 className="size-3 text-amber-300" /> ~15m</span>
-              </div>
-              <button type="button" onClick={() => { void createRoom("what_number"); }} className="primary-button mt-6 w-full">Play now</button>
-            </article>
-
-            <article className="group overflow-hidden rounded-3xl border border-rose-400/25 bg-gradient-to-b from-rose-500/10 to-slate-900 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-300/50 hover:shadow-2xl hover:shadow-amber-500/10">
-              <div className="flex items-center justify-between">
-                <div className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-rose-300 to-rose-700 text-slate-950 shadow-lg shadow-rose-500/20"><span className="text-2xl">🃏</span></div>
-                <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-[10px] font-bold text-emerald-300 uppercase">Available</span>
-              </div>
-              <h3 className="mt-7 text-2xl font-black text-white">You or me who more than?</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-400">High-stakes betting, hidden cards, and one bold question: who has more?</p>
-              <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-bold tracking-wide text-slate-400 uppercase">
-                <span className="game-tag"><Users className="size-3 text-amber-300" /> 2–4 players</span>
-                <span className="game-tag"><Swords className="size-3 text-amber-300" /> Bluffing</span>
-                <span className="game-tag"><Clock3 className="size-3 text-amber-300" /> ~20m</span>
-              </div>
-              <button type="button" onClick={() => { void createRoom("you_or_me"); }} className="primary-button mt-6 w-full">Play now</button>
-            </article>
-
-            <article className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 opacity-70">
-              <div className="grid size-14 place-items-center rounded-2xl bg-slate-800 text-slate-500"><Bot className="size-7" /></div>
-              <h3 className="mt-7 text-2xl font-black text-slate-300">Custom Games</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">Bring your own rules and build a table around them.</p>
-              <div className="mt-5"><span className="game-tag">Coming soon</span></div>
-            </article>
-
-          </div>
+          <GameCatalogCarousel onPlay={(game) => { void createRoom(game); }} isBusy={busyAction !== null} />
         </section>
       </div>
 
+      {isGameModalOpen && (
+        <GameSelectModal
+          selectedGame={selectedGame}
+          onSelect={setSelectedGame}
+          onClose={() => { setIsGameModalOpen(false); gameTriggerRef.current?.focus(); }}
+        />
+      )}
       {notice !== null && <Toast message={notice} onDismiss={() => { setNotice(null); }} />}
     </main>
   );

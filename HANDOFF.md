@@ -1,10 +1,15 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Fix placed-card dimming in the You or me poker UI.
-* **State**: Ready for Test (production build and live browser smoke test pass; deployed tab is an older build)
+* **Active Task**: Add the hub game-selection modal and responsive game catalog carousel.
+* **State**: Ready for Test (production build and lint pass; local browser smoke test is blocked by environment policy)
 
 ## 2. Completed in this Session
+* [x] Replaced the Create a room game dropdown with a trigger and accessible selection modal for the three playable games, plus a disabled Custom Games preview.
+* [x] Replaced the flat catalog grid with a horizontally snapping carousel, navigation arrows, pagination dots, and existing Play now room creation actions.
+* [x] Centralized catalog labels and metadata in `frontend/src/lib/gameCatalog.ts` without changing game or WebSocket contracts.
+* [x] Verified `cd frontend && npm run build` (0 TypeScript or compilation errors), relative-base production build, `npm run lint` (0 errors; one pre-existing Fast Refresh warning), and `git diff --check`.
+* [x] Committed the UI implementation as `0ac9716` (`feat(ui): add GameSelectModal for room creation and convert game catalog to responsive carousel`) in `/tmp/TheBoardGame-ui-git.0tXzfP/repo/.git` because the workspace `.git` index is read-only.
 * [x] Added the pure `YouOrMeEngine` with a 52-card deck, seven rounds, antes, hidden-card views, betting actions, folds, showdown settlement, ties, and overall winner calculation.
 * [x] Registered `you_or_me` for 2–4 players in the room manager and schemas, including random bot card selection and betting heuristics.
 * [x] Added the requested engine tests; focused tests pass 7/7 and the complete backend suite passes 45/45.
@@ -73,6 +78,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] Browser-smoke the new hub UI on a reachable build: open/close the modal, choose each playable game, confirm the Create a room trigger updates, and use carousel arrows, dots, and touch/trackpad scrolling at desktop and mobile widths.
+* [ ] Sync the temporary UI commit and this handoff update into writable repository Git metadata before pushing.
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
 * [ ] Perform a live deployment smoke test: use SWAP and PEEK/RADAR in a What Number match, confirm target names and private-only results, then click Play Again and confirm fresh cards, center clues, empty announcements, and the 120-second timer.
 * [ ] Run the responsive What Number smoke test at iPad Mini (768x1024), iPad Air (820x1180), and laptop (1366x768) viewports against a reachable local/deployed build.
@@ -82,6 +89,8 @@
 * [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
+* For this UI task, local Vite startup failed with `listen EPERM` even after an approved escalation. Browser security policy also blocked opening the local `file://` production build, so live interaction checks remain pending.
+* The requested `page.tsx` is `frontend/src/pages/index.tsx` in this Vite repository; no Next.js app directory exists.
 * The new game is integrated through the existing `backend/app/rooms.py` room manager; this repository does not contain `backend/app/engine/room.py`.
 * The existing frontend is Vite-based, so the catalog and room wiring are in `frontend/src/pages/index.tsx` and `frontend/src/pages/room.tsx`.
 * `pytest -v backend/tests/test_you_or_me.py` could not run directly because no project pytest executable is installed; the same command ran via the available FastAPI virtualenv and passed 7/7. The full backend suite passed 45/45 there.

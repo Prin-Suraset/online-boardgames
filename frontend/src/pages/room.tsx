@@ -121,6 +121,20 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     leaveRoom,
   } = useRoomSocket(code, profile, token);
 
+  useEffect(() => {
+    if (room?.status !== "PLAYING") {
+      return;
+    }
+
+    const handleBeforeUnload = (event: BeforeUnloadEvent): void => {
+      event.preventDefault();
+      event.returnValue = "เกมกำลังดำเนินอยู่ คุณแน่ใจหรือไม่ว่าต้องการออกจากหน้านี้?";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [room?.status]);
+
   const previousRoomStatus = useRef(room?.status);
   useEffect(() => {
     if (room?.status === "LOBBY" && previousRoomStatus.current !== "LOBBY") {

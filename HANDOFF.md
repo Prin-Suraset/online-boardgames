@@ -1,10 +1,14 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Add an accessible guide book UI for the three playable games.
-* **State**: Ready for Test (production build and lint pass; live browser review remains pending)
+* **Active Task**: Fix Vercel room-route refresh and guard against accidental reloads during play.
+* **State**: Ready for Test (production build passes; post-deployment browser refresh remains pending)
 
 ## 2. Completed in this Session
+* [x] Added the Vercel catch-all rewrite to `/index.html` after the existing `/api/(.*)` proxy.
+* [x] Added a `beforeunload` guard while a room is `PLAYING`; confirmed the existing URL, stored-auth, and WebSocket join flow reuses the same player ID after reload.
+* [x] Verified `cd frontend && npm run build` (0 errors), rewrite ordering, and `git diff --check`. The deployed `/room/DMMMF3` currently reproduces `404 NOT_FOUND` before this fix is deployed.
+* [x] Committed the routing fix as `61e225c` in `/tmp/TheBoardGame-routing-git/.git` because the workspace Git index is read-only.
 * [x] Added a scrollable `GameRulesModal` that renders `GAME_RULES` with game metadata and all rule sections. It supports Escape, backdrop close, focus trapping/return, and scroll locking.
 * [x] Added guide buttons to each catalog card, beside the selected game in room creation, and in the room header so players can read rules during play.
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning in `YouOrMeCard.tsx`), and `git diff --check`; committed as `76f485c` (`feat(ui): add accessible game rulebook modal`) in `/tmp/TheBoardGame-guide-ui-git.6GJko5/.git`.
@@ -88,6 +92,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] Sync commit `61e225c` and this handoff update from `/tmp/TheBoardGame-routing-git/.git` into writable repository Git metadata, then deploy.
+* [ ] After deployment, open a live `/room/[code]`, refresh directly, and verify the app loads, restores the saved identity, and rejoins the same room; verify the browser warns on reload during `PLAYING`.
 * [ ] Sync guide book UI commit `76f485c` and this handoff update from `/tmp/TheBoardGame-guide-ui-git.6GJko5/.git` into writable repository Git metadata before pushing.
 * [ ] Browser-check the guide book from all three catalog cards, the room creation card, and the room header at desktop and mobile sizes; verify long Thai sections scroll and focus returns after close.
 * [ ] Sync commit `762841e` and this handoff update from `/tmp/TheBoardGame-thai-copy-git.10frzG/.git` into writable repository Git metadata before pushing.
@@ -105,6 +111,8 @@
 * [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
+* Local `npm run preview -- --host 127.0.0.1` fails with `listen EPERM` even with elevated execution, so local browser refresh testing could not run. The current deployed site still has the pre-fix Vercel config and returns `404 NOT_FOUND` for `/room/DMMMF3`.
+* A socket disconnect only unregisters that connection; the backend retains the player record, and `join_room` accepts the same player ID during `PLAYING`. `AuthProvider` restores `auth_token` from localStorage before `RoomSession` opens the socket.
 * The guide book UI now renders `frontend/src/data/gameRules.ts` without changing game or WebSocket contracts.
 * Local Vite startup still fails with `listen EPERM` on `127.0.0.1:5173` in both sandboxed and escalated runs, so live browser verification of the new modal could not run here.
 * The repository `.git` index is mounted read-only even with escalation, so the copy commit and handoff commit are stored in temporary Git metadata.

@@ -226,7 +226,7 @@ function OpponentSeat({
     <article
       style={placement.style}
       className={cn(
-        "absolute z-20 rounded-2xl border bg-slate-950/85 p-2 shadow-xl backdrop-blur-md sm:p-2.5",
+        "absolute z-20 rounded-2xl border bg-[#161B26]/95 p-2 text-white shadow-xl backdrop-blur-md sm:p-2.5",
         placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:left-6 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
         placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
@@ -236,8 +236,8 @@ function OpponentSeat({
             ? "w-36 sm:w-40 xl:w-44 2xl:w-48"
             : "w-44 sm:w-48 xl:w-56 2xl:w-60",
         isActive
-          ? "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-4 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.5)]"
-          : "animate-[seat-in_450ms_ease-out_both] border-slate-700/80",
+          ? "animate-[active-seat_2s_ease-in-out_infinite] border-[#E5A93C] ring-2 ring-[#E5A93C] shadow-[0_0_20px_rgba(229,169,60,0.5)]"
+          : "animate-[seat-in_450ms_ease-out_both] border-slate-700/70",
         gamePlayer.status === "ELIMINATED" && "opacity-50 grayscale",
       )}
     >
@@ -377,7 +377,7 @@ export function WhatNumberBoard({
 
   return (
     <>
-      <div className="fixed top-3 left-1/2 z-30 flex max-w-[calc(100vw-5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-slate-900/90 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
+      <div className="fixed top-3 left-1/2 z-30 flex max-w-[calc(100vw-5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-[#161B26]/95 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
         <span className="rounded-full bg-emerald-400/15 px-2 py-1 text-[10px] font-black tracking-wide text-emerald-200 sm:text-xs">
           T{game.turn_counter}
         </span>
@@ -413,9 +413,9 @@ export function WhatNumberBoard({
         onSend={onSendChat}
       />
 
-      <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl xl:flex-row">
-      <section className="relative h-full w-full min-w-0 flex-1 overflow-hidden bg-[#050c0b] p-2 sm:p-3 xl:p-5">
-        <div className="relative h-full w-full overflow-hidden rounded-[60px] border-[6px] border-amber-950/80 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/90 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),0_25px_70px_rgba(0,0,0,0.5)] md:rounded-[90px] md:border-8 md:p-4 xl:p-8">
+      <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-700/70 bg-[#161B26]/95 shadow-2xl xl:flex-row">
+      <section className="relative h-full w-full min-w-0 flex-1 overflow-hidden bg-[#0B0F19] p-2 sm:p-3 xl:p-5">
+        <div className="relative h-full w-full overflow-hidden rounded-[60px] border-[6px] border-slate-700/70 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/90 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),0_25px_70px_rgba(0,0,0,0.5)] md:rounded-[90px] md:border-8 md:p-4 xl:p-8">
           <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
           <div className="pointer-events-none absolute inset-3 rounded-[54px] border border-emerald-200/10 md:rounded-[82px]" />
 
@@ -448,7 +448,7 @@ export function WhatNumberBoard({
           </div>
 
           {isAttacker && selectedTarget !== undefined && (
-            <div className="absolute bottom-36 left-1/2 z-30 flex w-fit max-w-[95vw] -translate-x-1/2 animate-[action-rise_300ms_ease-out_both] flex-wrap items-center justify-center gap-2 rounded-2xl border border-amber-400/30 bg-slate-950/95 p-2 shadow-2xl backdrop-blur-md sm:bottom-40 sm:p-3 xl:bottom-44">
+            <div className="absolute bottom-36 left-1/2 z-30 flex w-fit max-w-[95vw] -translate-x-1/2 animate-[action-rise_300ms_ease-out_both] flex-wrap items-center justify-center gap-2 rounded-2xl border border-slate-700/70 bg-[#161B26]/95 p-2 shadow-2xl backdrop-blur-md sm:bottom-40 sm:p-3 xl:bottom-44">
               <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm font-bold text-rose-100">
                 <Target className="size-4 text-rose-300" />
                 🎯 เป้าหมาย: {playerNames.get(selectedTarget.player_id) ?? "ผู้เล่นเป้าหมาย"}
@@ -501,9 +501,9 @@ export function WhatNumberBoard({
                 "absolute bottom-2 left-1/2 z-20 flex max-h-[38%] max-w-[95vw] -translate-x-1/2 flex-col items-center gap-1.5 rounded-2xl border px-3 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3 sm:max-w-none sm:px-5 sm:py-2.5",
                 hasPenalty
                   ? "z-40 -translate-y-8 scale-110 border-rose-500 bg-slate-900/95 ring-4 ring-rose-500/70 shadow-2xl"
-                  : "z-20 border-slate-700/60 bg-slate-900/85",
+                  : "z-20 border-slate-700/70 bg-[#161B26]/95 text-white",
                 game.active_player_id === playerId && !hasPenalty
-                  && "animate-[active-seat_2s_ease-in-out_infinite] border-amber-300/80 ring-4 ring-amber-400/80 shadow-[0_0_25px_rgba(245,158,11,0.5)]",
+                  && "animate-[active-seat_2s_ease-in-out_infinite] border-[#E5A93C] ring-2 ring-[#E5A93C] shadow-[0_0_20px_rgba(229,169,60,0.5)]",
                 ownView.status === "ELIMINATED" && "opacity-50 grayscale",
               )}
             >
@@ -585,8 +585,8 @@ export function WhatNumberBoard({
         </div>
       </section>
 
-      <aside className="hidden max-h-[42rem] w-80 max-w-full shrink-0 flex-col gap-4 border-t border-slate-800 bg-slate-900/90 p-4 xl:flex xl:max-h-none xl:border-t-0 xl:border-l">
-        <section className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+      <aside className="hidden max-h-[42rem] w-80 max-w-full shrink-0 flex-col gap-4 border-t border-slate-700/70 bg-[#161B26]/95 p-4 xl:flex xl:max-h-none xl:border-t-0 xl:border-l">
+        <section className="rounded-2xl border border-slate-700/60 bg-[#1C212D] p-4">
           <div className="flex items-center justify-between gap-3">
             <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
               เทิร์นที่ {game.turn_counter}

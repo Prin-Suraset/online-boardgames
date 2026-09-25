@@ -76,7 +76,7 @@ export function RoomPage({ code }: RoomPageProps) {
 
   if (user === null || token === null) {
     return (
-      <main className="grid min-h-[calc(100vh-4rem)] place-items-center bg-slate-950 px-5 text-center">
+      <main className="grid min-h-[calc(100vh-4rem)] place-items-center bg-[#0B0F19] px-5 text-center">
         <div>
           <LoaderCircle className="mx-auto size-8 animate-spin text-indigo-300" />
           <p className="mt-4 font-bold text-slate-300">เลือกโปรไฟล์ก่อน แล้วเข้ามาเล่นด้วยกันนะ</p>
@@ -196,7 +196,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         "mx-auto w-full",
         isWhatNumberSession || isYouOrMeSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
-        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
+        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-700/60 bg-[#161B26]/90 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
           <div className="flex flex-wrap items-center gap-2">
             <button type="button" onClick={exitRoom} className="ghost-button">
               <ArrowLeft className="size-4" /> ออกจากห้อง

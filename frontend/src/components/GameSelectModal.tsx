@@ -63,7 +63,7 @@ export function GameSelectModal({ selectedGame, onSelect, onClose }: GameSelectM
         aria-modal="true"
         aria-labelledby="game-select-title"
         onKeyDown={handleKeyDown}
-        className={`w-full max-w-xl rounded-3xl border border-amber-400/20 bg-slate-900/95 p-5 shadow-2xl shadow-black/50 transition-transform duration-200 sm:p-7 ${isClosing ? "translate-y-2 scale-95" : "translate-y-0 scale-100"}`}
+        className={`w-full max-w-xl rounded-3xl border border-slate-700/60 bg-[#161B26]/90 p-5 shadow-2xl shadow-black/50 backdrop-blur-md transition-transform duration-200 sm:p-7 ${isClosing ? "translate-y-2 scale-95" : "translate-y-0 scale-100"}`}
       >
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -83,7 +83,7 @@ export function GameSelectModal({ selectedGame, onSelect, onClose }: GameSelectM
               type="button"
               onClick={() => { onSelect(game.id); setIsClosing(true); }}
               aria-pressed={selectedGame === game.id}
-              className={`group flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-colors hover:border-amber-400/60 hover:bg-slate-800 ${selectedGame === game.id ? "border-amber-400/70 bg-amber-400/10" : "border-slate-700 bg-slate-800/50"}`}
+              className={`group flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-colors hover:border-[#E5A93C]/60 hover:bg-[#252D3B] ${selectedGame === game.id ? "border-[#E5A93C]/70 bg-[#E5A93C]/10" : "border-slate-700 bg-[#1C212D]"}`}
             >
               <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-amber-400/10 text-2xl" aria-hidden="true">{game.icon}</span>
               <span className="min-w-0 flex-1">
@@ -93,7 +93,7 @@ export function GameSelectModal({ selectedGame, onSelect, onClose }: GameSelectM
               {selectedGame === game.id && <span className="text-xs font-bold text-amber-300">Selected</span>}
             </button>
           ))}
-          <div className="flex items-center gap-4 rounded-2xl border border-slate-700/60 bg-slate-800/30 p-4 opacity-65" aria-disabled="true">
+          <div className="flex items-center gap-4 rounded-2xl border border-slate-700/60 bg-[#1C212D] p-4 opacity-65" aria-disabled="true">
             <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-slate-700/60 text-slate-400"><Settings2 className="size-6" /></span>
             <span className="min-w-0 flex-1">
               <span className="block font-bold text-slate-300">Custom Games</span>

@@ -69,27 +69,27 @@ export function GameCatalogCarousel({ onPlay, onReadRules, isBusy }: GameCatalog
               if (index >= slideCount) return null;
               const game = catalogGames[index];
               return game === undefined ? (
-                <article key="custom" className="flex min-w-0 flex-col rounded-3xl border border-slate-800 bg-slate-900/60 p-6 opacity-70">
-                  <div className="grid size-14 place-items-center rounded-2xl bg-slate-800 text-slate-500"><Settings2 className="size-7" /></div>
+                <article key="custom" className="flex min-w-0 flex-col rounded-3xl border border-slate-700/60 bg-[#161B26]/90 p-6 opacity-70">
+                  <div className="grid size-14 place-items-center rounded-2xl bg-[#1C212D] text-slate-500"><Settings2 className="size-7" /></div>
                   <h3 className="mt-7 text-2xl font-black text-slate-300">Custom Games</h3>
                   <p className="mt-2 flex-1 text-sm leading-6 text-slate-500">Bring your own rules and build a table around them.</p>
-                  <div className="mt-5"><span className="game-tag text-xs text-slate-400">Coming soon</span></div>
+                  <div className="mt-5"><span className="game-tag text-slate-300 uppercase"><span className="size-1.5 rounded-full bg-slate-400" />Coming soon</span></div>
                 </article>
               ) : (
                 <article
                   key={game.id}
-                  className={`group flex min-w-0 flex-col overflow-hidden rounded-3xl border bg-gradient-to-b p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-300/60 hover:shadow-2xl hover:shadow-amber-500/10 ${index === 0 ? "border-amber-400/25 from-amber-500/10 to-slate-900" : index === 1 ? "border-emerald-400/25 from-emerald-500/10 to-slate-900" : "border-rose-400/25 from-rose-500/10 to-slate-900"}`}
+                  className={`group flex min-w-0 flex-col overflow-hidden rounded-3xl border bg-[#161B26]/90 p-6 shadow-xl transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl ${index === 1 ? "border-slate-700/60 hover:border-sky-400/70 hover:shadow-sky-400/10" : "border-slate-700/60 hover:border-[#E5A93C]/70 hover:shadow-amber-500/10"}`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="grid size-14 place-items-center rounded-2xl bg-gradient-to-br from-amber-300 to-amber-600 text-3xl shadow-lg shadow-amber-500/20" aria-hidden="true">{game.icon}</div>
-                    <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-[10px] font-bold text-emerald-300 uppercase">Available</span>
+                    <div className="grid size-14 place-items-center rounded-2xl border border-[#E5A93C]/30 bg-[#1C212D] text-3xl shadow-[0_0_20px_rgba(229,169,60,0.15)]" aria-hidden="true">{game.icon}</div>
+                    <span className="game-tag text-slate-300 uppercase"><span className="size-1.5 rounded-full bg-amber-400" />Available</span>
                   </div>
                   <h3 className="mt-7 text-2xl font-black text-white">{game.title}</h3>
                   <p className="mt-2 flex-1 text-sm leading-6 text-slate-400">{game.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-bold tracking-wide text-slate-400 uppercase">
-                    <span className="game-tag"><Users className="size-3 text-amber-300" /> {game.players}</span>
-                    <span className="game-tag"><Clock3 className="size-3 text-amber-300" /> {game.duration}</span>
-                    <span className="game-tag"><Swords className="size-3 text-amber-300" /> {game.genre}</span>
+                  <div className="mt-5 flex flex-wrap gap-2 text-slate-300 uppercase">
+                    <span className="game-tag"><Users className="size-3 text-[#E5A93C]" /> {game.players}</span>
+                    <span className="game-tag"><Clock3 className="size-3 text-[#E5A93C]" /> {game.duration}</span>
+                    <span className="game-tag"><Swords className="size-3 text-[#E5A93C]" /> {game.genre}</span>
                   </div>
                   <div className="mt-6 flex gap-2">
                     <button type="button" onClick={() => { onReadRules(game.id); }} aria-label={`ดูกติกา ${game.title}`} className="secondary-button min-w-0 flex-1 px-2 text-sm">

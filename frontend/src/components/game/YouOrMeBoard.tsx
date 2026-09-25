@@ -128,9 +128,9 @@ function PlayerPod({
         "flex w-full items-center gap-2 rounded-2xl border p-2 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] transition-all sm:gap-3 sm:p-2.5",
         isLocal ? "max-w-[24rem]" : "max-w-[20rem]",
         isTurn
-          ? "border-amber-200 bg-amber-950/85 ring-2 ring-amber-300/80 ring-offset-2 ring-offset-emerald-950 shadow-[0_0_28px_rgba(251,191,36,0.42)]"
-          : "border-amber-100/15 bg-slate-950/80",
-        isLocal && "border-emerald-200/70",
+          ? "border-[#E5A93C] bg-[#161B26]/95 text-white ring-2 ring-[#E5A93C] ring-offset-2 ring-offset-emerald-950 shadow-[0_0_20px_rgba(229,169,60,0.5)]"
+          : "border-slate-700/70 bg-[#161B26]/95 text-white",
+        isLocal && !isTurn && "border-slate-700/70",
       )}
     >
       <div className="min-w-0 flex-1">
@@ -276,7 +276,7 @@ export function YouOrMeBoard({
 
       {activeRoundResult !== null && showdownStage === "winner" && (
         <div className="pointer-events-none fixed inset-0 z-[60] grid place-items-center p-4">
-          <section className="w-full max-w-xl rounded-[2rem] border border-amber-200/60 bg-slate-950/95 p-6 text-center shadow-[0_0_70px_rgba(251,191,36,0.35)] backdrop-blur-xl animate-[modal-pop_240ms_ease-out_both]">
+          <section className="w-full max-w-xl rounded-[2rem] border border-slate-700/60 bg-[#161B26]/95 p-6 text-center shadow-[0_0_70px_rgba(229,169,60,0.35)] backdrop-blur-xl animate-[modal-pop_240ms_ease-out_both]">
             <p className="text-xs font-black tracking-[0.25em] text-amber-300 uppercase">ผลรอบที่ {String(activeRoundResult.round_number)}</p>
             <h2 className="mt-3 text-2xl font-black text-amber-50 sm:text-3xl">
               {activeRoundResult.is_tie
@@ -299,15 +299,15 @@ export function YouOrMeBoard({
         </div>
       )}
 
-      <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 shadow-2xl sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
-        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#090d16]">
+      <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-slate-700/70 bg-[#161B26]/95 shadow-2xl sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
+        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0B0F19]">
           <div className="w-full flex-1 min-h-0 relative p-2 sm:p-4 overflow-hidden flex items-center justify-center">
-            <div className="w-full h-full rounded-[40px] md:rounded-[70px] border-4 md:border-8 border-amber-950 shadow-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 flex flex-col justify-between items-center p-3 sm:p-5 relative overflow-hidden">
+            <div className="w-full h-full rounded-[40px] md:rounded-[70px] border-4 md:border-8 border-slate-700/70 shadow-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 flex flex-col justify-between items-center p-3 sm:p-5 relative overflow-hidden">
               <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-amber-500/20 md:rounded-[120px]" />
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(52,211,153,0.15),transparent_35%),linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.03),transparent_80%)]" />
               {showdownStage === "inspection" && (
                 <div className="pointer-events-none absolute top-1/2 left-1/2 z-40 w-[min(92%,34rem)] -translate-x-1/2 -translate-y-1/2 text-center">
-                  <div className="rounded-2xl border border-amber-200/70 bg-slate-950/95 px-4 py-3 text-base font-black text-amber-50 shadow-[0_0_42px_rgba(251,191,36,0.38)] sm:px-6 sm:py-4 sm:text-xl">
+                  <div className="rounded-2xl border border-[#E5A93C]/70 bg-[#161B26]/95 px-4 py-3 text-base font-black text-amber-50 shadow-[0_0_42px_rgba(229,169,60,0.38)] sm:px-6 sm:py-4 sm:text-xl">
                     🃏 ปิดเดิมพันแล้ว! มาหงายไพ่กัน...
                   </div>
                 </div>
@@ -329,7 +329,7 @@ export function YouOrMeBoard({
               </div>
 
               <div className="my-auto flex flex-col items-center justify-center gap-1 z-10">
-                <div className="flex w-[min(100%,22rem)] flex-col items-center gap-1 rounded-[2rem] border border-amber-200/30 bg-slate-950/55 px-3 py-2 text-center shadow-[0_0_42px_rgba(251,191,36,0.17)] backdrop-blur-sm sm:px-5 sm:py-3">
+                <div className="flex w-[min(100%,22rem)] flex-col items-center gap-1 rounded-[2rem] border border-slate-700/70 bg-[#161B26]/90 px-3 py-2 text-center shadow-[0_0_42px_rgba(229,169,60,0.17)] backdrop-blur-sm sm:px-5 sm:py-3">
                   <div className="flex items-center justify-center gap-2 text-rose-100">
                     <HandCoins className="size-4 text-amber-300 sm:size-5" />
                     <span className="text-sm font-black sm:text-lg">❤️ กองกลาง: {String(game.pot)} เหรียญ</span>
@@ -391,7 +391,7 @@ export function YouOrMeBoard({
               </div>
 
           {isBettingTurn && (
-            <div className="absolute right-3 bottom-3 z-30 w-[calc(100%-1.5rem)] max-w-[20rem] rounded-2xl border border-amber-200/35 bg-slate-950/95 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:right-5 sm:bottom-5 sm:p-4 lg:right-7 lg:w-80">
+            <div className="absolute right-3 bottom-3 z-30 w-[calc(100%-1.5rem)] max-w-[20rem] rounded-2xl border border-slate-700/70 bg-[#161B26]/95 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:right-5 sm:bottom-5 sm:p-4 lg:right-7 lg:w-80">
               <div className="flex items-center justify-between gap-2">
                 <p className="flex items-center gap-2 text-xs font-black tracking-[0.16em] text-amber-100 uppercase">
                   <CircleDollarSign className="size-4 text-amber-300" /> ถึงตาคุณแล้ว!
@@ -454,7 +454,7 @@ export function YouOrMeBoard({
           </div>
         </main>
 
-        <aside className="hidden w-80 flex-shrink-0 flex-col border-l border-slate-800 bg-slate-900/90 p-3 xl:flex">
+        <aside className="hidden w-80 flex-shrink-0 flex-col border-l border-slate-700/70 bg-[#161B26]/95 p-3 xl:flex">
           <ChatBox
             messages={chatMessages}
             currentPlayerId={playerId}
@@ -469,7 +469,7 @@ export function YouOrMeBoard({
             role="dialog"
             aria-modal="true"
             aria-labelledby="confirm-card-title"
-            className="w-full max-w-md animate-[modal-pop_240ms_ease-out_both] rounded-[2rem] border border-amber-300/35 bg-slate-950/95 p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.7)]"
+            className="w-full max-w-md animate-[modal-pop_240ms_ease-out_both] rounded-[2rem] border border-slate-700/60 bg-[#161B26]/95 p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-md"
           >
             <div className="mx-auto w-fit rounded-2xl bg-amber-300/10 p-2 shadow-[0_0_32px_rgba(251,191,36,0.2)]">
               <YouOrMeCard card={pendingCard} className="w-44 sm:w-52" />

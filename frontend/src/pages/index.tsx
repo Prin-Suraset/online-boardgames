@@ -104,17 +104,17 @@ export function HubPage() {
   };
 
   return (
-    <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-slate-950">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(at_50%_0%,#1e1b4b_0%,#090d16_60%)]" />
-      <div className="pointer-events-none absolute top-20 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-amber-500/10 blur-3xl" />
+    <main className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-[#0B0F19]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,#1b2634_0%,#0b0f19_58%,#070a11_100%)]" />
+      <div className="pointer-events-none absolute top-20 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[#E5A93C]/10 blur-3xl" />
       <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
         <section className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-amber-300/25 bg-amber-400/10 px-4 py-2 text-xs font-bold tracking-wider text-amber-200 uppercase shadow-lg shadow-amber-950/20">
-            <Sparkles className="size-3.5 text-amber-300" /> The grand tabletop lounge
+          <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#E5A93C]/35 bg-[#1C212D] px-4 py-2 text-xs font-bold tracking-[0.2em] text-amber-400 uppercase shadow-[0_0_20px_rgba(229,169,60,0.25)]">
+            <Sparkles className="size-3.5 text-[#E5A93C]" /> The grand tabletop lounge
           </div>
           <h1 className="mt-6 font-display text-4xl leading-tight font-black tracking-[-0.035em] text-white sm:text-6xl">
             Pull up a chair.
-            <span className="block bg-gradient-to-r from-amber-200 via-amber-400 to-orange-500 bg-clip-text text-transparent">Play something timeless.</span>
+            <span className="block bg-gradient-to-r from-[#F8DE9D] via-[#E5A93C] to-[#B77922] bg-clip-text text-transparent">Play something timeless.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-400 sm:text-lg">
             Private rooms, instant invites, and real-time play. Start a table or enter a friend's code—no setup maze required.
@@ -122,12 +122,12 @@ export function HubPage() {
         </section>
 
         <section className="mx-auto mt-12 grid max-w-5xl gap-5 lg:grid-cols-2">
-          <article className="lounge-card overflow-hidden bg-gradient-to-br from-amber-500/10 via-slate-900/80 to-slate-950 p-6 sm:p-7">
+          <article className="lounge-card overflow-hidden bg-[#161B26]/90 p-6 sm:p-7">
             <div className="flex items-start justify-between gap-5">
-              <div className="grid size-12 place-items-center rounded-2xl bg-amber-400/15 text-amber-300 shadow-inner shadow-amber-300/10">
+              <div className="grid size-12 place-items-center rounded-2xl border border-[#E5A93C]/30 bg-[#E5A93C]/10 text-[#E5A93C] shadow-inner shadow-amber-300/10">
                 <Plus className="size-6" />
               </div>
-              <span className="rounded-full bg-emerald-400/10 px-3 py-1 text-[10px] font-bold tracking-wider text-emerald-300 uppercase">Private by default</span>
+              <span className="game-tag text-slate-300 uppercase"><span className="size-1.5 rounded-full bg-amber-400" />Private by default</span>
             </div>
             <h2 className="mt-6 text-2xl font-black text-white">Create a room</h2>
             <p className="mt-2 text-sm leading-6 text-slate-400">Choose a game and get a shareable code for your table.</p>
@@ -138,7 +138,7 @@ export function HubPage() {
                 type="button"
                 onClick={() => { setIsGameModalOpen(true); }}
                 aria-haspopup="dialog"
-                className="group mt-2 flex w-full items-center justify-between rounded-xl border border-slate-700 bg-slate-800/80 p-3.5 text-left transition-all hover:border-amber-400/40 hover:bg-slate-700/80"
+                className="group mt-2 flex w-full items-center justify-between rounded-xl border border-slate-700 bg-[#1C212D] p-3.5 text-left transition-all hover:border-[#E5A93C]/50 hover:bg-[#252D3B]"
               >
                 <span className="flex items-center gap-3">
                   <span className="rounded-lg bg-amber-500/10 p-2 text-xl font-bold text-amber-400" aria-hidden="true">{selectedGameDetails?.icon}</span>
@@ -150,7 +150,7 @@ export function HubPage() {
                 <span className="text-xs font-semibold text-amber-400 transition-transform group-hover:translate-x-0.5">เปลี่ยน ▾</span>
               </button>
             </div>
-            <button type="button" onClick={() => { void createRoom(); }} disabled={busyAction !== null} className="primary-button mt-5 w-full py-3">
+            <button type="button" onClick={() => { void createRoom(); }} disabled={busyAction !== null} className="primary-button mt-5 w-full rounded-lg px-6 py-3 font-black tracking-wider text-[#0B0F19] shadow-lg shadow-amber-500/20">
               {busyAction === "create" ? <LoaderCircle className="size-4 animate-spin" /> : <Gamepad2 className="size-4" />}
               Enter the lounge
             </button>
@@ -161,10 +161,10 @@ export function HubPage() {
 
           <article className="lounge-card p-6 sm:p-7">
             <div className="flex items-start justify-between gap-5">
-              <div className="grid size-12 place-items-center rounded-2xl bg-slate-700/70 text-emerald-300">
+              <div className="grid size-12 place-items-center rounded-2xl border border-sky-400/25 bg-[#1C212D] text-sky-400">
                 <LockKeyhole className="size-6" />
               </div>
-              <span className="rounded-full bg-slate-800 px-3 py-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Invite only</span>
+              <span className="game-tag text-slate-300 uppercase"><span className="size-1.5 rounded-full bg-sky-400" />Invite only</span>
             </div>
             <h2 className="mt-6 text-2xl font-black text-white">Join a table</h2>
             <p className="mt-2 text-sm leading-6 text-slate-400">Enter the six-character room code from your invite.</p>
@@ -183,7 +183,7 @@ export function HubPage() {
                 className="text-input mt-2 w-full text-center font-mono text-xl font-black tracking-[0.35em] uppercase"
               />
             </label>
-              <button type="button" onClick={() => { void joinRoom(); }} disabled={busyAction !== null} className="secondary-button mt-5 w-full py-3">
+              <button type="button" onClick={() => { void joinRoom(); }} disabled={busyAction !== null} className="primary-button mt-5 w-full rounded-lg px-6 py-3 font-black tracking-wider text-[#0B0F19] shadow-lg shadow-amber-500/20">
                 {busyAction === "join" ? <LoaderCircle className="size-4 animate-spin" /> : <ArrowRight className="size-4" />}
               Enter game
             </button>
@@ -193,7 +193,7 @@ export function HubPage() {
         <section className="mt-20">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
-              <p className="text-xs font-bold tracking-[0.18em] text-amber-300 uppercase">Game catalog</p>
+              <p className="text-xs font-bold tracking-[0.2em] text-amber-400 uppercase">Game catalog</p>
               <h2 className="mt-2 text-3xl font-black text-white">Pick your table</h2>
             </div>
             <p className="text-sm text-slate-500">More classics and custom games are on the way.</p>

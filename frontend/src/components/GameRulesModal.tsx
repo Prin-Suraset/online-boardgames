@@ -63,7 +63,7 @@ export function GameRulesModal({ gameId, onClose }: GameRulesModalProps) {
         aria-labelledby="game-rules-title"
         aria-describedby="game-rules-subtitle"
         onKeyDown={handleKeyDown}
-        className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-amber-300/30 bg-slate-900 text-white shadow-2xl shadow-black/60"
+        className="flex max-h-[92dvh] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-slate-700/60 bg-[#161B26]/90 text-white shadow-2xl shadow-black/60 backdrop-blur-md"
       >
         <div className="flex shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-gradient-to-r from-amber-400/10 to-transparent p-5 sm:p-7">
           <div className="min-w-0">
@@ -76,8 +76,8 @@ export function GameRulesModal({ gameId, onClose }: GameRulesModalProps) {
             </h2>
             <p id="game-rules-subtitle" className="mt-2 text-sm leading-6 text-slate-300">{rulebook.subtitle}</p>
             <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-amber-100">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5"><Users className="size-3.5" /> {rulebook.players}</span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/20 bg-amber-300/10 px-3 py-1.5"><Clock3 className="size-3.5" /> {rulebook.duration}</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-[#1C212D] px-3 py-1.5 font-semibold tracking-wider text-slate-300"><Users className="size-3.5 text-[#E5A93C]" /> {rulebook.players}</span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-[#1C212D] px-3 py-1.5 font-semibold tracking-wider text-slate-300"><Clock3 className="size-3.5 text-[#E5A93C]" /> {rulebook.duration}</span>
             </div>
           </div>
           <button ref={closeButtonRef} type="button" onClick={onClose} aria-label="ปิดคู่มือเกม" className="icon-button !size-10 shrink-0 rounded-full">
@@ -87,7 +87,7 @@ export function GameRulesModal({ gameId, onClose }: GameRulesModalProps) {
 
         <div className="min-h-0 space-y-4 overflow-y-auto overscroll-contain p-4 sm:p-7">
           {rulebook.sections.map((section) => (
-            <section key={section.title} className="rounded-2xl border border-white/10 bg-white/[0.035] p-4 sm:p-5">
+            <section key={section.title} className="rounded-2xl border border-slate-700/60 bg-[#1C212D] p-4 sm:p-5">
               <h3 className="flex items-center gap-2 text-lg font-black text-amber-100">
                 <span aria-hidden="true">{section.icon}</span> {section.title}
               </h3>

@@ -77,9 +77,9 @@ export function AuthModal() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-title"
-        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-slate-700/70 bg-slate-900 shadow-2xl shadow-black/40"
+        className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-slate-700/60 bg-[#161B26]/90 shadow-2xl shadow-black/40 backdrop-blur-md"
       >
-        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-br from-indigo-500/20 via-violet-500/10 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-br from-[#E5A93C]/15 via-sky-500/5 to-transparent" />
         {user !== null && (
           <button
             type="button"
@@ -93,7 +93,7 @@ export function AuthModal() {
 
         <div className="relative p-6 sm:p-8">
           <div className="flex items-center gap-3">
-            <div className="grid size-12 place-items-center rounded-2xl bg-indigo-500 text-white shadow-lg shadow-indigo-500/25">
+            <div className="grid size-12 place-items-center rounded-2xl bg-[#E5A93C] text-[#0B0F19] shadow-[0_0_20px_rgba(229,169,60,0.25)]">
               <Dices className="size-6" />
             </div>
             <div>

@@ -1,10 +1,13 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Fix Vercel room-route refresh and guard against accidental reloads during play.
-* **State**: Ready for Test (production build passes; post-deployment browser refresh remains pending)
+* **Active Task**: Reskin the platform to the 7K Atlas dark fantasy palette while preserving responsive layouts.
+* **State**: Ready for Test (frontend build passes; local browser viewport checks remain pending)
 
 ## 2. Completed in this Session
+* [x] Reskinned the global color system, navbar, hub, catalog, modals, room header, game rails, and player pods with midnight charcoal, dark slate, metallic gold, and status pill badges. Kept the emerald felt and existing layout classes.
+* [x] Confirmed the position, size, padding, flex, grid, overflow, and transform utility tokens in both game board components are unchanged from `HEAD`.
+* [x] Verified `cd frontend && npm run build` (0 TypeScript or compilation errors) and `git diff --check`; committed the theme as `2bf4895` (`style(theme): reskin platform to 7K Atlas dark fantasy gaming aesthetic while preserving responsive layouts`) in `/tmp/TheBoardGame-7k-theme/.git` because the workspace `.git` index is read-only.
 * [x] Added the Vercel catch-all rewrite to `/index.html` after the existing `/api/(.*)` proxy.
 * [x] Added a `beforeunload` guard while a room is `PLAYING`; confirmed the existing URL, stored-auth, and WebSocket join flow reuses the same player ID after reload.
 * [x] Verified `cd frontend && npm run build` (0 errors), rewrite ordering, and `git diff --check`. The deployed `/room/DMMMF3` currently reproduces `404 NOT_FOUND` before this fix is deployed.
@@ -92,6 +95,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] Sync theme commit `2bf4895` and the handoff commit from `/tmp/TheBoardGame-7k-theme/.git` into writable repository Git metadata before pushing or deploying.
+* [ ] On a reachable build, verify the midnight/gold/slate theme and check desktop, tablet, and mobile viewports for board and hub overlaps. Local Vite cannot bind and direct browser access to the built file is blocked.
 * [ ] Sync commit `61e225c` and this handoff update from `/tmp/TheBoardGame-routing-git/.git` into writable repository Git metadata, then deploy.
 * [ ] After deployment, open a live `/room/[code]`, refresh directly, and verify the app loads, restores the saved identity, and rejoins the same room; verify the browser warns on reload during `PLAYING`.
 * [ ] Sync guide book UI commit `76f485c` and this handoff update from `/tmp/TheBoardGame-guide-ui-git.6GJko5/.git` into writable repository Git metadata before pushing.
@@ -111,6 +116,9 @@
 * [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
+* For the 7K Atlas theme, `npm run lint` reports two pre-existing errors in the unchanged reload guard at `frontend/src/pages/room.tsx:131` and `:135`, plus the existing Fast Refresh warning in `YouOrMeCard.tsx:14`. The requested production build passes.
+* Local `npm run dev -- --host 127.0.0.1` fails with `listen EPERM` inside and outside the sandbox. The browser URL policy blocks `file://` access to `frontend/dist/index.html`, so local visual viewport checks could not run.
+* The workspace `.git` index remains read-only even with escalation; the 7K Atlas theme commit is stored in writable temporary Git metadata at `/tmp/TheBoardGame-7k-theme/.git`.
 * Local `npm run preview -- --host 127.0.0.1` fails with `listen EPERM` even with elevated execution, so local browser refresh testing could not run. The current deployed site still has the pre-fix Vercel config and returns `404 NOT_FOUND` for `/room/DMMMF3`.
 * A socket disconnect only unregisters that connection; the backend retains the player record, and `join_room` accepts the same player ID during `PLAYING`. `AuthProvider` restores `auth_token` from localStorage before `RoomSession` opens the socket.
 * The guide book UI now renders `frontend/src/data/gameRules.ts` without changing game or WebSocket contracts.

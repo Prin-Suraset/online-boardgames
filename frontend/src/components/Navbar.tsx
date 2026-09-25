@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ChevronDown, Dices, LogOut, Pencil, ShieldCheck, UserPlus } from "lucide-react";
+import { ChevronDown, LogOut, Pencil, ShieldCheck, UserPlus } from "lucide-react";
 
 import { useAuth } from "../context/AuthContext";
 
@@ -12,14 +12,15 @@ export function Navbar() {
   );
 
   return (
-    <nav className="relative z-50 border-b border-slate-800/80 bg-slate-950/75 shadow-lg shadow-black/10 backdrop-blur-xl">
+    <nav className="relative z-50 border-b border-slate-800/80 bg-[#0B0F19]/90 shadow-lg shadow-black/10 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="/" className="group flex items-center gap-3 text-white">
-          <span className="grid size-9 place-items-center rounded-xl bg-gradient-to-br from-amber-300 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/20 transition-transform duration-200 group-hover:rotate-6">
-            <Dices className="size-5" />
+          <span className="grid size-9 place-items-center rounded-xl border border-[#E5A93C]/60 bg-[#1C212D] text-xl shadow-[0_0_20px_rgba(229,169,60,0.25)] transition-transform duration-200 group-hover:rotate-6" aria-hidden="true">
+            🎲
           </span>
-          <span className="font-display text-sm font-black tracking-tight sm:text-base"><span className="text-amber-300">Online</span> Board Games</span>
+          <span className="font-display text-sm font-extrabold tracking-wider text-white uppercase sm:text-base">Online Board Games</span>
         </a>
+        <span className="hidden text-xs tracking-wider text-slate-400 md:block">SYSTEM • <span className="text-sky-400">ONLINE</span></span>
 
         {isLoading ? (
           <div className="h-9 w-32 animate-pulse rounded-xl bg-slate-800" />
@@ -31,18 +32,18 @@ export function Navbar() {
               type="button"
               onClick={() => { setMenuOpen((open) => !open); }}
               aria-expanded={isMenuOpen}
-              className="flex items-center gap-3 rounded-full border border-slate-700/80 bg-slate-900/80 p-1.5 pr-3 text-left shadow-lg shadow-black/10 transition hover:border-amber-400/40"
+              className="flex items-center gap-3 rounded-full border border-slate-700/80 bg-[#1C212D] p-1.5 pr-3 text-left shadow-lg shadow-black/10 transition hover:border-[#E5A93C]/50"
             >
-              <span className="grid size-9 place-items-center rounded-full bg-gradient-to-br from-amber-300 to-amber-600 text-xs font-black text-slate-950">{initials}</span>
+              <span className="grid size-9 place-items-center rounded-full border border-[#E5A93C] bg-[#161B26] text-xs font-black text-[#E5A93C] shadow-[0_0_20px_rgba(229,169,60,0.25)]">{initials}</span>
               <span className="hidden sm:block">
                 <span className="block max-w-36 truncate text-sm font-bold text-slate-100">{user.display_name}</span>
-                <span className={isGuest ? "mt-0.5 inline-flex w-fit rounded-full bg-amber-400/10 px-2 py-0.5 text-[9px] font-bold tracking-wider text-amber-300 uppercase" : "mt-0.5 inline-flex w-fit rounded-full bg-emerald-400/10 px-2 py-0.5 text-[9px] font-bold tracking-wider text-emerald-300 uppercase"}>{user.is_admin ? "Admin" : isGuest ? "Guest" : "Member"}</span>
+                <span className="mt-0.5 inline-flex w-fit items-center gap-1.5 rounded-full border border-slate-700 bg-[#1C212D] px-2 py-0.5 text-[9px] font-bold tracking-wider text-slate-300 uppercase"><span className={`size-1.5 rounded-full ${isGuest ? "bg-amber-400" : "bg-sky-400"}`} />{user.is_admin ? "Admin" : isGuest ? "Guest" : "Member"}</span>
               </span>
               <ChevronDown className="size-4 text-slate-500" />
             </button>
 
             {isMenuOpen && (
-              <div className="absolute top-[calc(100%+0.6rem)] right-0 w-64 rounded-2xl border border-slate-700 bg-slate-900 p-2 shadow-2xl shadow-black/40">
+              <div className="absolute top-[calc(100%+0.6rem)] right-0 w-64 rounded-2xl border border-slate-700/60 bg-[#161B26]/90 p-2 shadow-2xl shadow-black/40 backdrop-blur-md">
                 {isGuest ? (
                   <>
                     <button type="button" onClick={() => { setMenuOpen(false); openAuthModal("register"); }} className="menu-action text-amber-200">

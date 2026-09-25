@@ -1,10 +1,13 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Add the hub game-selection modal and responsive game catalog carousel.
+* **Active Task**: Ensure the game catalog carousel fills all three desktop slots and uses responsive page navigation.
 * **State**: Ready for Test (production build and lint pass; local browser smoke test is blocked by environment policy)
 
 ## 2. Completed in this Session
+* [x] Grouped catalog cards into full-width carousel pages: three games on desktop, two cards on tablet, and one card on mobile. The next desktop page contains Custom Games, with page-based arrows and pagination dots.
+* [x] Verified `cd frontend && npm run build` (0 errors), `npm run lint` (0 errors; one existing Fast Refresh warning), and `git diff --check`.
+* [x] Committed the carousel fix as `a23c86b` (`fix(carousel): ensure 3 cards fill the carousel row on desktop viewports`) in `/tmp/TheBoardGame-carousel-git.axmTNY/.git` because the workspace `.git` index is read-only.
 * [x] Replaced the Create a room game dropdown with a trigger and accessible selection modal for the three playable games, plus a disabled Custom Games preview.
 * [x] Replaced the flat catalog grid with a horizontally snapping carousel, navigation arrows, pagination dots, and existing Play now room creation actions.
 * [x] Centralized catalog labels and metadata in `frontend/src/lib/gameCatalog.ts` without changing game or WebSocket contracts.
@@ -78,6 +81,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] On a reachable local or deployed build, verify the first desktop page shows Tic-Tac-Toe, What number I have?, and You or me who more than? side-by-side; `>` reveals Custom Games and `<` returns to the first page. Check the two-card tablet and one-card mobile layouts.
+* [ ] Sync the carousel commit and handoff update from `/tmp/TheBoardGame-carousel-git.axmTNY/.git` into writable repository Git metadata before pushing.
 * [ ] Browser-smoke the new hub UI on a reachable build: open/close the modal, choose each playable game, confirm the Create a room trigger updates, and use carousel arrows, dots, and touch/trackpad scrolling at desktop and mobile widths.
 * [ ] Sync the temporary UI commit and this handoff update into writable repository Git metadata before pushing.
 * [ ] Push the gameplay commit, handoff update, and prior rematch commits to `origin/main`.
@@ -89,6 +94,7 @@
 * [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
+* The local Vite server fails with `listen EPERM` on `127.0.0.1:5173` even after escalation. Chrome's browser URL policy blocks opening the local `file://` production build, so the requested live browser verification could not be completed here.
 * For this UI task, local Vite startup failed with `listen EPERM` even after an approved escalation. Browser security policy also blocked opening the local `file://` production build, so live interaction checks remain pending.
 * The requested `page.tsx` is `frontend/src/pages/index.tsx` in this Vite repository; no Next.js app directory exists.
 * The new game is integrated through the existing `backend/app/rooms.py` room manager; this repository does not contain `backend/app/engine/room.py`.

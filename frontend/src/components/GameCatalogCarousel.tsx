@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type UIEvent } from "react";
-import { ChevronLeft, ChevronRight, Clock3, Settings2, Swords, Users } from "lucide-react";
+import { BookOpen, ChevronLeft, ChevronRight, Clock3, Settings2, Swords, Users } from "lucide-react";
 
 import { catalogGames } from "../lib/gameCatalog";
 import type { GameType } from "../types";
 
 interface GameCatalogCarouselProps {
   onPlay: (game: GameType) => void;
+  onReadRules: (game: GameType) => void;
   isBusy: boolean;
 }
 
@@ -17,7 +18,7 @@ function getCardsPerPage(): number {
   return 1;
 }
 
-export function GameCatalogCarousel({ onPlay, isBusy }: GameCatalogCarouselProps) {
+export function GameCatalogCarousel({ onPlay, onReadRules, isBusy }: GameCatalogCarouselProps) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [cardsPerPage, setCardsPerPage] = useState(getCardsPerPage);
@@ -90,7 +91,12 @@ export function GameCatalogCarousel({ onPlay, isBusy }: GameCatalogCarouselProps
                     <span className="game-tag"><Clock3 className="size-3 text-amber-300" /> {game.duration}</span>
                     <span className="game-tag"><Swords className="size-3 text-amber-300" /> {game.genre}</span>
                   </div>
-                  <button type="button" onClick={() => { onPlay(game.id); }} disabled={isBusy} className="primary-button mt-6 w-full">Play now</button>
+                  <div className="mt-6 flex gap-2">
+                    <button type="button" onClick={() => { onReadRules(game.id); }} aria-label={`ดูกติกา ${game.title}`} className="secondary-button min-w-0 flex-1 px-2 text-sm">
+                      <BookOpen className="size-4" /> ดูกติกา
+                    </button>
+                    <button type="button" onClick={() => { onPlay(game.id); }} disabled={isBusy} className="primary-button min-w-0 flex-1 px-2 text-sm">เล่นเลย</button>
+                  </div>
                 </article>
               );
             })}

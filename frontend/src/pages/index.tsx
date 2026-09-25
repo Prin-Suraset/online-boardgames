@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import {
   ArrowRight,
+  BookOpen,
   Gamepad2,
   LoaderCircle,
   LockKeyhole,
@@ -10,6 +11,7 @@ import {
 
 import { GameCatalogCarousel } from "../components/GameCatalogCarousel";
 import { GameSelectModal } from "../components/GameSelectModal";
+import { GameRulesModal } from "../components/GameRulesModal";
 import { Toast } from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
 import { catalogGames } from "../lib/gameCatalog";
@@ -34,6 +36,7 @@ export function HubPage() {
   const [roomCode, setRoomCode] = useState("");
   const [selectedGame, setSelectedGame] = useState<GameType>("tictactoe");
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
+  const [ruleGame, setRuleGame] = useState<GameType | null>(null);
   const [busyAction, setBusyAction] = useState<"create" | "join" | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const gameTriggerRef = useRef<HTMLButtonElement>(null);
@@ -151,6 +154,9 @@ export function HubPage() {
               {busyAction === "create" ? <LoaderCircle className="size-4 animate-spin" /> : <Gamepad2 className="size-4" />}
               Enter the lounge
             </button>
+            <button type="button" onClick={() => { setRuleGame(selectedGame); }} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-amber-300 transition hover:text-amber-100">
+              <BookOpen className="size-4" /> อ่านกติกา {selectedGameDetails?.title}
+            </button>
           </article>
 
           <article className="lounge-card p-6 sm:p-7">
@@ -193,7 +199,7 @@ export function HubPage() {
             <p className="text-sm text-slate-500">More classics and custom games are on the way.</p>
           </div>
 
-          <GameCatalogCarousel onPlay={(game) => { void createRoom(game); }} isBusy={busyAction !== null} />
+          <GameCatalogCarousel onPlay={(game) => { void createRoom(game); }} onReadRules={setRuleGame} isBusy={busyAction !== null} />
         </section>
       </div>
 
@@ -204,6 +210,7 @@ export function HubPage() {
           onClose={() => { setIsGameModalOpen(false); gameTriggerRef.current?.focus(); }}
         />
       )}
+      {ruleGame !== null && <GameRulesModal gameId={ruleGame} onClose={() => { setRuleGame(null); }} />}
       {notice !== null && <Toast message={notice} onDismiss={() => { setNotice(null); }} />}
     </main>
   );

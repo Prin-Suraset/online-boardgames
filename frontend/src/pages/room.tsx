@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
+  BookOpen,
   Bot,
   Check,
   CircleDashed,
@@ -18,6 +19,7 @@ import { TicTacToeBoard } from "../components/TicTacToeBoard";
 import { WhatNumberGame } from "../components/WhatNumberGame";
 import { YouOrMeBoard } from "../components/game/YouOrMeBoard";
 import { GameAnnouncer } from "../components/game/GameAnnouncer";
+import { GameRulesModal } from "../components/GameRulesModal";
 import { Toast } from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
 import { useRoomSocket } from "../hooks/useRoomSocket";
@@ -101,6 +103,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     [user.display_name, user.id],
   );
   const [notice, setNotice] = useState<string | null>(null);
+  const [isRulesOpen, setIsRulesOpen] = useState(false);
   const {
     room,
     connectionStatus,
@@ -180,9 +183,16 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         isWhatNumberSession || isYouOrMeSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
         <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
-          <button type="button" onClick={exitRoom} className="ghost-button">
-            <ArrowLeft className="size-4" /> ออกจากห้อง
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" onClick={exitRoom} className="ghost-button">
+              <ArrowLeft className="size-4" /> ออกจากห้อง
+            </button>
+            {room !== null && (
+              <button type="button" onClick={() => { setIsRulesOpen(true); }} className="ghost-button border border-amber-300/25 text-amber-200 hover:bg-amber-300/10">
+                <BookOpen className="size-4" /> ดูกติกา
+              </button>
+            )}
+          </div>
           <div className="flex items-center gap-3">
             {room?.status === "PLAYING" && user.is_admin && (
               <button
@@ -373,6 +383,10 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
       {isWhatNumberSession && (
         <GameAnnouncer events={gameEvents} currentPlayerId={profile.playerId} />
+      )}
+
+      {isRulesOpen && room !== null && (
+        <GameRulesModal gameId={room.game_type} onClose={() => { setIsRulesOpen(false); }} />
       )}
 
       {displayError !== null && (

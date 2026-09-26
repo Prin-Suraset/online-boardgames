@@ -1,10 +1,13 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Top 1-100 by ChatGPT topic roulette, guess feedback, and ten-topic bank.
-* **State**: Ready for browser verification (backend tests and production build pass)
+* **Active Task**: Top 1-100 by ChatGPT case-insensitive, punctuation-tolerant guess matching.
+* **State**: Ready for test (focused and full backend suites pass)
 
 ## 2. Completed in this Session
+* [x] Added `normalize_string()` for lowercase, trimmed, punctuation-collapsed matching across guesses, topic names, and aliases. The room's already-claimed result uses the same normalization; punctuation-only guesses remain invalid.
+* [x] Added regression tests for mixed case, spaces, hyphens, dots, underscores, quotes, Thai titles, scoring, and punctuation-variant duplicate claims. Verified `pytest -v backend/tests/test_top100.py` (15 passed), full backend suite (61 passed), and `git diff --check`.
+* [x] Committed the backend fix as `6c700e8` (`fix(top100): match guesses across case and punctuation variants`) in `/tmp/TheBoardGame-normalization-git.git` because the workspace `.git` index remains read-only even with elevated execution.
 * [x] Added a 3-second decelerating topic roulette, 1.5-second gold lock reveal, and dissolve before input activates. The server reserves five seconds before the first 30-second turn and polls updated deadlines after guesses.
 * [x] Added private-safe guess feedback events for human and bot turns, with correct/miss/already-claimed outcomes. The local guesser reads rank and points only from their player-specific game view; public events contain no score or rank.
 * [x] Added executable `backend/scripts/seed_top100_topics.py` and `backend/scripts/top100_starter_topics.json`; generated and validated the ten requested topics with 100 ranked answers and Thai/English aliases each. Running the script again regenerates the same bank.
@@ -107,6 +110,7 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] Sync normalization commit `6c700e8` and this handoff update from `/tmp/TheBoardGame-normalization-git.git` into writable repository Git metadata before pushing.
 * [ ] Browser-check the roulette pacing, feedback queue, and reveal on desktop/mobile against a reachable frontend and backend.
 * [ ] Sync feature commit `f802ac1`, fixes `0750141` and `7cec44c`, and handoff commits from `/tmp/TheBoardGame-top100-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync theme commit `2bf4895` and the handoff commit from `/tmp/TheBoardGame-7k-theme/.git` into writable repository Git metadata before pushing or deploying.
@@ -129,6 +133,7 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
+* The case/punctuation change is backend-only; the frontend contract and UI did not change. The ten-topic bank validates with the new normalization and has no normalized answer or alias collisions.
 * The current ten-topic request supersedes the older four-topic master list in this handoff; `video_games` and `world_movies` are not part of the new ten-topic bank.
 * The workspace `.git` index is read-only even with elevated execution. This session's feature commit is in `/tmp/TheBoardGame-top100-git.git`; the working tree contains the committed files plus this handoff update.
 * No live browser interaction was run this session. The previous handoff records local Vite `listen EPERM`; production build and backend tests pass.

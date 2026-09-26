@@ -12,6 +12,7 @@ from app.engine.games.top100 import (
     Top100Engine,
     Top100State,
     load_topic_bank,
+    normalize_string,
 )
 from app.rooms import RoomManager
 from app.schemas import PlayerInput
@@ -20,6 +21,7 @@ from app.schemas import PlayerInput
 PLAYERS = ("p1", "p2")
 NAMES = {"p1": "Alpha", "p2": "Beta"}
 TOPIC = next(topic for topic in load_topic_bank() if topic.id == "thai_food")
+ANIME_TOPIC = next(topic for topic in load_topic_bank() if topic.id == "anime_characters")
 
 
 def start() -> Top100State:
@@ -31,6 +33,26 @@ def guess(state: Top100State, value: str) -> Top100State:
     return Top100Engine.apply_action(
         state, state.turn_player_id, Top100Action(action_type="SUBMIT_GUESS", guess=value)
     )
+
+
+@pytest.mark.parametrize(("raw", "expected"), [
+    ("", ""),
+    ("  PAD-THAI  ", "pad thai"),
+    ("  MONKEY.D_LUFFY!  ", "monkey d luffy"),
+    ("  Jack's:\"Sparrow\" / Captain?  ", "jack s sparrow captain"),
+    ("พี่มาก..พระโขนง", "พี่มาก พระโขนง"),
+])
+def test_normalize_string(raw: str, expected: str) -> None:
+    assert normalize_string(raw) == expected
+
+
+def test_punctuation_tolerant_scoring_and_duplicate_claim() -> None:
+    state = Top100Engine.create_state(PLAYERS, NAMES, ANIME_TOPIC)
+    state = guess(state, "  MONKEY-D_LUFFY!  ")
+    assert state.player_scores == {"p1": 100, "p2": 0}
+    state = guess(state, "monkey.d.luffy")
+    assert state.player_scores == {"p1": 100, "p2": 0}
+    assert [item.rank for item in state.guessed_items] == [1]
 
 
 def test_topic_bank_and_seeded_selection() -> None:
@@ -59,7 +81,10 @@ def test_public_guess_result_has_no_secret_score_or_rank() -> None:
     assert room.turn_deadline is not None
     assert 34 <= room.turn_deadline - time.monotonic() <= 35
     assert rooms.player_view(room.code, "p1").game.turn_timer == 30
-    first_answer = room.game_state.topic.items[0].name
+    first_answer = next(
+        value for item in room.game_state.topic.items for value in (item.name, *item.aliases)
+        if " " in value or "." in value
+    )
     assert rooms.player_view(room.code, "p1").game is not None
     rooms.apply_game_action(room.code, "p1", "SUBMIT_GUESS", {"guess": first_answer})
     assert room.turn_deadline is not None
@@ -74,7 +99,9 @@ def test_public_guess_result_has_no_secret_score_or_rank() -> None:
     assert opponent is not None
     assert opponent.revealed_chronological_items[0].rank is None
     assert opponent.revealed_chronological_items[0].points is None
-    rooms.apply_game_action(room.code, "p2", "SUBMIT_GUESS", {"guess": first_answer})
+    rooms.apply_game_action(room.code, "p2", "SUBMIT_GUESS", {
+        "guess": first_answer.replace(" ", "-").replace(".", "_")
+    })
     assert rooms.take_pending_events(room.code)[0].value == {"outcome": "ALREADY_CLAIMED", "claim_index": None}
     rooms.apply_game_action(room.code, "p1", "SUBMIT_GUESS", {"guess": "not a real answer"})
     assert rooms.take_pending_events(room.code)[0].value == {"outcome": "MISS", "claim_index": None}
@@ -134,6 +161,9 @@ def test_invalid_actions_leave_state_unchanged() -> None:
     with pytest.raises(GameRuleError) as blank:
         Top100Engine.apply_action(state, "p1", Top100Action(action_type="SUBMIT_GUESS", guess="   "))
     assert blank.value.code == MoveErrorCode.INVALID_ACTION
+    with pytest.raises(GameRuleError) as punctuation_only:
+        Top100Engine.apply_action(state, "p1", Top100Action(action_type="SUBMIT_GUESS", guess="...?!"))
+    assert punctuation_only.value.code == MoveErrorCode.INVALID_ACTION
     with pytest.raises(GameRuleError) as stranger:
         Top100Engine.apply_action(state, "outsider", Top100Action(action_type="TURN_TIMEOUT"))
     assert stranger.value.code == MoveErrorCode.INVALID_PLAYER

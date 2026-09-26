@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import random
+import re
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
@@ -31,7 +32,7 @@ class Top100Topic(BaseModel):
     def validate_items(self) -> Top100Topic:
         if tuple(item.rank for item in self.items) != tuple(range(1, 101)):
             raise ValueError("a topic must contain ranks 1 through 100 in order")
-        names = [normalize(value) for item in self.items for value in (item.name, *item.aliases)]
+        names = [normalize_string(value) for item in self.items for value in (item.name, *item.aliases)]
         if len(names) != len(set(names)) or any(not name for name in names):
             raise ValueError("topic names and aliases must be unique and non-empty")
         return self
@@ -105,8 +106,16 @@ class Top100View(BaseModel):
     answer_sheet: tuple[TopicItem, ...] | None
 
 
-def normalize(value: str) -> str:
-    return " ".join(value.strip().casefold().split())
+def normalize_string(text: str) -> str:
+    """Use one comparison form for guesses, answer names, and aliases."""
+    if not text:
+        return ""
+    normalized = text.strip().lower()
+    return re.sub(r"""[\s\-_.:'"!?,/]+""", " ", normalized).strip()
+
+
+# Keep the existing helper name available to room adapters and callers.
+normalize = normalize_string
 
 
 @lru_cache(maxsize=1)
@@ -163,7 +172,7 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
         if state.turn_player_id != player_id:
             raise GameRuleError(MoveErrorCode.NOT_YOUR_TURN, "it is not this player's turn")
         if action.action_type == "SUBMIT_GUESS":
-            if action.guess is None or not normalize(action.guess):
+            if action.guess is None or not normalize_string(action.guess):
                 raise GameRuleError(MoveErrorCode.INVALID_ACTION, "a non-empty guess is required")
         elif action.guess is not None:
             raise GameRuleError(MoveErrorCode.INVALID_ACTION, "timeout does not accept a guess")
@@ -171,10 +180,10 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
         guesses = state.guessed_items
         scores = dict(state.player_scores)
         if action.action_type == "SUBMIT_GUESS" and action.guess is not None:
-            guess = normalize(action.guess)
+            guess = normalize_string(action.guess)
             item = next(
                 (item for item in state.topic.items
-                 if guess in (normalize(value) for value in (item.name, *item.aliases))),
+                 if guess in (normalize_string(value) for value in (item.name, *item.aliases))),
                 None,
             )
             if item is not None and all(prior.rank != item.rank for prior in guesses):

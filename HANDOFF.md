@@ -1,10 +1,13 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Top 1-100 by ChatGPT backend implementation (frontend integration is a separate next step).
-* **State**: Ready for Test (focused and full backend suites pass)
+* **Active Task**: Top 1-100 by ChatGPT frontend integration.
+* **State**: Ready for Test (production build and local browser smoke test pass)
 
 ## 2. Completed in this Session
+* [x] Added the Top100 catalog entry and Thai rulebook, strict TypeScript/WebSocket view parsing, 2–8 player room selection, and `Top100Board` with chronological answer cards, private scoring, countdown, persistent guess console, responsive chat, and final leaderboard/100-answer reveal. Committed as `b849fc0` (`feat(frontend): implement Top100Board UI with chronological reveal and secret scoring`).
+* [x] Verified `cd frontend && npm run build` (0 TypeScript/compilation errors), `git diff --check`, and a local guest-plus-bot browser match through round 10. Confirmed initial topic-only center, own rank/points, opponent `อันดับ: ???`, chronological card order, final scores, and all 100 answers with aliases.
+* [x] Checked desktop, tablet (820×1180), and mobile (390×844) layouts. The answer area now scrolls while the guess console remains visible; mobile/tablet chat uses the existing drawer. Restored the browser viewport after testing.
 * [x] Implemented the deterministic Top100 engine with seeded topic selection, 10 rounds, 30-second turns, alias matching, chronological claims, hidden scoring, final rankings, and player-specific views; committed as `721530e` (`feat(backend): implement Top 1-100 by ChatGPT engine, starter data, and tests`).
 * [x] Added complete 100-item `anime_characters` and `thai_food` starter topics with aliases, registered `top100` for 2–8 players in the existing room manager, added bot guesses and server-controlled timeout advancement.
 * [x] Verified `pytest -v backend/tests/test_top100.py` (8 passed), full backend suite (54 passed), JSON topic validation, Python compilation, and `git diff --check` using `/tmp/top100-venv`.
@@ -98,7 +101,6 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
-* [ ] In a separate frontend step, register `top100` in the catalog and TypeScript/WebSocket contracts, then build the chronological board and finish reveal UI. The current frontend does not parse or display this game type.
 * [ ] If resuming the broader original master task, add the `video_games` and `world_movies` 100-item topic lists and verify their aliases and rankings before release.
 * [ ] Sync theme commit `2bf4895` and the handoff commit from `/tmp/TheBoardGame-7k-theme/.git` into writable repository Git metadata before pushing or deploying.
 * [ ] On a reachable build, verify the midnight/gold/slate theme and check desktop, tablet, and mobile viewports for board and hub overlaps. Local Vite cannot bind and direct browser access to the built file is blocked.
@@ -120,8 +122,10 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
+* The frontend now parses and displays `top100` from the Step 1 backend. The catalog and game selection modal both consume `frontend/src/lib/gameCatalog.ts`, so one shared metadata entry registers the game in both places.
+* `npm run lint` reports two pre-existing reload-guard errors in `frontend/src/pages/room.tsx` and one pre-existing Fast Refresh warning in `YouOrMeCard.tsx`; the new Top100 files add no lint findings. The requested production build passes.
 * Backend dependencies were installed in `/tmp/top100-venv` for this session; the repository has no checked-in virtual environment. Run the focused tests with `PATH=/tmp/top100-venv/bin:$PATH pytest -v backend/tests/test_top100.py` while that temporary environment exists.
-* This backend-only step exposes `top100` through the API, but the existing frontend game-type parser does not recognize it yet. The server owns turn deadlines in its current in-memory room process.
+* The server owns Top100 turn deadlines in its current in-memory room process.
 * For the 7K Atlas theme, `npm run lint` reports two pre-existing errors in the unchanged reload guard at `frontend/src/pages/room.tsx:131` and `:135`, plus the existing Fast Refresh warning in `YouOrMeCard.tsx:14`. The requested production build passes.
 * Local `npm run dev -- --host 127.0.0.1` fails with `listen EPERM` inside and outside the sandbox. The browser URL policy blocks `file://` access to `frontend/dist/index.html`, so local visual viewport checks could not run.
 * The workspace `.git` index remains read-only even with escalation; the 7K Atlas theme commit is stored in writable temporary Git metadata at `/tmp/TheBoardGame-7k-theme/.git`.

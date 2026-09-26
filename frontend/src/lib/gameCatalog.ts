@@ -42,4 +42,14 @@ export const catalogGames: readonly CatalogGame[] = [
     description: "High-stakes betting, hidden cards, and one bold question: who has more?",
     selectionDetails: "High-Stakes Bluffing · 2–4 Players · Poker Betting",
   },
+  {
+    id: "top100",
+    title: "Top 1-100 by ChatGPT",
+    icon: "🔢",
+    players: "2-8 Players",
+    duration: "~10–40m",
+    genre: "Trivia & Deduction",
+    description: "ทาย 100 อันดับ ลับสมอง ซ่อนแต้ม ลุ้นอันดับลับ",
+    selectionDetails: "ทาย 100 อันดับ ลับสมอง ซ่อนแต้ม ลุ้นอันดับลับ",
+  },
 ];

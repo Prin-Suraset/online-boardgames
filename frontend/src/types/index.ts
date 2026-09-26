@@ -1,6 +1,6 @@
 export type PlayerMark = "X" | "O";
 export type RoomStatus = "LOBBY" | "PLAYING" | "FINISHED";
-export type GameType = "tictactoe" | "what_number" | "you_or_me";
+export type GameType = "tictactoe" | "what_number" | "you_or_me" | "top100";
 export type ConnectionStatus = "CONNECTING" | "CONNECTED" | "DISCONNECTED" | "ERROR";
 
 export interface Player {
@@ -102,6 +102,42 @@ export interface YouOrMeView {
   event_log: readonly string[];
 }
 
+export interface Top100RevealedItem {
+  name: string;
+  rank: number | null;
+  points: number | null;
+  is_mine: boolean;
+  by: string | null;
+}
+
+export interface Top100Answer {
+  rank: number;
+  name: string;
+  aliases: readonly string[];
+}
+
+export interface Top100Ranking {
+  position: number;
+  player_id: string;
+  player_name: string;
+  score: number;
+}
+
+export interface Top100View {
+  topic_title: string;
+  is_my_turn: boolean;
+  turn_player_id: string | null;
+  turn_timer: number;
+  round_number: number;
+  my_score: number;
+  other_player_scores: Readonly<Record<string, number>> | null;
+  revealed_chronological_items: readonly Top100RevealedItem[];
+  status: "PLAYING" | "FINISHED";
+  winner_ids: readonly string[] | null;
+  final_rankings: readonly Top100Ranking[] | null;
+  answer_sheet: readonly Top100Answer[] | null;
+}
+
 export interface GameOverResult {
   is_over: boolean;
   outcome: "WIN" | "DRAW" | "FORCED";
@@ -115,7 +151,7 @@ export interface RoomState {
   status: RoomStatus;
   host_id: string;
   players: readonly Player[];
-  game: TicTacToeView | WhatNumberView | YouOrMeView | null;
+  game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | null;
   result: GameOverResult | null;
 }
 

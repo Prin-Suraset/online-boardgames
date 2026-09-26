@@ -18,21 +18,27 @@ import {
 import { TicTacToeBoard } from "../components/TicTacToeBoard";
 import { WhatNumberGame } from "../components/WhatNumberGame";
 import { YouOrMeBoard } from "../components/game/YouOrMeBoard";
+import { Top100Board } from "../components/game/Top100Board";
 import { GameAnnouncer } from "../components/game/GameAnnouncer";
 import { GameRulesModal } from "../components/GameRulesModal";
 import { Toast } from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
 import { useRoomSocket } from "../hooks/useRoomSocket";
 import { navigate } from "../lib/navigation";
+import { catalogGames } from "../lib/gameCatalog";
 import { cn } from "../lib/styles";
-import type { AuthUser, Player, TicTacToeView, WhatNumberView, YouOrMeView } from "../types";
+import type { AuthUser, Player, TicTacToeView, Top100View, WhatNumberView, YouOrMeView } from "../types";
 
-function isTicTacToeView(game: TicTacToeView | WhatNumberView | YouOrMeView): game is TicTacToeView {
+function isTicTacToeView(game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View): game is TicTacToeView {
   return "board" in game;
 }
 
-function isYouOrMeView(game: TicTacToeView | WhatNumberView | YouOrMeView): game is YouOrMeView {
+function isYouOrMeView(game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View): game is YouOrMeView {
   return "pot" in game;
+}
+
+function isTop100View(game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View): game is Top100View {
+  return "topic_title" in game;
 }
 
 function PlayerSlot({ player, label }: { player: Player | undefined; label: string }) {
@@ -146,7 +152,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
   const currentPlayer = room?.players.find((player) => player.id === profile.playerId);
   const minPlayers = room?.game_type === "what_number" ? 3 : 2;
-  const maxPlayers = room?.game_type === "what_number" ? 8 : room?.game_type === "you_or_me" ? 4 : 2;
+  const maxPlayers = room?.game_type === "what_number" || room?.game_type === "top100" ? 8 : room?.game_type === "you_or_me" ? 4 : 2;
   const allPlayersReady =
     room !== null && room.players.length >= minPlayers && room.players.every((player) => player.is_ready);
   const canStart = currentPlayer?.is_host === true && allPlayersReady;
@@ -158,6 +164,15 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
   const wasForceEnded = room?.result?.details.forced === true;
   const isWhatNumberSession = room?.game_type === "what_number" && room.status !== "LOBBY";
   const isYouOrMeSession = room?.game_type === "you_or_me" && room.status !== "LOBBY";
+  const isTop100Session = room?.game_type === "top100" && room.status !== "LOBBY";
+  const catalogTitle = catalogGames.find((game) => game.id === room?.game_type)?.title ?? "เกมกระดาน";
+  const didWin = room?.game !== null && room?.game !== undefined && (
+    isTicTacToeView(room.game)
+      ? room.game.winner === profile.playerId
+      : isTop100View(room.game)
+        ? room.game.winner_ids?.includes(profile.playerId) === true
+        : room.game.winner_id === profile.playerId
+  );
 
   const forceEndGame = (): void => {
     if (window.confirm("จะจบเกมนี้ทันทีเลยไหม?")) {
@@ -251,7 +266,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         ) : room.status === "LOBBY" ? (
           <section className="relative z-10 mx-auto max-w-3xl pt-16 pb-14 sm:pt-24">
             <div className="text-center">
-              <p className="eyebrow">ห้องเกม {room.game_type === "what_number" ? "What number I have?" : room.game_type === "you_or_me" ? "You or me who more than?" : "Tic-Tac-Toe"}</p>
+              <p className="eyebrow">ห้องเกม {catalogTitle}</p>
               <h1 className="mt-4 font-display text-4xl font-black tracking-tight text-white sm:text-6xl">ชวนเพื่อนมานั่งโต๊ะกัน!</h1>
               <p className="mx-auto mt-4 max-w-lg text-slate-400">ทุกคนกดพร้อมก่อนนะ พอมีอย่างน้อย {minPlayers} คน โฮสต์ก็เริ่มเกมได้เลย</p>
             </div>
@@ -292,7 +307,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
             {currentPlayer?.is_host === true && (
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {(room.game_type === "what_number" || room.game_type === "you_or_me") && room.players.length < minPlayers && (
+                {(room.game_type === "what_number" || room.game_type === "you_or_me" || room.game_type === "top100") && room.players.length < minPlayers && (
                   <button
                     type="button"
                     onClick={() => { sendAction("ADD_TEST_BOTS", { count: minPlayers - room.players.length }); }}
@@ -311,9 +326,9 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         ) : (
           <section className={cn(
             "relative z-10",
-            isWhatNumberSession || isYouOrMeSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
+            isWhatNumberSession || isYouOrMeSession || isTop100Session ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
           )}>
-            {!isWhatNumberSession && !isYouOrMeSession && <div className="mb-8 text-center">
+            {!isWhatNumberSession && !isYouOrMeSession && !isTop100Session && <div className="mb-8 text-center">
               <p className="eyebrow">ห้อง {room.room_code}</p>
               <h1 className="mt-3 font-display text-3xl font-black text-white sm:text-5xl">
                 เรียงให้ครบ 3 ก่อน ชนะเลย!
@@ -330,7 +345,20 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
             )}
 
             {room.game !== null && !isTicTacToeView(room.game) && (
-              isYouOrMeView(room.game) ? (
+              isTop100View(room.game) ? (
+                <Top100Board
+                  roomCode={room.room_code}
+                  game={room.game}
+                  players={room.players}
+                  playerId={profile.playerId}
+                  sendAction={sendAction}
+                  chatMessages={chatMessages}
+                  sendChat={sendChat}
+                  canRematch={currentPlayer?.is_host === true || user.is_admin}
+                  onRematch={() => { sendAction("REMATCH", {}); }}
+                  onExit={exitRoom}
+                />
+              ) : isYouOrMeView(room.game) ? (
                 <YouOrMeBoard
                   game={room.game}
                   players={room.players}
@@ -355,7 +383,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               )
             )}
 
-            {room.status === "FINISHED" && room.game !== null && (
+            {room.status === "FINISHED" && room.game !== null && !(isTop100View(room.game) && room.game.status === "FINISHED") && (
               <div className="fixed inset-0 z-40 grid place-items-center bg-slate-950/75 p-5 backdrop-blur-sm">
                 <div className="panel w-full max-w-md p-7 text-center sm:p-9">
                   <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-coral/15 text-2xl text-coral">{isTicTacToeView(room.game) && room.game.status === "draw" ? "=" : "★"}</div>
@@ -365,7 +393,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                       ? "แอดมินจบเกมนี้แล้ว"
                       : isTicTacToeView(room.game) && room.game.status === "draw"
                       ? "เสมอกัน!"
-                      : (isTicTacToeView(room.game) ? room.game.winner : room.game.winner_id) === profile.playerId
+                      : didWin
                         ? "คุณชนะ!"
                         : "เกมสนุกมาก ไว้เล่นกันใหม่!"}
                   </h2>

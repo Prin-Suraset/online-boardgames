@@ -10,6 +10,7 @@ import type {
   RoomState,
   ServerEnvelope,
   TicTacToeView,
+  Top100View,
   YouOrMePlayerView,
   YouOrMeView,
   WhatNumberPlayerView,
@@ -170,6 +171,53 @@ function isYouOrMeView(value: unknown): value is YouOrMeView {
   );
 }
 
+function isNumberRecord(value: unknown): value is Record<string, number> {
+  return isRecord(value) && Object.values(value).every((score) => typeof score === "number");
+}
+
+function isTop100View(value: unknown): value is Top100View {
+  if (!isRecord(value)) return false;
+  const isPlaying = value.status === "PLAYING";
+  if (!isPlaying && value.status !== "FINISHED") return false;
+  return (
+    typeof value.topic_title === "string" &&
+    typeof value.is_my_turn === "boolean" &&
+    isNullableString(value.turn_player_id) &&
+    typeof value.turn_timer === "number" &&
+    typeof value.round_number === "number" &&
+    typeof value.my_score === "number" &&
+    (value.other_player_scores === null || isNumberRecord(value.other_player_scores)) &&
+    Array.isArray(value.revealed_chronological_items) &&
+    value.revealed_chronological_items.every((item) => (
+      isRecord(item) && typeof item.name === "string" &&
+      (item.rank === null || typeof item.rank === "number") &&
+      (item.points === null || typeof item.points === "number") &&
+      typeof item.is_mine === "boolean" && isNullableString(item.by) &&
+      (!isPlaying || item.is_mine || (item.rank === null && item.points === null))
+    )) &&
+    (value.winner_ids === null ||
+      (Array.isArray(value.winner_ids) && value.winner_ids.every((id) => typeof id === "string"))) &&
+    (value.final_rankings === null ||
+      (Array.isArray(value.final_rankings) && value.final_rankings.every((ranking) => (
+        isRecord(ranking) && typeof ranking.position === "number" &&
+        typeof ranking.player_id === "string" && typeof ranking.player_name === "string" &&
+        typeof ranking.score === "number"
+      )))) &&
+    (value.answer_sheet === null ||
+      (Array.isArray(value.answer_sheet) && value.answer_sheet.length === 100 &&
+        value.answer_sheet.every((answer) => (
+          isRecord(answer) && typeof answer.rank === "number" &&
+          typeof answer.name === "string" && Array.isArray(answer.aliases) &&
+          answer.aliases.every((alias) => typeof alias === "string")
+        )))) &&
+    (isPlaying
+      ? value.other_player_scores === null && value.winner_ids === null &&
+        value.final_rankings === null && value.answer_sheet === null
+      : isNumberRecord(value.other_player_scores) && Array.isArray(value.winner_ids) &&
+        Array.isArray(value.final_rankings) && Array.isArray(value.answer_sheet))
+  );
+}
+
 function isTicTacToeView(value: unknown): value is TicTacToeView {
   return (
     isRecord(value) &&
@@ -237,7 +285,7 @@ function isRoomState(value: unknown): value is RoomState {
   return (
     isRecord(value) &&
     typeof value.room_code === "string" &&
-    (value.game_type === "tictactoe" || value.game_type === "what_number" || value.game_type === "you_or_me") &&
+    (value.game_type === "tictactoe" || value.game_type === "what_number" || value.game_type === "you_or_me" || value.game_type === "top100") &&
     (value.status === "LOBBY" || value.status === "PLAYING" || value.status === "FINISHED") &&
     typeof value.host_id === "string" &&
     Array.isArray(value.players) &&
@@ -247,7 +295,9 @@ function isRoomState(value: unknown): value is RoomState {
         ? isTicTacToeView(value.game)
         : value.game_type === "what_number"
           ? isWhatNumberView(value.game)
-          : isYouOrMeView(value.game))) &&
+          : value.game_type === "you_or_me"
+            ? isYouOrMeView(value.game)
+            : isTop100View(value.game))) &&
     (value.result === null || isGameOverResult(value.result))
   );
 }

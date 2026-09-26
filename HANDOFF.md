@@ -1,10 +1,13 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Reskin the platform to the 7K Atlas dark fantasy palette while preserving responsive layouts.
-* **State**: Ready for Test (frontend build passes; local browser viewport checks remain pending)
+* **Active Task**: Top 1-100 by ChatGPT backend implementation (frontend integration is a separate next step).
+* **State**: Ready for Test (focused and full backend suites pass)
 
 ## 2. Completed in this Session
+* [x] Implemented the deterministic Top100 engine with seeded topic selection, 10 rounds, 30-second turns, alias matching, chronological claims, hidden scoring, final rankings, and player-specific views; committed as `721530e` (`feat(backend): implement Top 1-100 by ChatGPT engine, starter data, and tests`).
+* [x] Added complete 100-item `anime_characters` and `thai_food` starter topics with aliases, registered `top100` for 2–8 players in the existing room manager, added bot guesses and server-controlled timeout advancement.
+* [x] Verified `pytest -v backend/tests/test_top100.py` (8 passed), full backend suite (54 passed), JSON topic validation, Python compilation, and `git diff --check` using `/tmp/top100-venv`.
 * [x] Reskinned the global color system, navbar, hub, catalog, modals, room header, game rails, and player pods with midnight charcoal, dark slate, metallic gold, and status pill badges. Kept the emerald felt and existing layout classes.
 * [x] Confirmed the position, size, padding, flex, grid, overflow, and transform utility tokens in both game board components are unchanged from `HEAD`.
 * [x] Verified `cd frontend && npm run build` (0 TypeScript or compilation errors) and `git diff --check`; committed the theme as `2bf4895` (`style(theme): reskin platform to 7K Atlas dark fantasy gaming aesthetic while preserving responsive layouts`) in `/tmp/TheBoardGame-7k-theme/.git` because the workspace `.git` index is read-only.
@@ -95,6 +98,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] In a separate frontend step, register `top100` in the catalog and TypeScript/WebSocket contracts, then build the chronological board and finish reveal UI. The current frontend does not parse or display this game type.
+* [ ] If resuming the broader original master task, add the `video_games` and `world_movies` 100-item topic lists and verify their aliases and rankings before release.
 * [ ] Sync theme commit `2bf4895` and the handoff commit from `/tmp/TheBoardGame-7k-theme/.git` into writable repository Git metadata before pushing or deploying.
 * [ ] On a reachable build, verify the midnight/gold/slate theme and check desktop, tablet, and mobile viewports for board and hub overlaps. Local Vite cannot bind and direct browser access to the built file is blocked.
 * [ ] Sync commit `61e225c` and this handoff update from `/tmp/TheBoardGame-routing-git/.git` into writable repository Git metadata, then deploy.
@@ -113,9 +118,10 @@
 * [ ] Perform a browser smoke test at desktop and tablet/mobile sizes, including table/hand viewport fit and chat send/receive between players.
 * [ ] Perform the requested live tablet landscape smoke test at 1024x768 and 1280x800 when a reachable local/deployed game session is available; the local Vite server is currently blocked by sandbox `listen EPERM` on `127.0.0.1:5173`.
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
-* [ ] Install backend requirements and run `pytest -v backend/tests/test_you_or_me.py`; this workspace currently has no `pytest` executable or installed `pydantic` package.
 
 ## 4. Known Issues & Notes
+* Backend dependencies were installed in `/tmp/top100-venv` for this session; the repository has no checked-in virtual environment. Run the focused tests with `PATH=/tmp/top100-venv/bin:$PATH pytest -v backend/tests/test_top100.py` while that temporary environment exists.
+* This backend-only step exposes `top100` through the API, but the existing frontend game-type parser does not recognize it yet. The server owns turn deadlines in its current in-memory room process.
 * For the 7K Atlas theme, `npm run lint` reports two pre-existing errors in the unchanged reload guard at `frontend/src/pages/room.tsx:131` and `:135`, plus the existing Fast Refresh warning in `YouOrMeCard.tsx:14`. The requested production build passes.
 * Local `npm run dev -- --host 127.0.0.1` fails with `listen EPERM` inside and outside the sandbox. The browser URL policy blocks `file://` access to `frontend/dist/index.html`, so local visual viewport checks could not run.
 * The workspace `.git` index remains read-only even with escalation; the 7K Atlas theme commit is stored in writable temporary Git metadata at `/tmp/TheBoardGame-7k-theme/.git`.

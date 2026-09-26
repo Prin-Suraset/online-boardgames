@@ -274,6 +274,15 @@ export function Top100Board({
                 <button type="submit" disabled={!canGuess || inputText.trim() === ""} className="primary-button min-h-12 justify-center px-5 disabled:cursor-not-allowed disabled:opacity-40">
                   <Send className="size-4" /> ส่งคำตอบ (Submit)
                 </button>
+                <button
+                  type="button"
+                  disabled={!canGuess}
+                  onClick={() => { sendAction("PASS_TURN", {}); setInputText(""); }}
+                  className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm font-semibold text-slate-300 transition-all hover:border-slate-500 hover:bg-slate-700/80 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <span aria-hidden="true">⏭️</span>
+                  <span>ผ่านเทิร์น</span>
+                </button>
               </div>
             </form>
             <div className="self-start rounded-2xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm font-black text-amber-100 lg:self-end" aria-label="คะแนนส่วนตัว">

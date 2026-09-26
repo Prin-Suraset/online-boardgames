@@ -1,10 +1,14 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Top 1-100 by ChatGPT five-tier Thai and English answer matching.
-* **State**: Ready for test (focused and full backend suites pass)
+* **Active Task**: Top 1-100 by ChatGPT voluntary pass turn.
+* **State**: Ready for test (backend suites and frontend build pass)
 
 ## 2. Completed in this Session
+* [x] Added `PASS_TURN` to the deterministic Top100 engine. A pass records `{player_id, action: "PASS", round}` in private turn history, awards no points, and advances through round 10 using the existing turn order and finish logic.
+* [x] Added room handling and a `TURN_PASSED` `GAME_EVENT` carrying `player_id` and `player_name`; the pass produces no guess-result event and bot follow-up remains automatic.
+* [x] Added the active-turn “ผ่านเทิร์น” button beside Submit and a pass announcement for all players. The button stays disabled outside the local player's active playable turn.
+* [x] Verified `pytest -v backend/tests/test_top100.py` (25 passed), full backend suite (71 passed), `cd frontend && npm run build` (0 errors), and `git diff --check`. Feature committed as `e68f8a8` (`feat(top100): add voluntary pass turn action and room event`) in `/tmp/TheBoardGame-pass-turn-git.git` because the workspace `.git` index remains read-only.
 * [x] Added `clean_base_string()`, `normalize_thai_phonetics()`, and `is_answer_match()` with direct, Thai phonetic, acronym, substring, and fuzzy matching. The engine resolves matches across all 100 entries by tier, so an exact answer takes precedence and ambiguous partial guesses do not claim a rank.
 * [x] Kept room feedback aligned with engine resolution: duplicate guesses report already claimed only when the shared resolver identifies the previously claimed item. Thai/English cross-script matching uses the topic bank's bilingual aliases.
 * [x] Added regression tests for garun, tone marks, colloquial spellings, acronyms, substring and fuzzy guesses, exact-match precedence, ambiguity, and scoring. Verified 22/22 focused tests, 68/68 backend tests, `git diff --check`, and all 1,000 canonical answers plus their aliases resolving to their own ranks.
@@ -114,6 +118,7 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] Sync pass-turn commit `e68f8a8` and this handoff update from `/tmp/TheBoardGame-pass-turn-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync five-tier commit `0a9ac7f` and this handoff update from `/tmp/TheBoardGame-five-tier-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync normalization commit `6c700e8` and this handoff update from `/tmp/TheBoardGame-normalization-git.git` into writable repository Git metadata before pushing.
 * [ ] Browser-check the roulette pacing, feedback queue, and reveal on desktop/mobile against a reachable frontend and backend.
@@ -138,6 +143,7 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
+* `TURN_PASSED` adds optional `player_id` and `player_name` fields to the shared event contract; existing `actor_id` and `actor_name` remain populated for compatibility. Turn history remains server-side and is not added to the player view.
 * The five-tier matcher does not generate arbitrary English-to-Thai transliterations; the shipped topic aliases provide cross-script equivalents. Unrecognized partial or ambiguous guesses receive 0 points.
 * The case/punctuation change is backend-only; the frontend contract and UI did not change. The ten-topic bank validates with the new normalization and has no normalized answer or alias collisions.
 * The current ten-topic request supersedes the older four-topic master list in this handoff; `video_games` and `world_movies` are not part of the new ten-topic bank.

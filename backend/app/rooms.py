@@ -320,15 +320,18 @@ class RoomManager:
             self._record_you_or_me_transition(room, previous_state, room.game_state)
             self._run_bot_actions(room)
         elif isinstance(room.game_state, Top100State):
-            if action_type != "SUBMIT_GUESS":
-                raise RoomError("INVALID_ACTION", "Only a guess can be submitted.")
+            if action_type not in {"SUBMIT_GUESS", "PASS_TURN"}:
+                raise RoomError("INVALID_ACTION", "Only a guess or pass can be submitted.")
             if room.turn_deadline is not None and time.monotonic() >= room.turn_deadline:
                 raise RoomError("TURN_EXPIRED", "This turn has expired.")
             action = Top100Action.model_validate({"action_type": action_type, **payload})
             previous_state = room.game_state
             room.game_state = Top100Engine.apply_action(previous_state, player_id, action)
             self._log_action(room, action_type, actor_id=player_id, value=action.guess)
-            self._record_top100_guess(room, player_id, action.guess, previous_state, room.game_state)
+            if action.action_type == "PASS_TURN":
+                self._emit_event(room, "TURN_PASSED", actor_id=player_id)
+            else:
+                self._record_top100_guess(room, player_id, action.guess, previous_state, room.game_state)
             self._run_bot_actions(room)
             self._reset_top100_deadline(room)
         else:
@@ -716,7 +719,7 @@ class RoomManager:
             "GUESS_WRONG", "TURN_END", "TURN_START", "SKILL_USED",
             "CENTER_CARD_REVEALED", "CENTER_REVEALED_FROM_GUESS",
             "GUESS_HELD_BY_ANOTHER", "ROUND_RESULT",
-            "TOP100_GUESS_RESULT",
+            "TOP100_GUESS_RESULT", "TURN_PASSED",
         ],
         *,
         actor_id: str | None = None,
@@ -730,6 +733,8 @@ class RoomManager:
             event_type=event_type,
             actor_id=actor_id,
             actor_name=actor.name if actor is not None else None,
+            player_id=actor_id if event_type == "TURN_PASSED" else None,
+            player_name=actor.name if actor is not None and event_type == "TURN_PASSED" else None,
             target_id=target_id,
             target_name=target.name if target is not None else None,
             value=value,

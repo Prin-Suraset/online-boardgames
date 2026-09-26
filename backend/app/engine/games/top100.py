@@ -57,6 +57,14 @@ class FinalRanking(BaseModel):
     score: int
 
 
+class Top100TurnEntry(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
+
+    player_id: str
+    action: Literal["PASS"]
+    round: int = Field(ge=1, le=10)
+
+
 class Top100State(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
 
@@ -69,6 +77,7 @@ class Top100State(BaseModel):
     guessed_items: tuple[GuessedItem, ...]
     player_scores: dict[str, int]
     status: Literal["PLAYING", "FINISHED"]
+    turn_history: tuple[Top100TurnEntry, ...] = ()
     winner_ids: tuple[str, ...] = ()
     final_rankings: tuple[FinalRanking, ...] = ()
 
@@ -76,7 +85,7 @@ class Top100State(BaseModel):
 class Top100Action(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
 
-    action_type: Literal["SUBMIT_GUESS", "TURN_TIMEOUT"]
+    action_type: Literal["SUBMIT_GUESS", "PASS_TURN", "TURN_TIMEOUT"]
     guess: str | None = Field(default=None, max_length=200)
 
 
@@ -273,10 +282,11 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
             if action.guess is None or not normalize_string(action.guess):
                 raise GameRuleError(MoveErrorCode.INVALID_ACTION, "a non-empty guess is required")
         elif action.guess is not None:
-            raise GameRuleError(MoveErrorCode.INVALID_ACTION, "timeout does not accept a guess")
+            raise GameRuleError(MoveErrorCode.INVALID_ACTION, "this action does not accept a guess")
 
         guesses = state.guessed_items
         scores = dict(state.player_scores)
+        history = state.turn_history
         if action.action_type == "SUBMIT_GUESS" and action.guess is not None:
             item = find_matching_item(state.topic, action.guess)
             if item is not None and all(prior.rank != item.rank for prior in guesses):
@@ -285,6 +295,8 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
                     rank=item.rank, name=item.name, by_id=player_id,
                     by_name=state.player_names[player_id],
                 ),)
+        elif action.action_type == "PASS_TURN":
+            history += (Top100TurnEntry(player_id=player_id, action="PASS", round=state.round_number),)
 
         index = state.player_ids.index(player_id)
         last_turn = state.round_number == cls.TOTAL_ROUNDS and index == len(state.player_ids) - 1
@@ -298,13 +310,14 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
                 ) for pid in ordered
             )
             return state.model_copy(update={
-                "guessed_items": guesses, "player_scores": scores, "status": "FINISHED",
+                "guessed_items": guesses, "player_scores": scores, "turn_history": history,
+                "status": "FINISHED",
                 "turn_player_id": None,
                 "winner_ids": tuple(pid for pid in state.player_ids if scores[pid] == highest),
                 "final_rankings": rankings,
             })
         return state.model_copy(update={
-            "guessed_items": guesses, "player_scores": scores,
+            "guessed_items": guesses, "player_scores": scores, "turn_history": history,
             "round_number": state.round_number + (1 if index == len(state.player_ids) - 1 else 0),
             "turn_player_id": state.player_ids[(index + 1) % len(state.player_ids)],
         })

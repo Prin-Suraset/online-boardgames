@@ -26,6 +26,7 @@ GameEventType = Literal[
     "GUESS_HELD_BY_ANOTHER",
     "ROUND_RESULT",
     "TOP100_GUESS_RESULT",
+    "TURN_PASSED",
 ]
 
 
@@ -122,6 +123,8 @@ class GameEventData(StrictModel):
     event_type: GameEventType
     actor_id: str | None = None
     actor_name: str | None = None
+    player_id: str | None = None
+    player_name: str | None = None
     target_id: str | None = None
     target_name: str | None = None
     value: JsonValue = None

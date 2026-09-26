@@ -185,12 +185,15 @@ export type GameEventType =
   | "CENTER_REVEALED_FROM_GUESS"
   | "GUESS_HELD_BY_ANOTHER"
   | "ROUND_RESULT"
-  | "TOP100_GUESS_RESULT";
+  | "TOP100_GUESS_RESULT"
+  | "TURN_PASSED";
 
 export interface GameEvent {
   event_type: GameEventType;
   actor_id: string | null;
   actor_name: string | null;
+  player_id?: string | null;
+  player_name?: string | null;
   target_id: string | null;
   target_name: string | null;
   value: unknown;

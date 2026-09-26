@@ -270,12 +270,15 @@ function isGameEvent(value: unknown): value is GameEvent {
     "GUESS_HELD_BY_ANOTHER",
     "ROUND_RESULT",
     "TOP100_GUESS_RESULT",
+    "TURN_PASSED",
   ];
   return (
     isRecord(value) &&
     eventTypes.includes(typeof value.event_type === "string" ? value.event_type : "") &&
     isNullableString(value.actor_id) &&
     isNullableString(value.actor_name) &&
+    (value.player_id === undefined || isNullableString(value.player_id)) &&
+    (value.player_name === undefined || isNullableString(value.player_name)) &&
     isNullableString(value.target_id) &&
     isNullableString(value.target_name) &&
     (value.is_correct === null || typeof value.is_correct === "boolean")

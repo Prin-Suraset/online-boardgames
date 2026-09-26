@@ -143,6 +143,10 @@ function eventMessage(event: GameEvent, currentPlayerId: string): string {
       return "รู้ผลรอบนี้แล้ว!";
     case "TOP100_GUESS_RESULT":
       return "";
+    case "TURN_PASSED":
+      return event.player_id === currentPlayerId
+        ? "คุณผ่านเทิร์นแล้ว"
+        : `${eventDisplayName(event.player_name ?? event.actor_name, "ผู้เล่น")} ผ่านเทิร์นแล้ว`;
   }
 }
 
@@ -172,6 +176,8 @@ function eventIcon(event: GameEvent): string {
       return "🏆";
     case "TOP100_GUESS_RESULT":
       return "";
+    case "TURN_PASSED":
+      return "⏭️";
   }
 }
 

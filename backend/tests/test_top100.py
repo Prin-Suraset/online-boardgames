@@ -250,6 +250,72 @@ def test_10_rounds_completion() -> None:
     assert game_over.value.code == MoveErrorCode.GAME_OVER
 
 
+def test_pass_turn() -> None:
+    state = start()
+    passed = Top100Engine.apply_action(state, "p1", Top100Action(action_type="PASS_TURN"))
+    assert passed.player_scores == {"p1": 0, "p2": 0}
+    assert passed.guessed_items == ()
+    assert passed.turn_player_id == "p2"
+    assert passed.round_number == 1
+    assert [entry.model_dump() for entry in passed.turn_history] == [
+        {"player_id": "p1", "action": "PASS", "round": 1}
+    ]
+    assert state.turn_history == ()
+
+    passed = Top100Engine.apply_action(passed, "p2", Top100Action(action_type="PASS_TURN"))
+    assert passed.turn_player_id == "p1"
+    assert passed.round_number == 2
+    for _ in range(18):
+        assert passed.turn_player_id is not None
+        passed = Top100Engine.apply_action(
+            passed, passed.turn_player_id, Top100Action(action_type="PASS_TURN")
+        )
+    assert passed.status == "FINISHED"
+    assert passed.round_number == 10
+    assert len(passed.turn_history) == 20
+    assert passed.turn_history[-1].model_dump() == {"player_id": "p2", "action": "PASS", "round": 10}
+    assert passed.player_scores == {"p1": 0, "p2": 0}
+    assert passed.winner_ids == PLAYERS
+    with pytest.raises(GameRuleError) as game_over:
+        Top100Engine.apply_action(passed, "p1", Top100Action(action_type="PASS_TURN"))
+    assert game_over.value.code == MoveErrorCode.GAME_OVER
+
+
+def test_pass_turn_rejects_wrong_player_and_payload() -> None:
+    state = start()
+    with pytest.raises(GameRuleError) as wrong_turn:
+        Top100Engine.apply_action(state, "p2", Top100Action(action_type="PASS_TURN"))
+    assert wrong_turn.value.code == MoveErrorCode.NOT_YOUR_TURN
+    with pytest.raises(GameRuleError) as unexpected_guess:
+        Top100Engine.apply_action(
+            state, "p1", Top100Action(action_type="PASS_TURN", guess="ผัดไทย")
+        )
+    assert unexpected_guess.value.code == MoveErrorCode.INVALID_ACTION
+    assert state.turn_history == ()
+
+
+def test_room_pass_event_and_bot_followup() -> None:
+    rooms = RoomManager()
+    room = rooms.create_room(PlayerInput(id="p1", name="Human", avatar="H"), "top100")
+    rooms.add_test_bots(room.code, "p1", 1)
+    rooms.toggle_ready(room.code, "p1", True)
+    rooms.start_game(room.code, "p1")
+    assert isinstance(room.game_state, Top100State)
+    rooms.apply_game_action(room.code, "p1", "PASS_TURN", {})
+    assert isinstance(room.game_state, Top100State)
+    assert room.game_state.turn_player_id == "p1"
+    assert room.game_state.round_number == 2  # bot took its turn immediately
+    assert room.game_state.player_scores["p1"] == 0
+    assert room.game_state.turn_history[0].model_dump() == {"player_id": "p1", "action": "PASS", "round": 1}
+    events = rooms.take_pending_events(room.code)
+    assert events[0].event_type == "TURN_PASSED"
+    assert events[0].player_id == "p1"
+    assert events[0].player_name == "Human"
+    assert events[0].actor_id == "p1"
+    assert len(events) == 2
+    assert events[1].event_type == "TOP100_GUESS_RESULT"  # bot's subsequent guess
+
+
 def test_tied_final_rankings() -> None:
     state = start()
     for _ in range(20):

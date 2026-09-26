@@ -11,8 +11,11 @@ from app.engine.games.top100 import (
     Top100Action,
     Top100Engine,
     Top100State,
+    clean_base_string,
+    is_answer_match,
     load_topic_bank,
     normalize_string,
+    normalize_thai_phonetics,
 )
 from app.rooms import RoomManager
 from app.schemas import PlayerInput
@@ -53,6 +56,52 @@ def test_punctuation_tolerant_scoring_and_duplicate_claim() -> None:
     state = guess(state, "monkey.d.luffy")
     assert state.player_scores == {"p1": 100, "p2": 0}
     assert [item.rank for item in state.guessed_items] == [1]
+
+
+def test_five_matching_tiers_and_thai_phonetics() -> None:
+    assert clean_base_string('  Grand-Theft_Auto (GTA)!  ') == "grand theft auto gta"
+    assert normalize_thai_phonetics("แมคโดนัลด์") == normalize_thai_phonetics("แมคโดนัล")
+    assert normalize_thai_phonetics("ผัดกระเพรา") == normalize_thai_phonetics("ผัดกะเพรา")
+    assert normalize_thai_phonetics("ผัดไท") == normalize_thai_phonetics("ผัดไทย")
+    assert normalize_thai_phonetics("ช็อคโกแลต") == normalize_thai_phonetics("ช็อกโกแลต")
+    assert normalize_thai_phonetics("แอพ") == normalize_thai_phonetics("แอป")
+    assert normalize_thai_phonetics("พี่มาก") == normalize_thai_phonetics("พีมาก")
+    assert is_answer_match("PAD-THAI", "Pad Thai", [])  # clean
+    assert is_answer_match("แมคโดนัล", "McDonald's", ["แมคโดนัลด์"])  # Thai alias
+    assert is_answer_match("GTA", "Grand Theft Auto V", [])  # acronym
+    assert is_answer_match("GTA", "Grand Theft Auto (GTA)", [])  # parenthesized acronym
+    assert is_answer_match("Cola", "Coca-Cola", [])  # substring
+    assert is_answer_match("Minecraf", "Minecraft", [])  # fuzzy
+    assert is_answer_match("เฟสบุ๊ก", "Facebook", ["เฟซบุ๊ก"])
+    assert not is_answer_match("", "Minecraft", [])
+    assert not is_answer_match("", "Minecraft", None)
+    assert not is_answer_match("wrong answer", "Minecraft", [])
+
+
+@pytest.mark.parametrize(("topic_id", "answer"), [
+    ("thai_food", "ผัดไท"),
+    ("thai_games", "GTA"),
+    ("thai_games", "Minecraf"),
+    ("global_brands", "แมคโดนัล"),
+    ("global_brands", "Coca"),
+])
+def test_matching_tiers_award_points_in_game(topic_id: str, answer: str) -> None:
+    topic = next(topic for topic in load_topic_bank() if topic.id == topic_id)
+    state = guess(Top100Engine.create_state(PLAYERS, NAMES, topic), answer)
+    assert len(state.guessed_items) == 1
+    assert state.player_scores["p1"] == 101 - state.guessed_items[0].rank
+
+
+def test_exact_answer_precedes_partial_match_and_ambiguous_guess_is_miss() -> None:
+    topic = next(topic for topic in load_topic_bank() if topic.id == "thai_movies")
+    exact = next(item for item in topic.items if item.name == "ไทบ้านเดอะซีรีส์ 2.1")
+    state = Top100Engine.create_state(PLAYERS, NAMES, topic)
+    state = guess(state, exact.name)
+    assert [item.rank for item in state.guessed_items] == [exact.rank]
+    assert state.player_scores["p1"] == 101 - exact.rank
+    state = guess(state, "ไทบ้าน")
+    assert [item.rank for item in state.guessed_items] == [exact.rank]
+    assert state.player_scores["p2"] == 0
 
 
 def test_topic_bank_and_seeded_selection() -> None:

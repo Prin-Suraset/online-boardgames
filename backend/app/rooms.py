@@ -13,7 +13,7 @@ from uuid import uuid4
 from pydantic import JsonValue
 
 from app.engine.games.tictactoe import TicTacToeGame, TicTacToeMove, TicTacToeState, TicTacToeView
-from app.engine.games.top100 import Top100Action, Top100Engine, Top100State, Top100View, normalize_string
+from app.engine.games.top100 import Top100Action, Top100Engine, Top100State, Top100View, find_matching_item
 from app.engine.games.what_number import (
     WhatNumberAction,
     WhatNumberEngine,
@@ -381,13 +381,9 @@ class RoomManager:
             outcome = "CORRECT"
             public_index: int | None = claim_index
         else:
-            normalized = normalize_string(guess or "")
             claimed_ranks = {item.rank for item in before.guessed_items}
-            already_claimed = any(
-                item.rank in claimed_ranks
-                and normalized in (normalize_string(value) for value in (item.name, *item.aliases))
-                for item in before.topic.items
-            )
+            matched = find_matching_item(before.topic, guess or "")
+            already_claimed = matched is not None and matched.rank in claimed_ranks
             outcome = "ALREADY_CLAIMED" if already_claimed else "MISS"
             public_index = None
         self._emit_event(

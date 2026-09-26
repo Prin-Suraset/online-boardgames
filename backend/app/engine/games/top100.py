@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+import difflib
 import random
 import re
 from functools import lru_cache
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Sequence
 
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, model_validator
 
@@ -106,16 +107,113 @@ class Top100View(BaseModel):
     answer_sheet: tuple[TopicItem, ...] | None
 
 
-def normalize_string(text: str) -> str:
-    """Use one comparison form for guesses, answer names, and aliases."""
+def clean_base_string(text: str) -> str:
+    """Lowercase and collapse punctuation into spaces."""
     if not text:
         return ""
-    normalized = text.strip().lower()
-    return re.sub(r"""[\s\-_.:'"!?,/]+""", " ", normalized).strip()
+    return re.sub(r"""[\s\-_.:'!?,/"()\[\]]+""", " ", text.strip().lower()).strip()
+
+
+def normalize_thai_phonetics(text: str) -> str:
+    """Fold common Thai spelling variants, silent consonants, and tone marks."""
+    if not text:
+        return ""
+    normalized = clean_base_string(text)
+    normalized = re.sub(r"[\u0E01-\u0E2E]\u0E4C", "", normalized)
+    normalized = normalized.replace("\u0E4C", "")
+    normalized = normalized.replace("กระเพรา", "กะเพรา")
+    normalized = re.sub(r"ผัดไท(?!ย)", "ผัดไทย", normalized)
+    normalized = normalized.replace("แอพ", "แอป")
+    normalized = normalized.replace("ซ", "ส")
+    normalized = normalized.replace("ช็อค", "ช็อก")
+    normalized = normalized.replace("บุ๊ค", "บุ๊ก")
+    return re.sub(r"[\u0E48-\u0E4B\u0E47]", "", normalized)
+
+
+def normalize_string(text: str) -> str:
+    """Preserve the original clean-matching helper for existing callers."""
+    return clean_base_string(text)
 
 
 # Keep the existing helper name available to room adapters and callers.
 normalize = normalize_string
+
+
+def _acronyms(candidate: str) -> set[str]:
+    words = re.findall(r"[a-z]+", clean_base_string(candidate))
+    if len(words) < 2:
+        return set()
+    initials = "".join(word[0] for word in words)
+    forms = {initials} if len(initials) >= 3 else set()
+    if words[-1] in {"i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"}:
+        if len(initials) > 3:
+            forms.add(initials[:-1])
+        if len(words) == 2 and len(words[0]) >= 3:
+            forms.add(words[0])
+    forms.update(match.lower() for match in re.findall(r"\(([A-Za-z]{3,8})\)", candidate))
+    return forms
+
+
+def _match_quality(guess: str, candidate: str) -> tuple[int, float] | None:
+    g_base = clean_base_string(guess)
+    c_base = clean_base_string(candidate)
+    if not g_base or not c_base:
+        return None
+    g_compact = g_base.replace(" ", "")
+    c_compact = c_base.replace(" ", "")
+    g_thai_compact = normalize_thai_phonetics(guess).replace(" ", "")
+    c_thai_compact = normalize_thai_phonetics(candidate).replace(" ", "")
+
+    # Earlier tiers always win over later, approximate matches.
+    if g_base == c_base or g_compact == c_compact:
+        return (1, 1.0)
+    if g_thai_compact == c_thai_compact:
+        return (2, 1.0)
+    if g_compact in _acronyms(candidate):
+        return (3, 1.0)
+    if len(g_compact) >= 3 and len(c_compact) >= 3:
+        if len(g_compact) >= 4 and g_compact in c_compact:
+            return (4, len(g_compact) / len(c_compact))
+        if len(g_thai_compact) >= 4 and (
+            g_thai_compact in c_thai_compact or c_thai_compact in g_thai_compact
+        ):
+            return (4, min(len(g_thai_compact), len(c_thai_compact)) / max(len(g_thai_compact), len(c_thai_compact)))
+    ratio = max(
+        difflib.SequenceMatcher(None, g_compact, c_compact).ratio(),
+        difflib.SequenceMatcher(None, g_thai_compact, c_thai_compact).ratio(),
+    )
+    return (5, ratio) if ratio >= 0.82 else None
+
+
+def is_answer_match(guess: str, target: str, aliases: Sequence[str] | None) -> bool:
+    """Check a target and its aliases through all five matching tiers."""
+    if not guess or not target:
+        return False
+    return any(_match_quality(guess, candidate) is not None for candidate in (target, *(aliases or ())))
+
+
+def find_matching_item(topic: Top100Topic, guess: str) -> TopicItem | None:
+    """Resolve the strongest unique answer across the entire topic."""
+    matches: list[tuple[int, float, TopicItem]] = []
+    for item in topic.items:
+        qualities = (
+            quality for candidate in (item.name, *item.aliases)
+            if (quality := _match_quality(guess, candidate)) is not None
+        )
+        best = min(qualities, key=lambda quality: (quality[0], -quality[1]), default=None)
+        if best is not None:
+            matches.append((best[0], best[1], item))
+    if not matches:
+        return None
+    best_tier = min(tier for tier, _, _ in matches)
+    tier_matches = [(score, item) for tier, score, item in matches if tier == best_tier]
+    if len(tier_matches) == 1:
+        return tier_matches[0][1]
+    if best_tier == 5:
+        tier_matches.sort(key=lambda pair: -pair[0])
+        if tier_matches[0][0] - tier_matches[1][0] >= 0.03:
+            return tier_matches[0][1]
+    return None
 
 
 @lru_cache(maxsize=1)
@@ -180,12 +278,7 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
         guesses = state.guessed_items
         scores = dict(state.player_scores)
         if action.action_type == "SUBMIT_GUESS" and action.guess is not None:
-            guess = normalize_string(action.guess)
-            item = next(
-                (item for item in state.topic.items
-                 if guess in (normalize_string(value) for value in (item.name, *item.aliases))),
-                None,
-            )
+            item = find_matching_item(state.topic, action.guess)
             if item is not None and all(prior.rank != item.rank for prior in guesses):
                 scores[player_id] += 101 - item.rank
                 guesses += (GuessedItem(

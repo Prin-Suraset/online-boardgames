@@ -62,7 +62,6 @@ export function Top100Board({
     ? 0
     : clock.key === turnKey ? clock.seconds : game.turn_timer;
   const timerProgress = Math.max(0, Math.min(100, secondsRemaining / 30 * 100));
-  const activePlayer = players.find((player) => player.id === game.turn_player_id);
   const canGuess = game.status === "PLAYING" && game.is_my_turn && secondsRemaining > 0 && roulette.phase === "done";
   const revealOpen = game.status === "FINISHED" && showReveal;
 
@@ -249,12 +248,17 @@ export function Top100Board({
         </div>
 
         <div className="relative z-10 shrink-0 border-t border-amber-300/20 bg-[#0D1422]/95 px-4 py-4 shadow-[0_-15px_45px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-7">
-          <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 lg:flex-row lg:items-end">
-            <form onSubmit={submitGuess} className="min-w-0 flex-1">
-              <label htmlFor="top100-guess" className="mb-2 block text-xs font-bold text-amber-200">
-                {canGuess ? "ถึงตาคุณแล้ว! เลือกคำตอบที่มั่นใจ" : game.status === "FINISHED" ? "จบเกมแล้ว" : `รอ ${activePlayer?.name ?? "ผู้เล่น"} ทายคำตอบ`}
+          <div className="mx-auto w-full max-w-6xl">
+            <div className="mb-1.5 flex w-full flex-wrap items-center justify-between gap-2 px-1 text-xs sm:text-sm">
+              <label htmlFor="top100-guess" className="font-medium text-amber-300">
+                {game.status === "FINISHED" ? "🏁 จบเกมแล้ว" : game.is_my_turn ? "🎯 ถึงตาคุณแล้ว! เลือกคำตอบแม่นๆ 1 ข้อ" : "⏳ รอเทิร์นของคุณ..."}
               </label>
-              <div className="flex flex-col gap-2 sm:flex-row">
+              <span className="whitespace-nowrap rounded-full border border-slate-700 bg-slate-800/90 px-3 py-1 font-bold text-amber-400" aria-label="คะแนนส่วนตัว">
+                🏆 คะแนนของคุณ: {game.my_score} แต้ม
+              </span>
+            </div>
+            <form onSubmit={submitGuess} className="w-full">
+              <div className="flex w-full flex-col gap-2 lg:flex-row">
                 <input
                   id="top100-guess"
                   type="text"
@@ -265,29 +269,28 @@ export function Top100Board({
                   disabled={!canGuess}
                   placeholder={canGuess ? "พิมพ์คำตอบของคุณที่นี่ (มีเวลา 30 วิ)..." : "รอเทิร์นของคุณ..."}
                   className={cn(
-                    "min-w-0 flex-1 rounded-xl px-4 py-3 text-sm outline-none transition sm:text-base",
+                    "w-full min-w-0 flex-1 rounded-xl px-4 py-3 text-sm outline-none transition sm:text-base",
                     canGuess
                       ? "border-2 border-amber-400 bg-slate-900 text-white shadow-[0_0_18px_rgba(229,169,60,0.22)] placeholder:text-slate-400 focus:border-cyan-300"
                       : "cursor-not-allowed border-2 border-slate-800 bg-slate-950/60 text-slate-500 placeholder:text-slate-600",
                   )}
                 />
-                <button type="submit" disabled={!canGuess || inputText.trim() === ""} className="primary-button min-h-12 justify-center px-5 disabled:cursor-not-allowed disabled:opacity-40">
-                  <Send className="size-4" /> ส่งคำตอบ (Submit)
-                </button>
-                <button
-                  type="button"
-                  disabled={!canGuess}
-                  onClick={() => { sendAction("PASS_TURN", {}); setInputText(""); }}
-                  className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm font-semibold text-slate-300 transition-all hover:border-slate-500 hover:bg-slate-700/80 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  <span aria-hidden="true">⏭️</span>
-                  <span>ผ่านเทิร์น</span>
-                </button>
+                <div className="grid w-full grid-cols-2 gap-2 lg:flex lg:w-auto lg:shrink-0">
+                  <button type="submit" disabled={!canGuess || inputText.trim() === ""} className="primary-button min-h-12 justify-center px-3 sm:px-5 disabled:cursor-not-allowed disabled:opacity-40">
+                    <Send className="size-4 shrink-0" /> ส่งคำตอบ <span className="hidden sm:inline">(Submit)</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!canGuess}
+                    onClick={() => { sendAction("PASS_TURN", {}); setInputText(""); }}
+                    className="flex min-h-12 items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-2.5 text-sm font-semibold text-slate-300 transition-all hover:border-slate-500 hover:bg-slate-700/80 hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <span aria-hidden="true">⏭️</span>
+                    <span>ผ่านเทิร์น</span>
+                  </button>
+                </div>
               </div>
             </form>
-            <div className="self-start rounded-2xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm font-black text-amber-100 lg:self-end" aria-label="คะแนนส่วนตัว">
-              คะแนนของคุณ: {game.my_score} แต้ม
-            </div>
           </div>
         </div>
 

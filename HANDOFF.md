@@ -1,10 +1,12 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Top 1-100 by ChatGPT voluntary pass turn.
-* **State**: Ready for test (backend suites and frontend build pass)
+* **Active Task**: Top 1-100 by ChatGPT guess console width and score placement.
+* **State**: Ready for test (frontend build passes)
 
 ## 2. Completed in this Session
+* [x] Moved the turn status and private score into a header above the Top100 guess form. The input now fills its own row on mobile and tablet, with Submit and Pass below it; on desktop, the input takes the remaining width beside the buttons.
+* [x] Verified `cd frontend && npm run build` (0 errors) and `git diff --check`. UI change committed as `0116919` (`fix(top100): expand guess input with separate score header`) in `/tmp/TheBoardGame-top100-input-layout.git` because the workspace `.git` index is read-only.
 * [x] Added `PASS_TURN` to the deterministic Top100 engine. A pass records `{player_id, action: "PASS", round}` in private turn history, awards no points, and advances through round 10 using the existing turn order and finish logic.
 * [x] Added room handling and a `TURN_PASSED` `GAME_EVENT` carrying `player_id` and `player_name`; the pass produces no guess-result event and bot follow-up remains automatic.
 * [x] Added the active-turn “ผ่านเทิร์น” button beside Submit and a pass announcement for all players. The button stays disabled outside the local player's active playable turn.

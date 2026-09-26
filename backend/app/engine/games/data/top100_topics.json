@@ -1,0 +1,1514 @@
+[
+  {
+    "id": "anime_characters",
+    "title": "Top 100 ตัวละครอนิเมะยอดนิยมตลอดกาล",
+    "items": [
+      {
+        "rank": 1,
+        "name": "Monkey D. Luffy",
+        "aliases": [
+          "ลูฟี่",
+          "Luffy"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "Naruto Uzumaki",
+        "aliases": [
+          "นารูโตะ",
+          "Naruto"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "Goku",
+        "aliases": [
+          "โกคู",
+          "Son Goku"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "Levi Ackerman",
+        "aliases": [
+          "รีไว",
+          "Levi"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "Satoru Gojo",
+        "aliases": [
+          "โกโจ",
+          "Gojo"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "Lelouch Lamperouge",
+        "aliases": [
+          "ลูลูช",
+          "Lelouch"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "Light Yagami",
+        "aliases": [
+          "ไลท์ ยางามิ",
+          "Kira"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "Eren Yeager",
+        "aliases": [
+          "เอเรน",
+          "Eren"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "Edward Elric",
+        "aliases": [
+          "เอ็ดเวิร์ด เอลริค",
+          "Edward"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "Ichigo Kurosaki",
+        "aliases": [
+          "อิจิโกะ",
+          "Ichigo"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "Roronoa Zoro",
+        "aliases": [
+          "โซโร",
+          "Zoro"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "L Lawliet",
+        "aliases": [
+          "แอล",
+          "Lawliet"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "Tanjiro Kamado",
+        "aliases": [
+          "ทันจิโร่",
+          "Tanjiro"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "Mikasa Ackerman",
+        "aliases": [
+          "มิคาสะ",
+          "Mikasa"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "Killua Zoldyck",
+        "aliases": [
+          "คิรัว",
+          "Killua"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "Gon Freecss",
+        "aliases": [
+          "กอน",
+          "Gon"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "Sasuke Uchiha",
+        "aliases": [
+          "ซาสึเกะ",
+          "Sasuke"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "Spike Spiegel",
+        "aliases": [
+          "สไปก์ สปีเกล",
+          "Spike"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "Vegeta",
+        "aliases": [
+          "เบจิต้า",
+          "Prince Vegeta"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "Kakashi Hatake",
+        "aliases": [
+          "คาคาชิ",
+          "Kakashi"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "Sailor Moon",
+        "aliases": [
+          "เซเลอร์มูน",
+          "Usagi Tsukino"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "Anya Forger",
+        "aliases": [
+          "อาเนีย",
+          "Anya"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "Jotaro Kujo",
+        "aliases": [
+          "โจทาโร่",
+          "Jotaro"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "Itachi Uchiha",
+        "aliases": [
+          "อิทาจิ",
+          "Itachi"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "Nami",
+        "aliases": [
+          "นามิ",
+          "Cat Burglar Nami"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "Shinji Ikari",
+        "aliases": [
+          "ชินจิ อิคาริ",
+          "Shinji"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "Asuka Langley Soryu",
+        "aliases": [
+          "อาสึกะ",
+          "Asuka"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "Rei Ayanami",
+        "aliases": [
+          "เรย์ อายานามิ",
+          "Rei"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "Ken Kaneki",
+        "aliases": [
+          "คาเนกิ",
+          "Kaneki"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "Saitama",
+        "aliases": [
+          "ไซตามะ",
+          "One Punch Man"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "Shoto Todoroki",
+        "aliases": [
+          "โทโดโรกิ",
+          "Todoroki"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "Izuku Midoriya",
+        "aliases": [
+          "เดกุ",
+          "Deku"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "Katsuki Bakugo",
+        "aliases": [
+          "บาคุโก",
+          "Bakugo"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "All Might",
+        "aliases": [
+          "ออลไมท์",
+          "Toshinori Yagi"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "Nezuko Kamado",
+        "aliases": [
+          "เนซึโกะ",
+          "Nezuko"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "Zenitsu Agatsuma",
+        "aliases": [
+          "เซ็นอิตสึ",
+          "Zenitsu"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "Inosuke Hashibira",
+        "aliases": [
+          "อิโนะสุเกะ",
+          "Inosuke"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "Rengoku Kyojuro",
+        "aliases": [
+          "เร็นโกคุ",
+          "Rengoku"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "Tengen Uzui",
+        "aliases": [
+          "อุซุย เท็นเง็น",
+          "Tengen"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "Shinobu Kocho",
+        "aliases": [
+          "ชิโนบุ",
+          "Shinobu"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "Giyu Tomioka",
+        "aliases": [
+          "กิยู",
+          "Giyu"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "Frieren",
+        "aliases": [
+          "ฟรีเรน",
+          "Sousou no Frieren"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "Fern",
+        "aliases": [
+          "เฟิร์น",
+          "Fern the mage"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "Himmel",
+        "aliases": [
+          "ฮิมเมล",
+          "Himmel the Hero"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "Maomao",
+        "aliases": [
+          "เมาเมา",
+          "The Apothecary Maomao"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "Violet Evergarden",
+        "aliases": [
+          "ไวโอเล็ต เอเวอร์การ์เดน",
+          "Violet"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "Rimuru Tempest",
+        "aliases": [
+          "ริมุรุ",
+          "Rimuru"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "Subaru Natsuki",
+        "aliases": [
+          "สุบารุ",
+          "Subaru"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "Rem",
+        "aliases": [
+          "เรม",
+          "Rem Re Zero"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "Emilia",
+        "aliases": [
+          "เอมิเลีย",
+          "Emilia Re Zero"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "Megumin",
+        "aliases": [
+          "เมกุมิน",
+          "Explosion Megumin"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "Kazuma Satou",
+        "aliases": [
+          "คาซึมะ",
+          "Kazuma"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "Aqua",
+        "aliases": [
+          "อควา",
+          "Aqua Konosuba"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "Yor Forger",
+        "aliases": [
+          "ยอร์",
+          "Thorn Princess"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "Loid Forger",
+        "aliases": [
+          "ลอยด์",
+          "Twilight"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "Denji",
+        "aliases": [
+          "เด็นจิ",
+          "Chainsaw Man Denji"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "Power",
+        "aliases": [
+          "พาวเวอร์",
+          "Power Chainsaw Man"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "Makima",
+        "aliases": [
+          "มากิมะ",
+          "Makima Chainsaw Man"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "Aki Hayakawa",
+        "aliases": [
+          "อากิ",
+          "Aki"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "Yuji Itadori",
+        "aliases": [
+          "ยูจิ",
+          "Itadori"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "Megumi Fushiguro",
+        "aliases": [
+          "เมงุมิ",
+          "Fushiguro"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "Nobara Kugisaki",
+        "aliases": [
+          "โนบาระ",
+          "Nobara"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "Ryomen Sukuna",
+        "aliases": [
+          "สุคุนะ",
+          "Sukuna"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "Yuta Okkotsu",
+        "aliases": [
+          "ยูตะ",
+          "Okkotsu"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "Toji Fushiguro",
+        "aliases": [
+          "โทจิ",
+          "Toji"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "Choso",
+        "aliases": [
+          "โชโซ",
+          "Choso Jujutsu Kaisen"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "Kento Nanami",
+        "aliases": [
+          "นานามิ",
+          "Nanami"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "Joseph Joestar",
+        "aliases": [
+          "โจเซฟ โจสตาร์",
+          "Joseph"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "Giorno Giovanna",
+        "aliases": [
+          "โจรูโน่",
+          "Giorno"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "Dio Brando",
+        "aliases": [
+          "ดิโอ",
+          "DIO"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "Jonathan Joestar",
+        "aliases": [
+          "โจนาธาน โจสตาร์",
+          "Jonathan"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "Josuke Higashikata",
+        "aliases": [
+          "โจสุเกะ",
+          "Josuke"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "Jolyne Cujoh",
+        "aliases": [
+          "โจลีน",
+          "Jolyne"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "Kurapika",
+        "aliases": [
+          "คุราปิก้า",
+          "Kurapika Hunter"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "Hisoka Morow",
+        "aliases": [
+          "ฮิโซกะ",
+          "Hisoka"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "Chrollo Lucilfer",
+        "aliases": [
+          "คุโรโร่",
+          "Chrollo"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "Meruem",
+        "aliases": [
+          "เมอร์เอม",
+          "Meruem Hunter"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "Roy Mustang",
+        "aliases": [
+          "รอย มัสแตง",
+          "Mustang"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "Alphonse Elric",
+        "aliases": [
+          "อัลฟองเซ่",
+          "Alphonse"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "Riza Hawkeye",
+        "aliases": [
+          "ริซ่า ฮอว์คอาย",
+          "Hawkeye"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "Winry Rockbell",
+        "aliases": [
+          "วินรี่",
+          "Winry"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "Erwin Smith",
+        "aliases": [
+          "เออร์วิน",
+          "Erwin"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "Armin Arlert",
+        "aliases": [
+          "อาร์มิน",
+          "Armin"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "Historia Reiss",
+        "aliases": [
+          "ฮิสทอเรีย",
+          "Historia"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "Hange Zoe",
+        "aliases": [
+          "ฮันจิ",
+          "Hange"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "Sasha Blouse",
+        "aliases": [
+          "ซาช่า",
+          "Sasha"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "Might Guy",
+        "aliases": [
+          "ไมโตะ ไก",
+          "Guy Sensei"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "Jiraiya",
+        "aliases": [
+          "จิไรยะ",
+          "Ero Sennin"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "Hinata Hyuga",
+        "aliases": [
+          "ฮินาตะ",
+          "Hinata"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "Sakura Haruno",
+        "aliases": [
+          "ซากุระ",
+          "Sakura"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "Minato Namikaze",
+        "aliases": [
+          "มินาโตะ",
+          "Fourth Hokage"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "Madara Uchiha",
+        "aliases": [
+          "มาดาระ",
+          "Madara"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "Obito Uchiha",
+        "aliases": [
+          "โอบิโตะ",
+          "Obito"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "Gaara",
+        "aliases": [
+          "กาอาระ",
+          "Gaara of the Sand"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "Shikamaru Nara",
+        "aliases": [
+          "ชิกามารุ",
+          "Shikamaru"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "Trafalgar D. Water Law",
+        "aliases": [
+          "ทราฟัลการ์ ลอว์",
+          "Trafalgar Law"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "Sanji",
+        "aliases": [
+          "ซันจิ",
+          "Black Leg Sanji"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "Nico Robin",
+        "aliases": [
+          "โรบิน",
+          "Robin"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "Portgas D. Ace",
+        "aliases": [
+          "เอส",
+          "Fire Fist Ace"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "Shanks",
+        "aliases": [
+          "แชงคูส",
+          "Red-Haired Shanks"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "thai_food",
+    "title": "Top 100 เมนูอาหารไทยยอดนิยม",
+    "items": [
+      {
+        "rank": 1,
+        "name": "ผัดไทย",
+        "aliases": [
+          "Pad Thai"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "ต้มยำกุ้ง",
+        "aliases": [
+          "Tom Yum Goong"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "ส้มตำไทย",
+        "aliases": [
+          "Som Tam Thai"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "แกงเขียวหวานไก่",
+        "aliases": [
+          "Green Chicken Curry"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "ข้าวกะเพราหมูสับ",
+        "aliases": [
+          "Pork Basil Rice"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "ข้าวมันไก่",
+        "aliases": [
+          "Khao Man Gai"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "มัสมั่นเนื้อ",
+        "aliases": [
+          "Beef Massaman Curry"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "ต้มข่าไก่",
+        "aliases": [
+          "Tom Kha Gai"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "ข้าวซอยไก่",
+        "aliases": [
+          "Chicken Khao Soi"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "พะแนงหมู",
+        "aliases": [
+          "Pork Panang Curry"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "ลาบหมู",
+        "aliases": [
+          "Larb Moo"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "แกงส้มชะอมไข่",
+        "aliases": [
+          "Sour Curry with Acacia Omelette"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "หมูสะเต๊ะ",
+        "aliases": [
+          "Pork Satay"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "ไก่ย่าง",
+        "aliases": [
+          "Gai Yang"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "คอหมูย่าง",
+        "aliases": [
+          "Grilled Pork Neck"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "ข้าวเหนียวมะม่วง",
+        "aliases": [
+          "Mango Sticky Rice"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "ยำวุ้นเส้น",
+        "aliases": [
+          "Glass Noodle Salad"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "น้ำตกหมู",
+        "aliases": [
+          "Nam Tok Moo"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "ผัดซีอิ๊วหมู",
+        "aliases": [
+          "Pad See Ew Pork"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "ราดหน้าหมู",
+        "aliases": [
+          "Rad Na Pork"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "ขนมจีนน้ำยา",
+        "aliases": [
+          "Khanom Jeen Nam Ya"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "ข้าวคลุกกะปิ",
+        "aliases": [
+          "Shrimp Paste Rice"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "แกงป่าไก่",
+        "aliases": [
+          "Jungle Curry Chicken"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "แกงเผ็ดเป็ดย่าง",
+        "aliases": [
+          "Roast Duck Red Curry"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "ทอดมันปลา",
+        "aliases": [
+          "Thai Fish Cakes"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "ห่อหมกปลา",
+        "aliases": [
+          "Steamed Fish Curry Custard"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "ปลากะพงนึ่งมะนาว",
+        "aliases": [
+          "Steamed Seabass with Lime"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "ปลาทอดน้ำปลา",
+        "aliases": [
+          "Fish with Fish Sauce"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "กุ้งอบวุ้นเส้น",
+        "aliases": [
+          "Prawns with Glass Noodles"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "ปูผัดผงกะหรี่",
+        "aliases": [
+          "Crab Curry Stir Fry"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "ไข่เจียวหมูสับ",
+        "aliases": [
+          "Pork Omelette"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "ไข่พะโล้",
+        "aliases": [
+          "Five Spice Eggs"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "หมูกรอบ",
+        "aliases": [
+          "Crispy Pork Belly"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "ข้าวหมูแดง",
+        "aliases": [
+          "Red Pork Rice"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "ข้าวหน้าเป็ด",
+        "aliases": [
+          "Roast Duck Rice"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "ข้าวผัดปู",
+        "aliases": [
+          "Crab Fried Rice"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "ข้าวผัดกุ้ง",
+        "aliases": [
+          "Shrimp Fried Rice"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "ข้าวผัดสับปะรด",
+        "aliases": [
+          "Pineapple Fried Rice"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "ข้าวต้มปลา",
+        "aliases": [
+          "Fish Rice Soup"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "โจ๊กหมู",
+        "aliases": [
+          "Pork Congee"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "ก๋วยเตี๋ยวเรือ",
+        "aliases": [
+          "Boat Noodles"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "ก๋วยเตี๋ยวต้มยำ",
+        "aliases": [
+          "Tom Yum Noodles"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "ก๋วยเตี๋ยวคั่วไก่",
+        "aliases": [
+          "Kua Gai Noodles"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "เย็นตาโฟ",
+        "aliases": [
+          "Yen Ta Fo"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "บะหมี่หมูแดง",
+        "aliases": [
+          "BBQ Pork Egg Noodles"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "สุกี้แห้ง",
+        "aliases": [
+          "Dry Thai Suki"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "สุกี้น้ำ",
+        "aliases": [
+          "Thai Suki Soup"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "ผัดขี้เมา",
+        "aliases": [
+          "Drunken Noodles"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "ขนมจีนแกงเขียวหวาน",
+        "aliases": [
+          "Rice Noodles with Green Curry"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "ขนมจีนน้ำเงี้ยว",
+        "aliases": [
+          "Nam Ngiao Rice Noodles"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "ข้าวยำปักษ์ใต้",
+        "aliases": [
+          "Southern Rice Salad"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "แกงไตปลา",
+        "aliases": [
+          "Gaeng Tai Pla"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "คั่วกลิ้งหมู",
+        "aliases": [
+          "Southern Dry Pork Curry"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "สะตอผัดกุ้ง",
+        "aliases": [
+          "Stink Beans with Shrimp"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "แกงเหลืองปลา",
+        "aliases": [
+          "Southern Yellow Fish Curry"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "ใบเหลียงผัดไข่",
+        "aliases": [
+          "Bai Liang with Egg"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "หมูฮ้อง",
+        "aliases": [
+          "Moo Hong"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "แกงฮังเล",
+        "aliases": [
+          "Hang Lay Curry"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "น้ำพริกอ่อง",
+        "aliases": [
+          "Nam Prik Ong"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "น้ำพริกหนุ่ม",
+        "aliases": [
+          "Nam Prik Noom"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "ไส้อั่ว",
+        "aliases": [
+          "Sai Ua"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "แคบหมู",
+        "aliases": [
+          "Pork Crackling"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "ลาบเหนือ",
+        "aliases": [
+          "Northern Larb"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "ข้าวซอยเนื้อ",
+        "aliases": [
+          "Beef Khao Soi"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "ตำปูปลาร้า",
+        "aliases": [
+          "Papaya Salad with Fermented Fish"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "ตำข้าวโพด",
+        "aliases": [
+          "Corn Som Tam"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "ตำแตง",
+        "aliases": [
+          "Cucumber Som Tam"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "ซุปหน่อไม้",
+        "aliases": [
+          "Bamboo Shoot Salad"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "ต้มแซ่บกระดูกอ่อน",
+        "aliases": [
+          "Spicy Pork Rib Soup"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "แกงอ่อมไก่",
+        "aliases": [
+          "Isan Chicken Herb Soup"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "จิ้มจุ่ม",
+        "aliases": [
+          "Jim Jum Hot Pot"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "หมูกระทะ",
+        "aliases": [
+          "Moo Krata"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "ก้อยเนื้อ",
+        "aliases": [
+          "Spicy Beef Koi"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "ข้าวเหนียวไก่ทอด",
+        "aliases": [
+          "Sticky Rice with Fried Chicken"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "ข้าวเหนียวหมูปิ้ง",
+        "aliases": [
+          "Sticky Rice with Grilled Pork"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "ข้าวเหนียวหมูทอด",
+        "aliases": [
+          "Sticky Rice with Fried Pork"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "กะเพราไก่",
+        "aliases": [
+          "Chicken Basil Rice"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "กะเพราทะเล",
+        "aliases": [
+          "Seafood Basil Rice"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "ผัดพริกแกงหมู",
+        "aliases": [
+          "Pork Red Curry Stir Fry"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "ผัดพริกเผาทะเล",
+        "aliases": [
+          "Seafood Chili Paste Stir Fry"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "ผัดผักบุ้งไฟแดง",
+        "aliases": [
+          "Stir Fried Morning Glory"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "ผัดคะน้าหมูกรอบ",
+        "aliases": [
+          "Chinese Kale with Crispy Pork"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "ผัดเปรี้ยวหวานหมู",
+        "aliases": [
+          "Sweet and Sour Pork Thai Style"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "ผัดเม็ดมะม่วงไก่",
+        "aliases": [
+          "Cashew Chicken Thai Style"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "แกงจืดเต้าหู้หมูสับ",
+        "aliases": [
+          "Tofu and Minced Pork Soup"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "ต้มจับฉ่าย",
+        "aliases": [
+          "Jab Chai Vegetable Stew"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "แกงเลียงกุ้งสด",
+        "aliases": [
+          "Thai Vegetable Soup with Shrimp"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "แกงคั่วหอยขม",
+        "aliases": [
+          "Snail Coconut Curry"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "ฉู่ฉี่ปลา",
+        "aliases": [
+          "Chu Chee Fish"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "ปลาดุกฟู",
+        "aliases": [
+          "Crispy Catfish Salad"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "ยำมะม่วง",
+        "aliases": [
+          "Spicy Green Mango Salad"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "ยำทะเล",
+        "aliases": [
+          "Spicy Seafood Salad"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "พล่ากุ้ง",
+        "aliases": [
+          "Spicy Shrimp Herb Salad"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "กุ้งแช่น้ำปลา",
+        "aliases": [
+          "Raw Shrimp in Fish Sauce"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "หอยทอด",
+        "aliases": [
+          "Thai Oyster Omelette"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "ขนมครก",
+        "aliases": [
+          "Coconut Rice Pancakes"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "บัวลอยไข่หวาน",
+        "aliases": [
+          "Bua Loy with Sweet Egg"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "ทับทิมกรอบ",
+        "aliases": [
+          "Red Rubies Dessert"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "ลอดช่องน้ำกะทิ",
+        "aliases": [
+          "Lod Chong in Coconut Milk"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "กล้วยบวชชี",
+        "aliases": [
+          "Bananas in Coconut Milk"
+        ]
+      }
+    ]
+  }
+]

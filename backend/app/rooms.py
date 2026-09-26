@@ -3,14 +3,17 @@
 from __future__ import annotations
 
 import secrets
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from math import ceil
 from typing import Literal
 from uuid import uuid4
 
 from pydantic import JsonValue
 
 from app.engine.games.tictactoe import TicTacToeGame, TicTacToeMove, TicTacToeState, TicTacToeView
+from app.engine.games.top100 import Top100Action, Top100Engine, Top100State, Top100View
 from app.engine.games.what_number import (
     WhatNumberAction,
     WhatNumberEngine,
@@ -34,7 +37,7 @@ from app.schemas import (
 )
 
 RoomStatus = Literal["LOBBY", "PLAYING", "FINISHED"]
-GameState = TicTacToeState | WhatNumberState | YouOrMeState
+GameState = TicTacToeState | WhatNumberState | YouOrMeState | Top100State
 _ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 _BOT_NAMES = ("Bot_Alpha", "Bot_Beta", "Bot_Gamma", "Bot_Delta", "Bot_Echo", "Bot_Foxtrot", "Bot_Golf")
 
@@ -80,6 +83,7 @@ class Room:
     started_at: str | None = None
     finished_at: str | None = None
     history_saved: bool = False
+    turn_deadline: float | None = None
 
     def force_end_game(self, requested_by_player_id: str) -> bool:
         """Immediately finish an active game when requested by an admin."""
@@ -96,6 +100,7 @@ class Room:
             details={"forced": True, "by": "Admin"},
         )
         self.finished_at = _utc_now()
+        self.turn_deadline = None
         self.action_logs.append(
             {
                 "timestamp": self.finished_at,
@@ -125,6 +130,7 @@ class Room:
         self.started_at = None
         self.finished_at = None
         self.history_saved = False
+        self.turn_deadline = None
         for room_player in self.players.values():
             room_player.is_ready = room_player.is_bot
         return True
@@ -147,11 +153,13 @@ class Room:
             return 2
         if self.game_type == "what_number":
             return 8
+        if self.game_type == "top100":
+            return 8
         return 4
 
     def add_test_bots(self, count: int) -> None:
         """Add ready development bots without coupling bots to game rules."""
-        if self.game_type not in {"what_number", "you_or_me"}:
+        if self.game_type not in {"what_number", "you_or_me", "top100"}:
             raise RoomError("INVALID_ACTION", "Test bots are only available for supported games.")
         if self.status != "LOBBY":
             raise RoomError("INVALID_ROOM_STATE", "Bots can only join in the lobby.")
@@ -238,15 +246,18 @@ class RoomManager:
         ):
             raise RoomError("PLAYERS_NOT_READY", f"{room.min_players}-{room.max_players} ready players are required.")
         player_ids = tuple(room.players)
-        room.game_state = (
-            TicTacToeGame.initial_state(player_ids)
-            if room.game_type == "tictactoe"
-            else WhatNumberEngine.create_state(
-                player_ids, seed=secrets.randbits(64)
-            ) if room.game_type == "what_number" else YouOrMeEngine.init_game(
-                player_ids, seed=secrets.randbits(64)
+        if room.game_type == "tictactoe":
+            room.game_state = TicTacToeGame.initial_state(player_ids)
+        elif room.game_type == "what_number":
+            room.game_state = WhatNumberEngine.create_state(player_ids, seed=secrets.randbits(64))
+        elif room.game_type == "you_or_me":
+            room.game_state = YouOrMeEngine.init_game(player_ids, seed=secrets.randbits(64))
+        else:
+            room.game_state = Top100Engine.init_game(
+                player_ids,
+                {player.id: player.name for player in room.players.values()},
+                seed=secrets.randbits(64),
             )
-        )
         room.status = "PLAYING"
         room.game_over_result = None
         room.action_logs.clear()
@@ -263,6 +274,9 @@ class RoomManager:
             if isinstance(room.game_state, YouOrMeState) and room.game_state.phase == "FINISHED":
                 room.status = "FINISHED"
                 room.finished_at = _utc_now()
+        elif room.game_type == "top100":
+            self._run_bot_actions(room)
+            self._reset_top100_deadline(room)
         return room
 
     def make_move(self, room_code: str, player_id: str, move: TicTacToeMove) -> Room:
@@ -305,12 +319,55 @@ class RoomManager:
             room.game_state = YouOrMeEngine.apply_action(previous_state, player_id, action)
             self._record_you_or_me_transition(room, previous_state, room.game_state)
             self._run_bot_actions(room)
+        elif isinstance(room.game_state, Top100State):
+            if action_type != "SUBMIT_GUESS":
+                raise RoomError("INVALID_ACTION", "Only a guess can be submitted.")
+            if room.turn_deadline is not None and time.monotonic() >= room.turn_deadline:
+                raise RoomError("TURN_EXPIRED", "This turn has expired.")
+            action = Top100Action.model_validate({"action_type": action_type, **payload})
+            room.game_state = Top100Engine.apply_action(room.game_state, player_id, action)
+            self._log_action(room, action_type, actor_id=player_id, value=action.guess)
+            self._run_bot_actions(room)
+            self._reset_top100_deadline(room)
         else:
             raise RoomError("GAME_NOT_ACTIVE", "The selected game is not active.")
-        if isinstance(room.game_state, (WhatNumberState, YouOrMeState)) and room.game_state.phase == "FINISHED":
+        if (
+            isinstance(room.game_state, (WhatNumberState, YouOrMeState))
+            and room.game_state.phase == "FINISHED"
+        ) or (isinstance(room.game_state, Top100State) and room.game_state.status == "FINISHED"):
             room.status = "FINISHED"
             room.finished_at = room.finished_at or _utc_now()
         return room
+
+    def expire_top100_turn(self, room_code: str) -> bool:
+        """Advance one expired turn; safe for concurrent timer wakeups."""
+        room = self.get_room(room_code)
+        state = room.game_state
+        if (
+            room.status != "PLAYING" or not isinstance(state, Top100State)
+            or state.turn_player_id is None or room.turn_deadline is None
+            or time.monotonic() < room.turn_deadline
+        ):
+            return False
+        actor_id = state.turn_player_id
+        room.game_state = Top100Engine.apply_action(
+            state, actor_id, Top100Action(action_type="TURN_TIMEOUT")
+        )
+        self._log_action(room, "TURN_TIMEOUT", actor_id=actor_id)
+        self._run_bot_actions(room)
+        self._reset_top100_deadline(room)
+        if isinstance(room.game_state, Top100State) and room.game_state.status == "FINISHED":
+            room.status = "FINISHED"
+            room.finished_at = _utc_now()
+        return True
+
+    @staticmethod
+    def _reset_top100_deadline(room: Room) -> None:
+        state = room.game_state
+        room.turn_deadline = (
+            time.monotonic() + state.timer
+            if isinstance(state, Top100State) and state.status == "PLAYING" else None
+        )
 
     def take_pending_events(self, room_code: str) -> tuple[GameEventData, ...]:
         room = self.get_room(room_code)
@@ -336,7 +393,7 @@ class RoomManager:
     def player_view(self, room_code: str, player_id: str) -> RoomStateView:
         room = self.get_room(room_code)
         self._require_player(room, player_id)
-        game_view: TicTacToeView | WhatNumberView | YouOrMeView | None = None
+        game_view: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | None = None
         result = room.game_over_result
         if isinstance(room.game_state, TicTacToeState):
             game_view = TicTacToeGame.get_player_view(room.game_state, player_id)
@@ -360,6 +417,18 @@ class RoomManager:
             game_view = YouOrMeEngine.get_player_view(room.game_state, player_id)
             if room.status == "FINISHED" and result is None:
                 result = GameOverResult(outcome="WIN", winner_id=room.game_state.winner_id)
+        elif isinstance(room.game_state, Top100State):
+            game_view = Top100Engine.get_player_view(room.game_state, player_id)
+            if room.status == "PLAYING" and room.turn_deadline is not None:
+                game_view = game_view.model_copy(update={
+                    "turn_timer": max(0, ceil(room.turn_deadline - time.monotonic()))
+                })
+            if room.status == "FINISHED" and result is None:
+                winners = room.game_state.winner_ids
+                result = GameOverResult(
+                    outcome="DRAW" if len(winners) > 1 else "WIN",
+                    winner_id=winners[0] if len(winners) == 1 else None,
+                )
         return RoomStateView(
             room_code=room.code, game_type=room.game_type, status=room.status,
             host_id=room.host_id,
@@ -375,6 +444,25 @@ class RoomManager:
                 self._run_you_or_me_bot_action(room, state)
                 if room.game_state is state:
                     return
+                continue
+            if isinstance(state, Top100State):
+                if state.status == "FINISHED" or state.turn_player_id is None:
+                    return
+                actor = room.players.get(state.turn_player_id)
+                if actor is None or not actor.is_bot:
+                    return
+                available = [
+                    item for item in state.topic.items
+                    if all(guess.rank != item.rank for guess in state.guessed_items)
+                ]
+                guess = (
+                    secrets.choice(available).name
+                    if available and secrets.randbelow(4) != 0 else "ไม่ทราบคำตอบ"
+                )
+                room.game_state = Top100Engine.apply_action(
+                    state, actor.id, Top100Action(action_type="SUBMIT_GUESS", guess=guess)
+                )
+                self._log_action(room, "SUBMIT_GUESS", actor_id=actor.id, value=guess)
                 continue
             if not isinstance(state, WhatNumberState) or state.phase == "FINISHED":
                 return

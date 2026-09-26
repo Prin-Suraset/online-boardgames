@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import asyncio
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -13,6 +15,7 @@ from pydantic import TypeAdapter, ValidationError
 from app.api.auth import create_auth_router
 from app.auth import AuthError, AuthService, AuthStore, AuthUser
 from app.engine.base import GameRuleError
+from app.engine.games.top100 import Top100State
 from app.realtime import RoomConnectionHub
 from app.rooms import RoomError, RoomManager
 from app.schemas import (
@@ -69,6 +72,43 @@ def create_app(
     application.state.hub = hub
     application.state.auth = auth
     application.include_router(create_auth_router(auth))
+    top100_tasks: dict[str, asyncio.Task[None]] = {}
+
+    def save_finished_match(room_code: str) -> None:
+        completed_room = rooms.get_room(room_code)
+        if (
+            completed_room.status != "FINISHED" or completed_room.history_saved
+            or completed_room.match_id is None or completed_room.started_at is None
+        ):
+            return
+        auth.save_match_history(
+            match_id=completed_room.match_id,
+            room_code=completed_room.code,
+            game_type=completed_room.game_type,
+            started_at=completed_room.started_at,
+            finished_at=completed_room.finished_at
+            or datetime.now(timezone.utc).isoformat(),
+            action_logs=completed_room.action_logs,
+        )
+        completed_room.history_saved = True
+
+    async def run_top100_timer(room_code: str, match_id: str) -> None:
+        try:
+            while True:
+                room = rooms.get_room(room_code)
+                if (
+                    room.match_id != match_id or room.status != "PLAYING"
+                    or not isinstance(room.game_state, Top100State)
+                    or room.turn_deadline is None
+                ):
+                    return
+                await asyncio.sleep(max(0, room.turn_deadline - time.monotonic()))
+                if rooms.expire_top100_turn(room_code):
+                    await hub.broadcast(room_code)
+                    save_finished_match(room_code)
+        finally:
+            if top100_tasks.get(room_code) is asyncio.current_task():
+                del top100_tasks[room_code]
 
     @application.get("/health")
     async def health() -> dict[str, str]:
@@ -220,6 +260,14 @@ def create_app(
                         )
                     elif isinstance(message, StartGameMessage):
                         rooms.start_game(code, message.player_id)
+                        started_room = rooms.get_room(code)
+                        if started_room.game_type == "top100" and started_room.match_id is not None:
+                            previous_task = top100_tasks.get(code)
+                            if previous_task is not None:
+                                previous_task.cancel()
+                            top100_tasks[code] = asyncio.create_task(
+                                run_top100_timer(code, started_room.match_id)
+                            )
                     elif isinstance(message, GameActionMessage):
                         if message.payload.action_type == "ADD_TEST_BOTS":
                             count = message.payload.payload.get("count")
@@ -276,23 +324,7 @@ def create_app(
                     await hub.broadcast(code)
                     for game_event in rooms.take_pending_events(code):
                         await hub.broadcast_game_event(code, game_event)
-                    completed_room = rooms.get_room(code)
-                    if (
-                        completed_room.status == "FINISHED"
-                        and not completed_room.history_saved
-                        and completed_room.match_id is not None
-                        and completed_room.started_at is not None
-                    ):
-                        auth.save_match_history(
-                            match_id=completed_room.match_id,
-                            room_code=completed_room.code,
-                            game_type=completed_room.game_type,
-                            started_at=completed_room.started_at,
-                            finished_at=completed_room.finished_at
-                            or datetime.now(timezone.utc).isoformat(),
-                            action_logs=completed_room.action_logs,
-                        )
-                        completed_room.history_saved = True
+                    save_finished_match(code)
                 except RoomError as error:
                     await hub.send_error(websocket, error.code, error.message)
                 except GameRuleError as error:

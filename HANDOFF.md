@@ -1,10 +1,16 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Top 1-100 by ChatGPT frontend integration.
-* **State**: Ready for Test (production build and local browser smoke test pass)
+* **Active Task**: Top 1-100 by ChatGPT topic roulette, guess feedback, and ten-topic bank.
+* **State**: Ready for browser verification (backend tests and production build pass)
 
 ## 2. Completed in this Session
+* [x] Added a 3-second decelerating topic roulette, 1.5-second gold lock reveal, and dissolve before input activates. The server reserves five seconds before the first 30-second turn and polls updated deadlines after guesses.
+* [x] Added private-safe guess feedback events for human and bot turns, with correct/miss/already-claimed outcomes. The local guesser reads rank and points only from their player-specific game view; public events contain no score or rank.
+* [x] Added executable `backend/scripts/seed_top100_topics.py` and `backend/scripts/top100_starter_topics.json`; generated and validated the ten requested topics with 100 ranked answers and Thai/English aliases each. Running the script again regenerates the same bank.
+* [x] Verified `pytest -v backend/tests/test_top100.py` (9 passed), full backend suite (55 passed), `cd frontend && npm run build` (0 errors), and staged `git diff --check`. Feature committed as `f802ac1` (`feat(top100): add topic roulette animation, guess feedback popups, and seed all 10 topics`) in `/tmp/TheBoardGame-top100-git.git` because the workspace `.git` index is read-only.
+* [x] Aligned the visible Round 1 countdown with the end of the five-second roulette; rebuilt successfully and committed as `0750141` (`fix(top100): start turn countdown after topic roulette`).
+* [x] Hid the actual topic box until the roulette dissolves, preventing an early visual reveal; rebuilt successfully and committed as `7cec44c` (`fix(top100): hide selected topic behind roulette until reveal`).
 * [x] Added the Top100 catalog entry and Thai rulebook, strict TypeScript/WebSocket view parsing, 2–8 player room selection, and `Top100Board` with chronological answer cards, private scoring, countdown, persistent guess console, responsive chat, and final leaderboard/100-answer reveal. Committed as `b849fc0` (`feat(frontend): implement Top100Board UI with chronological reveal and secret scoring`).
 * [x] Verified `cd frontend && npm run build` (0 TypeScript/compilation errors), `git diff --check`, and a local guest-plus-bot browser match through round 10. Confirmed initial topic-only center, own rank/points, opponent `อันดับ: ???`, chronological card order, final scores, and all 100 answers with aliases.
 * [x] Checked desktop, tablet (820×1180), and mobile (390×844) layouts. The answer area now scrolls while the guess console remains visible; mobile/tablet chat uses the existing drawer. Restored the browser viewport after testing.
@@ -101,7 +107,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
-* [ ] If resuming the broader original master task, add the `video_games` and `world_movies` 100-item topic lists and verify their aliases and rankings before release.
+* [ ] Browser-check the roulette pacing, feedback queue, and reveal on desktop/mobile against a reachable frontend and backend.
+* [ ] Sync feature commit `f802ac1`, fixes `0750141` and `7cec44c`, and handoff commits from `/tmp/TheBoardGame-top100-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync theme commit `2bf4895` and the handoff commit from `/tmp/TheBoardGame-7k-theme/.git` into writable repository Git metadata before pushing or deploying.
 * [ ] On a reachable build, verify the midnight/gold/slate theme and check desktop, tablet, and mobile viewports for board and hub overlaps. Local Vite cannot bind and direct browser access to the built file is blocked.
 * [ ] Sync commit `61e225c` and this handoff update from `/tmp/TheBoardGame-routing-git/.git` into writable repository Git metadata, then deploy.
@@ -122,6 +129,9 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
+* The current ten-topic request supersedes the older four-topic master list in this handoff; `video_games` and `world_movies` are not part of the new ten-topic bank.
+* The workspace `.git` index is read-only even with elevated execution. This session's feature commit is in `/tmp/TheBoardGame-top100-git.git`; the working tree contains the committed files plus this handoff update.
+* No live browser interaction was run this session. The previous handoff records local Vite `listen EPERM`; production build and backend tests pass.
 * The frontend now parses and displays `top100` from the Step 1 backend. The catalog and game selection modal both consume `frontend/src/lib/gameCatalog.ts`, so one shared metadata entry registers the game in both places.
 * `npm run lint` reports two pre-existing reload-guard errors in `frontend/src/pages/room.tsx` and one pre-existing Fast Refresh warning in `YouOrMeCard.tsx`; the new Top100 files add no lint findings. The requested production build passes.
 * Backend dependencies were installed in `/tmp/top100-venv` for this session; the repository has no checked-in virtual environment. Run the focused tests with `PATH=/tmp/top100-venv/bin:$PATH pytest -v backend/tests/test_top100.py` while that temporary environment exists.

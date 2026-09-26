@@ -269,6 +269,7 @@ function isGameEvent(value: unknown): value is GameEvent {
     "CENTER_REVEALED_FROM_GUESS",
     "GUESS_HELD_BY_ANOTHER",
     "ROUND_RESULT",
+    "TOP100_GUESS_RESULT",
   ];
   return (
     isRecord(value) &&

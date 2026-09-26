@@ -184,7 +184,8 @@ export type GameEventType =
   | "CENTER_CARD_REVEALED"
   | "CENTER_REVEALED_FROM_GUESS"
   | "GUESS_HELD_BY_ANOTHER"
-  | "ROUND_RESULT";
+  | "ROUND_RESULT"
+  | "TOP100_GUESS_RESULT";
 
 export interface GameEvent {
   event_type: GameEventType;

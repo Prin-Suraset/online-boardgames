@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes top100-progress { from { width: 0; } to { width: 100%; } }
+@keyframes top100-lock { 0% { transform: scale(0.92); box-shadow: 0 0 0 rgba(251, 191, 36, 0); } 55% { transform: scale(1.055); box-shadow: 0 0 100px rgba(251, 191, 36, 0.8); } 100% { transform: scale(1); box-shadow: 0 0 65px rgba(251, 191, 36, 0.45); } }
+@keyframes top100-sparks { from { opacity: 0; transform: scale(0.4) rotate(-12deg); } 35% { opacity: 1; } to { opacity: 0.35; transform: scale(1.8) rotate(12deg); } }
+@keyframes top100-fade { from { opacity: 1; } to { opacity: 0; } }
+@keyframes top100-feedback { 0% { opacity: 0; transform: translate(-50%, -1rem) scale(0.94); } 12%, 85% { opacity: 1; transform: translate(-50%, 0) scale(1); } 100% { opacity: 0; transform: translate(-50%, -0.7rem) scale(0.98); } }
+.top100-roulette-progress { animation: top100-progress 3s linear forwards; }
+.top100-topic-lock { animation: top100-lock 650ms ease-out both; }
+.top100-sparks { display: grid; place-items: center; color: #fcd34d; font-size: clamp(2rem, 8vw, 7rem); letter-spacing: 0.5em; animation: top100-sparks 1.5s ease-out both; }
+.top100-roulette-exit { animation: top100-fade 500ms ease-in forwards; }
+.top100-feedback { animation: top100-feedback 2.8s ease-in-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .top100-roulette-progress, .top100-topic-lock, .top100-sparks, .top100-roulette-exit, .top100-feedback { animation: none; }
+}
+
 :root {
   color: #f1f5f9;
   background: #0b0f19;

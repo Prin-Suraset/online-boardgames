@@ -102,7 +102,8 @@ def create_app(
                     or room.turn_deadline is None
                 ):
                     return
-                await asyncio.sleep(max(0, room.turn_deadline - time.monotonic()))
+                # Actions can replace the deadline while this task sleeps.
+                await asyncio.sleep(min(0.5, max(0, room.turn_deadline - time.monotonic())))
                 if rooms.expire_top100_turn(room_code):
                     await hub.broadcast(room_code)
                     save_finished_match(room_code)

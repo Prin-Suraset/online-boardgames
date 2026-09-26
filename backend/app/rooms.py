@@ -13,7 +13,7 @@ from uuid import uuid4
 from pydantic import JsonValue
 
 from app.engine.games.tictactoe import TicTacToeGame, TicTacToeMove, TicTacToeState, TicTacToeView
-from app.engine.games.top100 import Top100Action, Top100Engine, Top100State, Top100View
+from app.engine.games.top100 import Top100Action, Top100Engine, Top100State, Top100View, normalize
 from app.engine.games.what_number import (
     WhatNumberAction,
     WhatNumberEngine,
@@ -276,7 +276,7 @@ class RoomManager:
                 room.finished_at = _utc_now()
         elif room.game_type == "top100":
             self._run_bot_actions(room)
-            self._reset_top100_deadline(room)
+            self._reset_top100_deadline(room, opening_delay=5)
         return room
 
     def make_move(self, room_code: str, player_id: str, move: TicTacToeMove) -> Room:
@@ -325,8 +325,10 @@ class RoomManager:
             if room.turn_deadline is not None and time.monotonic() >= room.turn_deadline:
                 raise RoomError("TURN_EXPIRED", "This turn has expired.")
             action = Top100Action.model_validate({"action_type": action_type, **payload})
-            room.game_state = Top100Engine.apply_action(room.game_state, player_id, action)
+            previous_state = room.game_state
+            room.game_state = Top100Engine.apply_action(previous_state, player_id, action)
             self._log_action(room, action_type, actor_id=player_id, value=action.guess)
+            self._record_top100_guess(room, player_id, action.guess, previous_state, room.game_state)
             self._run_bot_actions(room)
             self._reset_top100_deadline(room)
         else:
@@ -362,11 +364,36 @@ class RoomManager:
         return True
 
     @staticmethod
-    def _reset_top100_deadline(room: Room) -> None:
+    def _reset_top100_deadline(room: Room, *, opening_delay: int = 0) -> None:
         state = room.game_state
         room.turn_deadline = (
-            time.monotonic() + state.timer
+            time.monotonic() + state.timer + opening_delay
             if isinstance(state, Top100State) and state.status == "PLAYING" else None
+        )
+
+    def _record_top100_guess(
+        self, room: Room, actor_id: str, guess: str | None,
+        before: Top100State, after: Top100State,
+    ) -> None:
+        """Broadcast only the outcome and claim position; private views hold scores."""
+        claim_index = len(before.guessed_items)
+        if len(after.guessed_items) > claim_index:
+            outcome = "CORRECT"
+            public_index: int | None = claim_index
+        else:
+            normalized = normalize(guess or "")
+            claimed_ranks = {item.rank for item in before.guessed_items}
+            already_claimed = any(
+                item.rank in claimed_ranks
+                and normalized in (normalize(value) for value in (item.name, *item.aliases))
+                for item in before.topic.items
+            )
+            outcome = "ALREADY_CLAIMED" if already_claimed else "MISS"
+            public_index = None
+        self._emit_event(
+            room, "TOP100_GUESS_RESULT", actor_id=actor_id,
+            value={"outcome": outcome, "claim_index": public_index},
+            is_correct=outcome == "CORRECT",
         )
 
     def take_pending_events(self, room_code: str) -> tuple[GameEventData, ...]:
@@ -421,7 +448,7 @@ class RoomManager:
             game_view = Top100Engine.get_player_view(room.game_state, player_id)
             if room.status == "PLAYING" and room.turn_deadline is not None:
                 game_view = game_view.model_copy(update={
-                    "turn_timer": max(0, ceil(room.turn_deadline - time.monotonic()))
+                    "turn_timer": min(room.game_state.timer, max(0, ceil(room.turn_deadline - time.monotonic())))
                 })
             if room.status == "FINISHED" and result is None:
                 winners = room.game_state.winner_ids
@@ -463,6 +490,7 @@ class RoomManager:
                     state, actor.id, Top100Action(action_type="SUBMIT_GUESS", guess=guess)
                 )
                 self._log_action(room, "SUBMIT_GUESS", actor_id=actor.id, value=guess)
+                self._record_top100_guess(room, actor.id, guess, state, room.game_state)
                 continue
             if not isinstance(state, WhatNumberState) or state.phase == "FINISHED":
                 return
@@ -692,6 +720,7 @@ class RoomManager:
             "GUESS_WRONG", "TURN_END", "TURN_START", "SKILL_USED",
             "CENTER_CARD_REVEALED", "CENTER_REVEALED_FROM_GUESS",
             "GUESS_HELD_BY_ANOTHER", "ROUND_RESULT",
+            "TOP100_GUESS_RESULT",
         ],
         *,
         actor_id: str | None = None,

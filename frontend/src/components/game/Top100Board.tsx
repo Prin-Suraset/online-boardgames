@@ -1,8 +1,8 @@
-import { useEffect, useState, type SyntheticEvent } from "react";
+import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import { ChevronDown, Clock3, Crown, LogOut, Play, Send, Sparkles, Trophy } from "lucide-react";
 
 import { cn } from "../../lib/styles";
-import type { ChatMessage, Player, Top100View } from "../../types";
+import type { ChatMessage, GameEvent, Player, Top100View } from "../../types";
 import { ChatBox } from "./ChatBox";
 import { ChatDrawer } from "./ChatDrawer";
 
@@ -12,6 +12,7 @@ interface Top100BoardProps {
   players: readonly Player[];
   playerId: string;
   sendAction: (actionType: string, payload: object) => void;
+  gameEvents: readonly GameEvent[];
   chatMessages: readonly ChatMessage[];
   sendChat: (text: string) => void;
   canRematch: boolean;
@@ -19,12 +20,24 @@ interface Top100BoardProps {
   onExit: () => void;
 }
 
+const ROULETTE_TITLES = [
+  "Top 100 เมนูอาหารไทยยอดนิยม", "Top 100 หนังไทยระดับตำนาน",
+  "Top 100 เกมที่คนไทยชอบเล่น", "Top 100 ตัวละครอนิเมะยอดนิยมตลอดกาล",
+  "Top 100 ตัวละครจากหนังทั่วโลก", "Top 100 อาหารยอดนิยมทั่วโลก",
+  "Top 100 สถานที่ท่องเที่ยวในไทย", "Top 100 สถานที่ท่องเที่ยวทั่วโลก",
+  "Top 100 แบรนด์ดังทั่วโลก", "Top 100 แอปพลิเคชันยอดนิยม",
+] as const;
+
+type RoulettePhase = "spinning" | "locked" | "exiting" | "done";
+interface GuessFeedback { message: string; correct: boolean }
+
 export function Top100Board({
   roomCode,
   game,
   players,
   playerId,
   sendAction,
+  gameEvents,
   chatMessages,
   sendChat,
   canRematch,
@@ -33,6 +46,16 @@ export function Top100Board({
 }: Top100BoardProps) {
   const [inputText, setInputText] = useState("");
   const [showReveal, setShowReveal] = useState(true);
+  const [roulette, setRoulette] = useState<{ phase: RoulettePhase; title: string }>(() => ({
+    phase: game.status === "PLAYING" && game.round_number === 1 && game.revealed_chronological_items.length === 0
+      ? "spinning" : "done",
+    title: ROULETTE_TITLES[0],
+  }));
+  const startRoulette = useRef(roulette.phase === "spinning");
+  const [feedback, setFeedback] = useState<GuessFeedback | null>(null);
+  const pendingFeedback = useRef<GuessFeedback[]>([]);
+  const processedEvents = useRef(0);
+  const feedbackTimer = useRef<number | null>(null);
   const turnKey = `${String(game.round_number)}:${game.turn_player_id ?? "finished"}:${String(game.turn_timer)}`;
   const [clock, setClock] = useState({ key: turnKey, seconds: game.turn_timer });
   const secondsRemaining = game.status === "FINISHED"
@@ -40,11 +63,79 @@ export function Top100Board({
     : clock.key === turnKey ? clock.seconds : game.turn_timer;
   const timerProgress = Math.max(0, Math.min(100, secondsRemaining / 30 * 100));
   const activePlayer = players.find((player) => player.id === game.turn_player_id);
-  const canGuess = game.status === "PLAYING" && game.is_my_turn && secondsRemaining > 0;
+  const canGuess = game.status === "PLAYING" && game.is_my_turn && secondsRemaining > 0 && roulette.phase === "done";
   const revealOpen = game.status === "FINISHED" && showReveal;
 
   useEffect(() => {
-    if (game.status !== "PLAYING") return;
+    if (!startRoulette.current) return;
+    const started = Date.now();
+    let lastTick = started;
+    let titleIndex = 0;
+    const interval = window.setInterval(() => {
+      const elapsed = Math.min(3000, Date.now() - started);
+      const tickGap = 80 + 420 * (elapsed / 3000) ** 3;
+      if (Date.now() - lastTick >= tickGap) {
+        titleIndex = (titleIndex + 1) % ROULETTE_TITLES.length;
+        lastTick = Date.now();
+        setRoulette({ phase: "spinning", title: ROULETTE_TITLES[titleIndex] ?? ROULETTE_TITLES[0] });
+      }
+    }, 80);
+    const lock = window.setTimeout(() => {
+      window.clearInterval(interval);
+      setRoulette({ phase: "locked", title: game.topic_title });
+    }, 3000);
+    const exit = window.setTimeout(() => { setRoulette({ phase: "exiting", title: game.topic_title }); }, 4500);
+    const done = window.setTimeout(() => { setRoulette({ phase: "done", title: game.topic_title }); }, 5000);
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(lock);
+      window.clearTimeout(exit);
+      window.clearTimeout(done);
+    };
+  }, [game.topic_title]);
+
+  useEffect(() => {
+    if (gameEvents.length < processedEvents.current) processedEvents.current = 0;
+    const incoming = gameEvents.slice(processedEvents.current);
+    processedEvents.current = gameEvents.length;
+    for (const event of incoming) {
+      if (event.event_type !== "TOP100_GUESS_RESULT" || !event.value || typeof event.value !== "object") continue;
+      const result = event.value as { outcome?: unknown; claim_index?: unknown };
+      const isMine = event.actor_id === playerId;
+      if (result.outcome === "CORRECT") {
+        if (isMine) {
+          const index = result.claim_index;
+          const item = typeof index === "number" ? game.revealed_chronological_items[index] : undefined;
+          if (!item || item.rank === null || item.points === null) continue;
+          pendingFeedback.current.push({ message: `🎉 ถูกต้อง! คุณได้ +${item.points} แต้ม (อันดับ ${item.rank})`, correct: true });
+        } else {
+          pendingFeedback.current.push({ message: `💡 ${event.actor_name ?? "ผู้เล่น"} ตอบถูกต้อง!`, correct: true });
+        }
+      } else if (result.outcome === "MISS" || result.outcome === "ALREADY_CLAIMED") {
+        pendingFeedback.current.push({
+          message: isMine
+            ? result.outcome === "ALREADY_CLAIMED" ? "❌ คำนี้ถูกตอบไปแล้ว!" : "❌ ไม่ถูกต้อง! ไม่มีใน Top 100"
+            : `❌ ${event.actor_name ?? "ผู้เล่น"} ตอบไม่ถูกต้อง`,
+          correct: false,
+        });
+      }
+    }
+    if (feedbackTimer.current === null && pendingFeedback.current.length > 0) {
+      const showNext = (): void => {
+        const next = pendingFeedback.current.shift() ?? null;
+        setFeedback(next);
+        feedbackTimer.current = next ? window.setTimeout(showNext, 2800) : null;
+      };
+      feedbackTimer.current = window.setTimeout(showNext, 0);
+    }
+  }, [gameEvents, game.revealed_chronological_items, playerId]);
+
+  useEffect(() => () => {
+    if (feedbackTimer.current !== null) window.clearTimeout(feedbackTimer.current);
+  }, []);
+
+  useEffect(() => {
+    if (game.status !== "PLAYING" || roulette.phase !== "done") return;
     const deadline = Date.now() + game.turn_timer * 1000;
     const interval = window.setInterval(() => {
       setClock({
@@ -53,7 +144,7 @@ export function Top100Board({
       });
     }, 250);
     return () => { window.clearInterval(interval); };
-  }, [game.status, game.turn_timer, turnKey]);
+  }, [game.status, game.turn_timer, turnKey, roulette.phase]);
 
   useEffect(() => {
     if (!revealOpen) return;
@@ -113,10 +204,10 @@ export function Top100Board({
         </header>
 
         <div className="relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto px-4 py-6 sm:px-7 sm:py-8">
-          <div className="mx-auto w-full max-w-3xl rounded-3xl border-2 border-amber-300/70 bg-gradient-to-br from-amber-400/15 via-[#1D2634] to-[#111827] px-5 py-6 text-center shadow-[0_0_36px_rgba(229,169,60,0.22)] sm:px-8 sm:py-8">
+          {roulette.phase === "done" && <div className="mx-auto w-full max-w-3xl rounded-3xl border-2 border-amber-300/70 bg-gradient-to-br from-amber-400/15 via-[#1D2634] to-[#111827] px-5 py-6 text-center shadow-[0_0_36px_rgba(229,169,60,0.22)] sm:px-8 sm:py-8">
             <p className="text-xs font-bold tracking-[0.25em] text-amber-300 uppercase">หมวดคำตอบ</p>
             <h1 className="mt-3 font-display text-2xl font-black leading-snug text-amber-100 sm:text-4xl">🎯 หัวข้อ: {game.topic_title}</h1>
-          </div>
+          </div>}
 
           {game.revealed_chronological_items.length > 0 && (
             <section className="mx-auto mt-8 w-full max-w-6xl" aria-label="คำตอบที่ทายถูกตามลำดับ" aria-live="polite">
@@ -202,6 +293,29 @@ export function Top100Board({
         <ChatBox messages={chatMessages} currentPlayerId={playerId} onSend={sendChat} />
       </aside>
       <ChatDrawer messages={chatMessages} currentPlayerId={playerId} onSend={sendChat} />
+
+      {feedback && (
+        <div role="status" aria-live="assertive" className={cn(
+          "top100-feedback fixed left-1/2 top-20 z-50 w-[min(92vw,38rem)] -translate-x-1/2 rounded-2xl border-2 px-5 py-4 text-center text-lg font-black shadow-2xl backdrop-blur-xl sm:top-28 sm:text-2xl",
+          feedback.correct
+            ? "border-emerald-300 bg-emerald-950/95 text-emerald-100 shadow-emerald-400/40"
+            : "border-rose-400 bg-rose-950/95 text-rose-100 shadow-rose-400/25",
+        )}>{feedback.message}</div>
+      )}
+
+      {roulette.phase !== "done" && (
+        <div className={cn("top100-roulette fixed inset-0 z-[60] grid place-items-center bg-[#070B14]/95 p-5 backdrop-blur-xl", roulette.phase === "exiting" && "top100-roulette-exit")} role="dialog" aria-modal="true" aria-label="กำลังเลือกหัวข้อ">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.16),transparent_55%)]" />
+          {roulette.phase !== "spinning" && <div className="top100-sparks pointer-events-none absolute inset-0" aria-hidden="true">✦ ✧ ✦ ✧ ✦ ✧ ✦</div>}
+          <div className={cn("relative w-full max-w-3xl rounded-3xl border-2 bg-gradient-to-br from-[#1B2738] to-[#0D1422] px-6 py-10 text-center shadow-[0_0_80px_rgba(245,158,11,0.24)] sm:px-12 sm:py-16", roulette.phase === "spinning" ? "border-amber-300/50" : "top100-topic-lock border-amber-300")}>
+            <p className="text-sm font-black tracking-[0.3em] text-amber-300 uppercase">{roulette.phase === "spinning" ? "กำลังสุ่มหัวข้อ..." : "หัวข้อที่ได้!"}</p>
+            <h2 className="mt-6 min-h-24 font-display text-3xl font-black leading-snug text-amber-100 sm:text-5xl">🎯 {roulette.title}</h2>
+            <div className="mx-auto mt-6 h-1 w-40 overflow-hidden rounded-full bg-slate-700">
+              <div className={cn("h-full bg-amber-300", roulette.phase === "spinning" ? "top100-roulette-progress" : "w-full")} />
+            </div>
+          </div>
+        </div>
+      )}
 
       {revealOpen && (
         <div className="fixed inset-0 z-40 grid place-items-center bg-slate-950/85 p-3 backdrop-blur-md sm:p-6">

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import time
+
 import pytest
 
 from app.engine.base import GameRuleError, MoveErrorCode
@@ -33,15 +35,49 @@ def guess(state: Top100State, value: str) -> Top100State:
 
 def test_topic_bank_and_seeded_selection() -> None:
     topics = load_topic_bank()
-    assert {topic.id for topic in topics} == {"anime_characters", "thai_food"}
+    expected = {
+        "thai_food", "thai_movies", "thai_games", "anime_characters", "movie_characters",
+        "global_foods", "thai_travel", "world_travel", "global_brands", "popular_apps",
+    }
+    assert {topic.id for topic in topics} == expected
     assert all(len(topic.items) == 100 for topic in topics)
     assert all(tuple(item.rank for item in topic.items) == tuple(range(1, 101)) for topic in topics)
     first = Top100Engine.init_game(PLAYERS, NAMES, seed=7)
     second = Top100Engine.init_game(PLAYERS, NAMES, seed=7)
     assert first == second
-    assert {Top100Engine.init_game(PLAYERS, NAMES, seed=seed).topic.id for seed in range(20)} == {
-        "anime_characters", "thai_food"
-    }
+    assert {Top100Engine.init_game(PLAYERS, NAMES, seed=seed).topic.id for seed in range(100)} == expected
+
+
+def test_public_guess_result_has_no_secret_score_or_rank() -> None:
+    rooms = RoomManager()
+    room = rooms.create_room(PlayerInput(id="p1", name="Alpha", avatar="A"), "top100")
+    rooms.join_room(room.code, PlayerInput(id="p2", name="Beta", avatar="B"))
+    rooms.toggle_ready(room.code, "p1", True)
+    rooms.toggle_ready(room.code, "p2", True)
+    rooms.start_game(room.code, "p1")
+    assert isinstance(room.game_state, Top100State)
+    assert room.turn_deadline is not None
+    assert 34 <= room.turn_deadline - time.monotonic() <= 35
+    assert rooms.player_view(room.code, "p1").game.turn_timer == 30
+    first_answer = room.game_state.topic.items[0].name
+    assert rooms.player_view(room.code, "p1").game is not None
+    rooms.apply_game_action(room.code, "p1", "SUBMIT_GUESS", {"guess": first_answer})
+    assert room.turn_deadline is not None
+    assert 29 <= room.turn_deadline - time.monotonic() <= 30
+    events = rooms.take_pending_events(room.code)
+    assert len(events) == 1
+    assert events[0].event_type == "TOP100_GUESS_RESULT"
+    assert events[0].value == {"outcome": "CORRECT", "claim_index": 0}
+    assert "rank" not in events[0].model_dump_json()
+    assert "points" not in events[0].model_dump_json()
+    opponent = rooms.player_view(room.code, "p2").game
+    assert opponent is not None
+    assert opponent.revealed_chronological_items[0].rank is None
+    assert opponent.revealed_chronological_items[0].points is None
+    rooms.apply_game_action(room.code, "p2", "SUBMIT_GUESS", {"guess": first_answer})
+    assert rooms.take_pending_events(room.code)[0].value == {"outcome": "ALREADY_CLAIMED", "claim_index": None}
+    rooms.apply_game_action(room.code, "p1", "SUBMIT_GUESS", {"guess": "not a real answer"})
+    assert rooms.take_pending_events(room.code)[0].value == {"outcome": "MISS", "claim_index": None}
 
 
 def test_scoring() -> None:

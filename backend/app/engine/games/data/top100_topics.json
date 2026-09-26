@@ -1,5 +1,2142 @@
 [
   {
+    "id": "thai_food",
+    "title": "Top 100 เมนูอาหารไทยยอดนิยม",
+    "items": [
+      {
+        "rank": 1,
+        "name": "ผัดไทย",
+        "aliases": [
+          "Pad Thai"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "ต้มยำกุ้ง",
+        "aliases": [
+          "Tom Yum Goong"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "ส้มตำไทย",
+        "aliases": [
+          "Som Tam Thai"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "แกงเขียวหวานไก่",
+        "aliases": [
+          "Green Chicken Curry"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "ข้าวกะเพราหมูสับ",
+        "aliases": [
+          "Pork Basil Rice"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "ข้าวมันไก่",
+        "aliases": [
+          "Khao Man Gai"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "มัสมั่นเนื้อ",
+        "aliases": [
+          "Beef Massaman Curry"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "ต้มข่าไก่",
+        "aliases": [
+          "Tom Kha Gai"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "ข้าวซอยไก่",
+        "aliases": [
+          "Chicken Khao Soi"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "พะแนงหมู",
+        "aliases": [
+          "Pork Panang Curry"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "ลาบหมู",
+        "aliases": [
+          "Larb Moo"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "แกงส้มชะอมไข่",
+        "aliases": [
+          "Sour Curry with Acacia Omelette"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "หมูสะเต๊ะ",
+        "aliases": [
+          "Pork Satay"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "ไก่ย่าง",
+        "aliases": [
+          "Gai Yang"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "คอหมูย่าง",
+        "aliases": [
+          "Grilled Pork Neck"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "ข้าวเหนียวมะม่วง",
+        "aliases": [
+          "Mango Sticky Rice"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "ยำวุ้นเส้น",
+        "aliases": [
+          "Glass Noodle Salad"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "น้ำตกหมู",
+        "aliases": [
+          "Nam Tok Moo"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "ผัดซีอิ๊วหมู",
+        "aliases": [
+          "Pad See Ew Pork"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "ราดหน้าหมู",
+        "aliases": [
+          "Rad Na Pork"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "ขนมจีนน้ำยา",
+        "aliases": [
+          "Khanom Jeen Nam Ya"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "ข้าวคลุกกะปิ",
+        "aliases": [
+          "Shrimp Paste Rice"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "แกงป่าไก่",
+        "aliases": [
+          "Jungle Curry Chicken"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "แกงเผ็ดเป็ดย่าง",
+        "aliases": [
+          "Roast Duck Red Curry"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "ทอดมันปลา",
+        "aliases": [
+          "Thai Fish Cakes"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "ห่อหมกปลา",
+        "aliases": [
+          "Steamed Fish Curry Custard"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "ปลากะพงนึ่งมะนาว",
+        "aliases": [
+          "Steamed Seabass with Lime"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "ปลาทอดน้ำปลา",
+        "aliases": [
+          "Fish with Fish Sauce"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "กุ้งอบวุ้นเส้น",
+        "aliases": [
+          "Prawns with Glass Noodles"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "ปูผัดผงกะหรี่",
+        "aliases": [
+          "Crab Curry Stir Fry"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "ไข่เจียวหมูสับ",
+        "aliases": [
+          "Pork Omelette"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "ไข่พะโล้",
+        "aliases": [
+          "Five Spice Eggs"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "หมูกรอบ",
+        "aliases": [
+          "Crispy Pork Belly"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "ข้าวหมูแดง",
+        "aliases": [
+          "Red Pork Rice"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "ข้าวหน้าเป็ด",
+        "aliases": [
+          "Roast Duck Rice"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "ข้าวผัดปู",
+        "aliases": [
+          "Crab Fried Rice"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "ข้าวผัดกุ้ง",
+        "aliases": [
+          "Shrimp Fried Rice"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "ข้าวผัดสับปะรด",
+        "aliases": [
+          "Pineapple Fried Rice"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "ข้าวต้มปลา",
+        "aliases": [
+          "Fish Rice Soup"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "โจ๊กหมู",
+        "aliases": [
+          "Pork Congee"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "ก๋วยเตี๋ยวเรือ",
+        "aliases": [
+          "Boat Noodles"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "ก๋วยเตี๋ยวต้มยำ",
+        "aliases": [
+          "Tom Yum Noodles"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "ก๋วยเตี๋ยวคั่วไก่",
+        "aliases": [
+          "Kua Gai Noodles"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "เย็นตาโฟ",
+        "aliases": [
+          "Yen Ta Fo"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "บะหมี่หมูแดง",
+        "aliases": [
+          "BBQ Pork Egg Noodles"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "สุกี้แห้ง",
+        "aliases": [
+          "Dry Thai Suki"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "สุกี้น้ำ",
+        "aliases": [
+          "Thai Suki Soup"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "ผัดขี้เมา",
+        "aliases": [
+          "Drunken Noodles"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "ขนมจีนแกงเขียวหวาน",
+        "aliases": [
+          "Rice Noodles with Green Curry"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "ขนมจีนน้ำเงี้ยว",
+        "aliases": [
+          "Nam Ngiao Rice Noodles"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "ข้าวยำปักษ์ใต้",
+        "aliases": [
+          "Southern Rice Salad"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "แกงไตปลา",
+        "aliases": [
+          "Gaeng Tai Pla"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "คั่วกลิ้งหมู",
+        "aliases": [
+          "Southern Dry Pork Curry"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "สะตอผัดกุ้ง",
+        "aliases": [
+          "Stink Beans with Shrimp"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "แกงเหลืองปลา",
+        "aliases": [
+          "Southern Yellow Fish Curry"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "ใบเหลียงผัดไข่",
+        "aliases": [
+          "Bai Liang with Egg"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "หมูฮ้อง",
+        "aliases": [
+          "Moo Hong"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "แกงฮังเล",
+        "aliases": [
+          "Hang Lay Curry"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "น้ำพริกอ่อง",
+        "aliases": [
+          "Nam Prik Ong"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "น้ำพริกหนุ่ม",
+        "aliases": [
+          "Nam Prik Noom"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "ไส้อั่ว",
+        "aliases": [
+          "Sai Ua"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "แคบหมู",
+        "aliases": [
+          "Pork Crackling"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "ลาบเหนือ",
+        "aliases": [
+          "Northern Larb"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "ข้าวซอยเนื้อ",
+        "aliases": [
+          "Beef Khao Soi"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "ตำปูปลาร้า",
+        "aliases": [
+          "Papaya Salad with Fermented Fish"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "ตำข้าวโพด",
+        "aliases": [
+          "Corn Som Tam"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "ตำแตง",
+        "aliases": [
+          "Cucumber Som Tam"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "ซุปหน่อไม้",
+        "aliases": [
+          "Bamboo Shoot Salad"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "ต้มแซ่บกระดูกอ่อน",
+        "aliases": [
+          "Spicy Pork Rib Soup"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "แกงอ่อมไก่",
+        "aliases": [
+          "Isan Chicken Herb Soup"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "จิ้มจุ่ม",
+        "aliases": [
+          "Jim Jum Hot Pot"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "หมูกระทะ",
+        "aliases": [
+          "Moo Krata"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "ก้อยเนื้อ",
+        "aliases": [
+          "Spicy Beef Koi"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "ข้าวเหนียวไก่ทอด",
+        "aliases": [
+          "Sticky Rice with Fried Chicken"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "ข้าวเหนียวหมูปิ้ง",
+        "aliases": [
+          "Sticky Rice with Grilled Pork"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "ข้าวเหนียวหมูทอด",
+        "aliases": [
+          "Sticky Rice with Fried Pork"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "กะเพราไก่",
+        "aliases": [
+          "Chicken Basil Rice"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "กะเพราทะเล",
+        "aliases": [
+          "Seafood Basil Rice"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "ผัดพริกแกงหมู",
+        "aliases": [
+          "Pork Red Curry Stir Fry"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "ผัดพริกเผาทะเล",
+        "aliases": [
+          "Seafood Chili Paste Stir Fry"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "ผัดผักบุ้งไฟแดง",
+        "aliases": [
+          "Stir Fried Morning Glory"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "ผัดคะน้าหมูกรอบ",
+        "aliases": [
+          "Chinese Kale with Crispy Pork"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "ผัดเปรี้ยวหวานหมู",
+        "aliases": [
+          "Sweet and Sour Pork Thai Style"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "ผัดเม็ดมะม่วงไก่",
+        "aliases": [
+          "Cashew Chicken Thai Style"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "แกงจืดเต้าหู้หมูสับ",
+        "aliases": [
+          "Tofu and Minced Pork Soup"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "ต้มจับฉ่าย",
+        "aliases": [
+          "Jab Chai Vegetable Stew"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "แกงเลียงกุ้งสด",
+        "aliases": [
+          "Thai Vegetable Soup with Shrimp"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "แกงคั่วหอยขม",
+        "aliases": [
+          "Snail Coconut Curry"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "ฉู่ฉี่ปลา",
+        "aliases": [
+          "Chu Chee Fish"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "ปลาดุกฟู",
+        "aliases": [
+          "Crispy Catfish Salad"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "ยำมะม่วง",
+        "aliases": [
+          "Spicy Green Mango Salad"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "ยำทะเล",
+        "aliases": [
+          "Spicy Seafood Salad"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "พล่ากุ้ง",
+        "aliases": [
+          "Spicy Shrimp Herb Salad"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "กุ้งแช่น้ำปลา",
+        "aliases": [
+          "Raw Shrimp in Fish Sauce"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "หอยทอด",
+        "aliases": [
+          "Thai Oyster Omelette"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "ขนมครก",
+        "aliases": [
+          "Coconut Rice Pancakes"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "บัวลอยไข่หวาน",
+        "aliases": [
+          "Bua Loy with Sweet Egg"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "ทับทิมกรอบ",
+        "aliases": [
+          "Red Rubies Dessert"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "ลอดช่องน้ำกะทิ",
+        "aliases": [
+          "Lod Chong in Coconut Milk"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "กล้วยบวชชี",
+        "aliases": [
+          "Bananas in Coconut Milk"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "thai_movies",
+    "title": "Top 100 หนังไทยระดับตำนาน",
+    "items": [
+      {
+        "rank": 1,
+        "name": "พี่มาก..พระโขนง",
+        "aliases": [
+          "Pee Mak",
+          "พี่มาก"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "ชัตเตอร์ กดติดวิญญาณ",
+        "aliases": [
+          "Shutter",
+          "ชัตเตอร์"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "ฉลาดเกมส์โกง",
+        "aliases": [
+          "Bad Genius"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "แฟนฉัน",
+        "aliases": [
+          "My Girl"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "สัปเหร่อ",
+        "aliases": [
+          "The Undertaker"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "หลานม่า",
+        "aliases": [
+          "How to Make Millions Before Grandma Dies"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "องค์บาก",
+        "aliases": [
+          "Ong-Bak"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "ต้มยำกุ้ง",
+        "aliases": [
+          "The Protector"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "บางระจัน",
+        "aliases": [
+          "Bang Rajan"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "สิ่งเล็กเล็กที่เรียกว่ารัก",
+        "aliases": [
+          "A Little Thing Called Love"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "กวน มึน โฮ",
+        "aliases": [
+          "Hello Stranger"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "รถไฟฟ้า มาหานะเธอ",
+        "aliases": [
+          "Bangkok Traffic Love Story"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "ลัดดาแลนด์",
+        "aliases": [
+          "Laddaland"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "นางนาก",
+        "aliases": [
+          "Nang Nak"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "โหมโรง",
+        "aliases": [
+          "The Overture"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "เด็กหอ",
+        "aliases": [
+          "Dorm"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "รักแห่งสยาม",
+        "aliases": [
+          "Love of Siam"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "เพื่อนสนิท",
+        "aliases": [
+          "Dear Dakanda"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "บุปผาราตรี",
+        "aliases": [
+          "Buppah Rahtree"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "4 แพร่ง",
+        "aliases": [
+          "4bia"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "5 แพร่ง",
+        "aliases": [
+          "Phobia 2"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "โปรแกรมหน้า วิญญาณอาฆาต",
+        "aliases": [
+          "Coming Soon"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "บอดี้ ศพ 19",
+        "aliases": [
+          "Body 19"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "คน ผี ปีศาจ",
+        "aliases": [
+          "Art of the Devil"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "ลองของ",
+        "aliases": [
+          "Art of the Devil 2"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "แฝด",
+        "aliases": [
+          "Alone"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "สายลับจับบ้านเล็ก",
+        "aliases": [
+          "The Bedside Detective"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "ห้าแถว",
+        "aliases": [
+          "5 Star"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "ไอฟาย..แต๊งกิ้ว..เลิฟยู้",
+        "aliases": [
+          "I Fine Thank You Love You"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "ATM เออรัก..เออเร่อ",
+        "aliases": [
+          "ATM Er Rak Error"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "พี่ชาย My Bromance",
+        "aliases": [
+          "My Bromance"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "ฟรีแลนซ์..ห้ามป่วย ห้ามพัก ห้ามรักหมอ",
+        "aliases": [
+          "Heart Attack"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "ฮาวทูทิ้ง..ทิ้งอย่างไรไม่ให้เหลือเธอ",
+        "aliases": [
+          "Happy Old Year"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "ตุ๊ดซี่ส์ แอนด์ เดอะเฟค",
+        "aliases": [
+          "Tootsies and the Fake"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "ไทบ้านเดอะซีรีส์",
+        "aliases": [
+          "Thi Baan The Series"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "ไทบ้านเดอะซีรีส์ 2.1",
+        "aliases": [
+          "Thi Baan 2.1"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "ไทบ้านเดอะซีรีส์ 2.2",
+        "aliases": [
+          "Thi Baan 2.2"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "ฮักนะสารคาม",
+        "aliases": [
+          "Hug Na Sarakham"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "บั้งไฟสไลเดอร์",
+        "aliases": [
+          "Rocket Slider"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "มนต์รักทรานซิสเตอร์",
+        "aliases": [
+          "Monrak Transistor"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "ฟ้าทะลายโจร",
+        "aliases": [
+          "Tears of the Black Tiger"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "เรื่องตลก 69",
+        "aliases": [
+          "6ixtynin9"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "สุดเสน่หา",
+        "aliases": [
+          "Blissfully Yours"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "สัตว์ประหลาด!",
+        "aliases": [
+          "Tropical Malady"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "แสงศตวรรษ",
+        "aliases": [
+          "Syndromes and a Century"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "ลุงบุญมีระลึกชาติ",
+        "aliases": [
+          "Uncle Boonmee Who Can Recall His Past Lives"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "รักที่ขอนแก่น",
+        "aliases": [
+          "Cemetery of Splendour"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "มะลิลา",
+        "aliases": [
+          "Malila The Farewell Flower"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "อนธการ",
+        "aliases": [
+          "The Blue Hour"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "กระเบนราหู",
+        "aliases": [
+          "Manta Ray"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "ป๊อปอาย มายเฟรนด์",
+        "aliases": [
+          "Pop Aye"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "ดาวคะนอง",
+        "aliases": [
+          "By the Time It Gets Dark"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "Mary Is Happy, Mary Is Happy",
+        "aliases": [
+          "แมรี่ อิส แฮปปี้"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "อวสานโลกสวย",
+        "aliases": [
+          "Grace"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "คืนยุติ-ธรรม",
+        "aliases": [
+          "The Last 10 Years"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "เฉือน",
+        "aliases": [
+          "Slice"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "ฝนตกขึ้นฟ้า",
+        "aliases": [
+          "Headshot"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "36",
+        "aliases": [
+          "Thirty Six"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "Snap แค่...ได้คิดถึง",
+        "aliases": [
+          "Snap"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "Die Tomorrow",
+        "aliases": [
+          "พรุ่งนี้ตาย"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "เพื่อน..ที่ระลึก",
+        "aliases": [
+          "The Promise"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "One for the Road",
+        "aliases": [
+          "วันสุดท้าย..ก่อนบายเธอ"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "Where We Belong",
+        "aliases": [
+          "ที่ตรงนั้น มีฉันหรือเปล่า"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "Homestay",
+        "aliases": [
+          "โฮมสเตย์"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "The Medium",
+        "aliases": [
+          "ร่างทรง"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "ธี่หยด",
+        "aliases": [
+          "Death Whisperer"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "ธี่หยด 2",
+        "aliases": [
+          "Death Whisperer 2"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "หอแต๋วแตก",
+        "aliases": [
+          "Hor Taew Tak"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "หอแต๋วแตก แหกกระเจิง",
+        "aliases": [
+          "Hor Taew Tak 2"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "หอแต๋วแตก แหกมว๊ากมว๊าก",
+        "aliases": [
+          "Hor Taew Tak 3"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "สาระแนสิบล้อ",
+        "aliases": [
+          "Saranae Sib Lor"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "สาระแนห้าวเป้ง",
+        "aliases": [
+          "Saranae Hao Peng"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "แหยมยโสธร",
+        "aliases": [
+          "Yam Yasothon"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "แหยมยโสธร 2",
+        "aliases": [
+          "Yam Yasothon 2"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "แหยมยโสธร 3",
+        "aliases": [
+          "Yam Yasothon 3"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "มือปืน/โลก/พระ/จัน",
+        "aliases": [
+          "Killer Tattoo"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "บอดี้การ์ดหน้าเหลี่ยม",
+        "aliases": [
+          "The Bodyguard"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "บอดี้การ์ดหน้าเหลี่ยม 2",
+        "aliases": [
+          "The Bodyguard 2"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "สารวัตรหมาบ้า",
+        "aliases": [
+          "The Cop"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "ขุนพันธ์",
+        "aliases": [
+          "Khun Pan"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "ขุนพันธ์ 2",
+        "aliases": [
+          "Khun Pan 2"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "ขุนพันธ์ 3",
+        "aliases": [
+          "Khun Pan 3"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "ตำนานสมเด็จพระนเรศวรมหาราช",
+        "aliases": [
+          "King Naresuan"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "สุริโยไท",
+        "aliases": [
+          "The Legend of Suriyothai"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "ขุนแผน ฟ้าฟื้น",
+        "aliases": [
+          "Khun Phaen Begins"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "พันท้ายนรสิงห์",
+        "aliases": [
+          "Pan Thai Norasing"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "ทวิภพ",
+        "aliases": [
+          "The Siam Renaissance"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "แม่นาคพระโขนง",
+        "aliases": [
+          "Mae Nak Phra Khanong"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "น้ำพริกลงเรือ",
+        "aliases": [
+          "Nam Prik Long Ruea"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "รัก 7 ปี ดี 7 หน",
+        "aliases": [
+          "Seven Something"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "เกรียน ฟิคชั่น",
+        "aliases": [
+          "Grean Fictions"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "ฤดูที่ฉันเหงา",
+        "aliases": [
+          "Love in the Rain"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "ซักซี้ด ห่วยขั้นเทพ",
+        "aliases": [
+          "SuckSeed"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "ปิดเทอมใหญ่ หัวใจว้าวุ่น",
+        "aliases": [
+          "Hormones"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "เมย์ไหน..ไฟแรงเฟร่อ",
+        "aliases": [
+          "May Who"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "มิสเตอร์เฮิร์ท มือวางอันดับเจ็บ",
+        "aliases": [
+          "Mr Hurt"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "ไบค์แมน ศักรินทร์ตูดหมึก",
+        "aliases": [
+          "Bikeman"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "อีเรียมซิ่ง",
+        "aliases": [
+          "E Riam Sing"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "แอน",
+        "aliases": [
+          "Faces of Anne"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "แมนสรวง",
+        "aliases": [
+          "Man Suang"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "thai_games",
+    "title": "Top 100 เกมที่คนไทยชอบเล่น",
+    "items": [
+      {
+        "rank": 1,
+        "name": "Arena of Valor",
+        "aliases": [
+          "RoV",
+          "อารีน่าออฟเวเลอร์"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "Free Fire",
+        "aliases": [
+          "ฟีฟาย"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "Genshin Impact",
+        "aliases": [
+          "เกนชิน"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "Valorant",
+        "aliases": [
+          "วาโลแรนต์"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "Grand Theft Auto V",
+        "aliases": [
+          "GTA V",
+          "จีทีเอห้า"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "Minecraft",
+        "aliases": [
+          "มายคราฟ"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "Seven Knights",
+        "aliases": [
+          "เซเว่นไนท์"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "PUBG: Battlegrounds",
+        "aliases": [
+          "PUBG",
+          "พับจี"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "Mobile Legends: Bang Bang",
+        "aliases": [
+          "MLBB",
+          "โมบายเลเจนด์"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "Roblox",
+        "aliases": [
+          "โรบล็อกซ์"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "League of Legends",
+        "aliases": [
+          "LoL",
+          "ลีกออฟเลเจนด์"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "Counter-Strike 2",
+        "aliases": [
+          "CS2",
+          "เคาน์เตอร์สไตรค์สอง"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "Dota 2",
+        "aliases": [
+          "โดต้า 2"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "FIFA Online 4",
+        "aliases": [
+          "FC Online",
+          "ฟีฟ่าออนไลน์"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "EA Sports FC 25",
+        "aliases": [
+          "FC25",
+          "เอฟซี 25"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "The Sims 4",
+        "aliases": [
+          "เดอะซิมส์ 4"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "Stardew Valley",
+        "aliases": [
+          "สตาร์ดิววัลเลย์"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "Among Us",
+        "aliases": [
+          "อะมองอัส"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "Pokémon GO",
+        "aliases": [
+          "Pokemon Go",
+          "โปเกมอนโก"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "Call of Duty: Mobile",
+        "aliases": [
+          "COD Mobile",
+          "คอลออฟดิวตี้โมบาย"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "Call of Duty: Warzone",
+        "aliases": [
+          "Warzone",
+          "วอร์โซน"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "Fortnite",
+        "aliases": [
+          "ฟอร์ตไนต์"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "Apex Legends",
+        "aliases": [
+          "เอเพ็กซ์เลเจนด์"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "Overwatch 2",
+        "aliases": [
+          "โอเวอร์วอตช์ 2"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "Honkai: Star Rail",
+        "aliases": [
+          "ฮอนไคสตาร์เรล"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "Honkai Impact 3rd",
+        "aliases": [
+          "ฮอนไคอิมแพค"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "Zenless Zone Zero",
+        "aliases": [
+          "ZZZ",
+          "เซนเลสโซนซีโร่"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "Wuthering Waves",
+        "aliases": [
+          "วูเธอริงเวฟส์"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "Ragnarok Online",
+        "aliases": [
+          "RO",
+          "แร็กนาร็อกออนไลน์"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "Ragnarok M: Eternal Love",
+        "aliases": [
+          "RO M",
+          "แร็กนาร็อกเอ็ม"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "MapleStory",
+        "aliases": [
+          "เมเปิลสตอรี่"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "Audition Online",
+        "aliases": [
+          "ออดิชั่นออนไลน์"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "Point Blank",
+        "aliases": [
+          "พอยต์แบลงก์"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "Special Force",
+        "aliases": [
+          "สเปเชียลฟอร์ซ"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "CrossFire",
+        "aliases": [
+          "ครอสไฟร์"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "Warcraft III",
+        "aliases": [
+          "วอร์คราฟต์สาม"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "World of Warcraft",
+        "aliases": [
+          "WoW",
+          "เวิลด์ออฟวอร์คราฟต์"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "Hearthstone",
+        "aliases": [
+          "ฮาร์ธสโตน"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "Teamfight Tactics",
+        "aliases": [
+          "TFT",
+          "ทีมไฟต์แท็กติกส์"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "Auto Chess",
+        "aliases": [
+          "ออโต้เชส"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "Dead by Daylight",
+        "aliases": [
+          "DBD",
+          "เดดบายเดย์ไลต์"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "Identity V",
+        "aliases": [
+          "ไอเดนติตี้ไฟว์"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "Phasmophobia",
+        "aliases": [
+          "แฟสโมโฟเบีย"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "Lethal Company",
+        "aliases": [
+          "ลีธัลคอมพานี"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "The Forest",
+        "aliases": [
+          "เดอะฟอเรสต์"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "Sons of the Forest",
+        "aliases": [
+          "ซันส์ออฟเดอะฟอเรสต์"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "Palworld",
+        "aliases": [
+          "พาลเวิลด์"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "Terraria",
+        "aliases": [
+          "เทอร์ราเรีย"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "Don't Starve Together",
+        "aliases": [
+          "ดอนต์สตาร์ฟทูเกเธอร์"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "Fall Guys",
+        "aliases": [
+          "ฟอลกายส์"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "Human: Fall Flat",
+        "aliases": [
+          "ฮิวแมนฟอลแฟลต"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "It Takes Two",
+        "aliases": [
+          "อิทเทกส์ทู"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "Overcooked! 2",
+        "aliases": [
+          "โอเวอร์คุก 2"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "PlateUp!",
+        "aliases": [
+          "เพลตอัป"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "Pico Park",
+        "aliases": [
+          "พิโกพาร์ก"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "Goose Goose Duck",
+        "aliases": [
+          "กูสกูสดัก"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "Sea of Thieves",
+        "aliases": [
+          "ซีออฟธีฟส์"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "Raft",
+        "aliases": [
+          "ราฟต์"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "Rust",
+        "aliases": [
+          "รัสต์"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "ARK: Survival Evolved",
+        "aliases": [
+          "อาร์กเซอร์ไววัล"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "The Witcher 3: Wild Hunt",
+        "aliases": [
+          "เดอะวิตเชอร์สาม"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "Elden Ring",
+        "aliases": [
+          "เอลเดนริง"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "Sekiro: Shadows Die Twice",
+        "aliases": [
+          "เซกิโร"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "Dark Souls III",
+        "aliases": [
+          "ดาร์กโซลส์สาม"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "Bloodborne",
+        "aliases": [
+          "บลัดบอร์น"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "Black Myth: Wukong",
+        "aliases": [
+          "แบล็กมิธหงอคง"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "Monster Hunter: World",
+        "aliases": [
+          "มอนสเตอร์ฮันเตอร์เวิลด์"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "Monster Hunter Rise",
+        "aliases": [
+          "มอนสเตอร์ฮันเตอร์ไรส์"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "Resident Evil 4",
+        "aliases": [
+          "เรซิเดนต์อีวิลสี่"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "Resident Evil Village",
+        "aliases": [
+          "เรซิเดนต์อีวิลวิลเลจ"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "The Last of Us",
+        "aliases": [
+          "เดอะลาสต์ออฟอัส"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "Red Dead Redemption 2",
+        "aliases": [
+          "เรดเดดรีเดมป์ชันสอง"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "Cyberpunk 2077",
+        "aliases": [
+          "ไซเบอร์พังก์"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "Hogwarts Legacy",
+        "aliases": [
+          "ฮอกวอตส์เลกาซี"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "Baldur's Gate 3",
+        "aliases": [
+          "บัลเดอร์สเกตสาม"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "The Legend of Zelda: Breath of the Wild",
+        "aliases": [
+          "เซลด้าเบรธออฟเดอะไวลด์"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "The Legend of Zelda: Tears of the Kingdom",
+        "aliases": [
+          "เซลด้าเทียร์สออฟเดอะคิงดอม"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "Super Mario Odyssey",
+        "aliases": [
+          "ซูเปอร์มาริโอโอดิสซีย์"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "Mario Kart 8 Deluxe",
+        "aliases": [
+          "มาริโอคาร์ตแปด"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "Animal Crossing: New Horizons",
+        "aliases": [
+          "แอนิมอลครอสซิง"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "Pokémon Scarlet",
+        "aliases": [
+          "โปเกมอนสการ์เล็ต"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "Pokémon Violet",
+        "aliases": [
+          "โปเกมอนไวโอเล็ต"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "Pokémon Unite",
+        "aliases": [
+          "โปเกมอนยูไนต์"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "Yu-Gi-Oh! Master Duel",
+        "aliases": [
+          "ยูกิโอมาสเตอร์ดูเอล"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "Cookie Run: Kingdom",
+        "aliases": [
+          "คุกกี้รันคิงดอม"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "Cookie Run: OvenBreak",
+        "aliases": [
+          "คุกกี้รันโอเวนเบรก"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "Clash of Clans",
+        "aliases": [
+          "แคลชออฟแคลนส์"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "Clash Royale",
+        "aliases": [
+          "แคลชรอยัล"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "Brawl Stars",
+        "aliases": [
+          "บรอลสตาร์ส"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "Hay Day",
+        "aliases": [
+          "เฮย์เดย์"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "Subway Surfers",
+        "aliases": [
+          "ซับเวย์เซิร์ฟเฟอร์ส"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "Temple Run 2",
+        "aliases": [
+          "เทมเพิลรันสอง"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "Candy Crush Saga",
+        "aliases": [
+          "แคนดี้ครัช"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "8 Ball Pool",
+        "aliases": [
+          "เอทบอลพูล"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "eFootball",
+        "aliases": [
+          "อีฟุตบอล"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "NBA 2K25",
+        "aliases": [
+          "เอ็นบีเอทูเค"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "Diablo IV",
+        "aliases": [
+          "ไดอาโบลสี่"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "Path of Exile",
+        "aliases": [
+          "พาธออฟเอ็กไซล์"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "Lost Ark",
+        "aliases": [
+          "ลอสต์อาร์ก"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "Tower of Fantasy",
+        "aliases": [
+          "ทาวเวอร์ออฟแฟนตาซี"
+        ]
+      }
+    ]
+  },
+  {
     "id": "anime_characters",
     "title": "Top 100 ตัวละครอนิเมะยอดนิยมตลอดกาล",
     "items": [
@@ -806,707 +2943,4282 @@
     ]
   },
   {
-    "id": "thai_food",
-    "title": "Top 100 เมนูอาหารไทยยอดนิยม",
+    "id": "movie_characters",
+    "title": "Top 100 ตัวละครจากหนังทั่วโลก",
     "items": [
       {
         "rank": 1,
-        "name": "ผัดไทย",
+        "name": "Iron Man",
         "aliases": [
-          "Pad Thai"
+          "Tony Stark",
+          "ไอรอนแมน"
         ]
       },
       {
         "rank": 2,
-        "name": "ต้มยำกุ้ง",
+        "name": "Spider-Man",
         "aliases": [
-          "Tom Yum Goong"
+          "Peter Parker",
+          "สไปเดอร์แมน"
         ]
       },
       {
         "rank": 3,
-        "name": "ส้มตำไทย",
+        "name": "Batman",
         "aliases": [
-          "Som Tam Thai"
+          "Bruce Wayne",
+          "แบทแมน"
         ]
       },
       {
         "rank": 4,
-        "name": "แกงเขียวหวานไก่",
+        "name": "Joker",
         "aliases": [
-          "Green Chicken Curry"
+          "โจ๊กเกอร์"
         ]
       },
       {
         "rank": 5,
-        "name": "ข้าวกะเพราหมูสับ",
+        "name": "Harry Potter",
         "aliases": [
-          "Pork Basil Rice"
+          "แฮร์รี่ พอตเตอร์"
         ]
       },
       {
         "rank": 6,
-        "name": "ข้าวมันไก่",
+        "name": "Darth Vader",
         "aliases": [
-          "Khao Man Gai"
+          "Anakin Skywalker",
+          "ดาร์ธ เวเดอร์"
         ]
       },
       {
         "rank": 7,
-        "name": "มัสมั่นเนื้อ",
+        "name": "Jack Sparrow",
         "aliases": [
-          "Beef Massaman Curry"
+          "กัปตันแจ็ค สแปร์โรว์"
         ]
       },
       {
         "rank": 8,
-        "name": "ต้มข่าไก่",
+        "name": "Superman",
         "aliases": [
-          "Tom Kha Gai"
+          "Clark Kent",
+          "ซูเปอร์แมน"
         ]
       },
       {
         "rank": 9,
-        "name": "ข้าวซอยไก่",
+        "name": "Wonder Woman",
         "aliases": [
-          "Chicken Khao Soi"
+          "Diana Prince",
+          "วันเดอร์วูแมน"
         ]
       },
       {
         "rank": 10,
-        "name": "พะแนงหมู",
+        "name": "Captain America",
         "aliases": [
-          "Pork Panang Curry"
+          "Steve Rogers",
+          "กัปตันอเมริกา"
         ]
       },
       {
         "rank": 11,
-        "name": "ลาบหมู",
+        "name": "Thor",
         "aliases": [
-          "Larb Moo"
+          "ธอร์"
         ]
       },
       {
         "rank": 12,
-        "name": "แกงส้มชะอมไข่",
+        "name": "Black Panther",
         "aliases": [
-          "Sour Curry with Acacia Omelette"
+          "T'Challa",
+          "แบล็กแพนเธอร์"
         ]
       },
       {
         "rank": 13,
-        "name": "หมูสะเต๊ะ",
+        "name": "Hulk",
         "aliases": [
-          "Pork Satay"
+          "Bruce Banner",
+          "ฮัลค์"
         ]
       },
       {
         "rank": 14,
-        "name": "ไก่ย่าง",
+        "name": "Doctor Strange",
         "aliases": [
-          "Gai Yang"
+          "Stephen Strange",
+          "ด็อกเตอร์สเตรนจ์"
         ]
       },
       {
         "rank": 15,
-        "name": "คอหมูย่าง",
+        "name": "Thanos",
         "aliases": [
-          "Grilled Pork Neck"
+          "ธานอส"
         ]
       },
       {
         "rank": 16,
-        "name": "ข้าวเหนียวมะม่วง",
+        "name": "Loki",
         "aliases": [
-          "Mango Sticky Rice"
+          "โลกิ"
         ]
       },
       {
         "rank": 17,
-        "name": "ยำวุ้นเส้น",
+        "name": "Black Widow",
         "aliases": [
-          "Glass Noodle Salad"
+          "Natasha Romanoff",
+          "แบล็กวิโดว์"
         ]
       },
       {
         "rank": 18,
-        "name": "น้ำตกหมู",
+        "name": "Deadpool",
         "aliases": [
-          "Nam Tok Moo"
+          "Wade Wilson",
+          "เดดพูล"
         ]
       },
       {
         "rank": 19,
-        "name": "ผัดซีอิ๊วหมู",
+        "name": "Wolverine",
         "aliases": [
-          "Pad See Ew Pork"
+          "Logan",
+          "วูล์ฟเวอรีน"
         ]
       },
       {
         "rank": 20,
-        "name": "ราดหน้าหมู",
+        "name": "Professor X",
         "aliases": [
-          "Rad Na Pork"
+          "Charles Xavier",
+          "ศาสตราจารย์เอ็กซ์"
         ]
       },
       {
         "rank": 21,
-        "name": "ขนมจีนน้ำยา",
+        "name": "Magneto",
         "aliases": [
-          "Khanom Jeen Nam Ya"
+          "Erik Lehnsherr",
+          "แม็กนีโต"
         ]
       },
       {
         "rank": 22,
-        "name": "ข้าวคลุกกะปิ",
+        "name": "Green Goblin",
         "aliases": [
-          "Shrimp Paste Rice"
+          "Norman Osborn",
+          "กรีนก็อบลิน"
         ]
       },
       {
         "rank": 23,
-        "name": "แกงป่าไก่",
+        "name": "Venom",
         "aliases": [
-          "Jungle Curry Chicken"
+          "Eddie Brock",
+          "เวน่อม"
         ]
       },
       {
         "rank": 24,
-        "name": "แกงเผ็ดเป็ดย่าง",
+        "name": "Harley Quinn",
         "aliases": [
-          "Roast Duck Red Curry"
+          "ฮาร์ลีย์ ควินน์"
         ]
       },
       {
         "rank": 25,
-        "name": "ทอดมันปลา",
+        "name": "The Penguin",
         "aliases": [
-          "Thai Fish Cakes"
+          "Oswald Cobblepot",
+          "เพนกวิน"
         ]
       },
       {
         "rank": 26,
-        "name": "ห่อหมกปลา",
+        "name": "Catwoman",
         "aliases": [
-          "Steamed Fish Curry Custard"
+          "Selina Kyle",
+          "แคตวูแมน"
         ]
       },
       {
         "rank": 27,
-        "name": "ปลากะพงนึ่งมะนาว",
+        "name": "Aquaman",
         "aliases": [
-          "Steamed Seabass with Lime"
+          "Arthur Curry",
+          "อควาแมน"
         ]
       },
       {
         "rank": 28,
-        "name": "ปลาทอดน้ำปลา",
+        "name": "The Flash",
         "aliases": [
-          "Fish with Fish Sauce"
+          "Barry Allen",
+          "เดอะแฟลช"
         ]
       },
       {
         "rank": 29,
-        "name": "กุ้งอบวุ้นเส้น",
+        "name": "Shazam",
         "aliases": [
-          "Prawns with Glass Noodles"
+          "Billy Batson",
+          "ชาแซม"
         ]
       },
       {
         "rank": 30,
-        "name": "ปูผัดผงกะหรี่",
+        "name": "John Wick",
         "aliases": [
-          "Crab Curry Stir Fry"
+          "จอห์น วิค"
         ]
       },
       {
         "rank": 31,
-        "name": "ไข่เจียวหมูสับ",
+        "name": "James Bond",
         "aliases": [
-          "Pork Omelette"
+          "007",
+          "เจมส์ บอนด์"
         ]
       },
       {
         "rank": 32,
-        "name": "ไข่พะโล้",
+        "name": "Ethan Hunt",
         "aliases": [
-          "Five Spice Eggs"
+          "อีธาน ฮันต์"
         ]
       },
       {
         "rank": 33,
-        "name": "หมูกรอบ",
+        "name": "Jason Bourne",
         "aliases": [
-          "Crispy Pork Belly"
+          "เจสัน บอร์น"
         ]
       },
       {
         "rank": 34,
-        "name": "ข้าวหมูแดง",
+        "name": "Indiana Jones",
         "aliases": [
-          "Red Pork Rice"
+          "อินเดียนา โจนส์"
         ]
       },
       {
         "rank": 35,
-        "name": "ข้าวหน้าเป็ด",
+        "name": "Lara Croft",
         "aliases": [
-          "Roast Duck Rice"
+          "ลาร่า ครอฟต์"
         ]
       },
       {
         "rank": 36,
-        "name": "ข้าวผัดปู",
+        "name": "Katniss Everdeen",
         "aliases": [
-          "Crab Fried Rice"
+          "แคตนิส เอฟเวอร์ดีน"
         ]
       },
       {
         "rank": 37,
-        "name": "ข้าวผัดกุ้ง",
+        "name": "Hannibal Lecter",
         "aliases": [
-          "Shrimp Fried Rice"
+          "ฮันนิบาล เล็กเตอร์"
         ]
       },
       {
         "rank": 38,
-        "name": "ข้าวผัดสับปะรด",
+        "name": "Forrest Gump",
         "aliases": [
-          "Pineapple Fried Rice"
+          "ฟอร์เรสต์ กัมป์"
         ]
       },
       {
         "rank": 39,
-        "name": "ข้าวต้มปลา",
+        "name": "Rocky Balboa",
         "aliases": [
-          "Fish Rice Soup"
+          "ร็อคกี้ บัลบัว"
         ]
       },
       {
         "rank": 40,
-        "name": "โจ๊กหมู",
+        "name": "Rambo",
         "aliases": [
-          "Pork Congee"
+          "John Rambo",
+          "แรมโบ้"
         ]
       },
       {
         "rank": 41,
-        "name": "ก๋วยเตี๋ยวเรือ",
+        "name": "Terminator T-800",
         "aliases": [
-          "Boat Noodles"
+          "T-800",
+          "คนเหล็ก"
         ]
       },
       {
         "rank": 42,
-        "name": "ก๋วยเตี๋ยวต้มยำ",
+        "name": "Sarah Connor",
         "aliases": [
-          "Tom Yum Noodles"
+          "ซาราห์ คอนเนอร์"
         ]
       },
       {
         "rank": 43,
-        "name": "ก๋วยเตี๋ยวคั่วไก่",
+        "name": "Ellen Ripley",
         "aliases": [
-          "Kua Gai Noodles"
+          "เอเลน ริปลีย์"
         ]
       },
       {
         "rank": 44,
-        "name": "เย็นตาโฟ",
+        "name": "Predator",
         "aliases": [
-          "Yen Ta Fo"
+          "พรีเดเตอร์"
         ]
       },
       {
         "rank": 45,
-        "name": "บะหมี่หมูแดง",
+        "name": "Alien Xenomorph",
         "aliases": [
-          "BBQ Pork Egg Noodles"
+          "Xenomorph",
+          "ซีโนมอร์ฟ"
         ]
       },
       {
         "rank": 46,
-        "name": "สุกี้แห้ง",
+        "name": "Neo",
         "aliases": [
-          "Dry Thai Suki"
+          "Thomas Anderson",
+          "นีโอ"
         ]
       },
       {
         "rank": 47,
-        "name": "สุกี้น้ำ",
+        "name": "Morpheus",
         "aliases": [
-          "Thai Suki Soup"
+          "มอร์เฟียส"
         ]
       },
       {
         "rank": 48,
-        "name": "ผัดขี้เมา",
+        "name": "Trinity",
         "aliases": [
-          "Drunken Noodles"
+          "ทรินิตี้"
         ]
       },
       {
         "rank": 49,
-        "name": "ขนมจีนแกงเขียวหวาน",
+        "name": "Agent Smith",
         "aliases": [
-          "Rice Noodles with Green Curry"
+          "เอเจนต์สมิธ"
         ]
       },
       {
         "rank": 50,
-        "name": "ขนมจีนน้ำเงี้ยว",
+        "name": "Luke Skywalker",
         "aliases": [
-          "Nam Ngiao Rice Noodles"
+          "ลุค สกายวอล์คเกอร์"
         ]
       },
       {
         "rank": 51,
-        "name": "ข้าวยำปักษ์ใต้",
+        "name": "Princess Leia",
         "aliases": [
-          "Southern Rice Salad"
+          "Leia Organa",
+          "เจ้าหญิงเลอา"
         ]
       },
       {
         "rank": 52,
-        "name": "แกงไตปลา",
+        "name": "Han Solo",
         "aliases": [
-          "Gaeng Tai Pla"
+          "ฮาน โซโล"
         ]
       },
       {
         "rank": 53,
-        "name": "คั่วกลิ้งหมู",
+        "name": "Yoda",
         "aliases": [
-          "Southern Dry Pork Curry"
+          "โยดา"
         ]
       },
       {
         "rank": 54,
-        "name": "สะตอผัดกุ้ง",
+        "name": "Obi-Wan Kenobi",
         "aliases": [
-          "Stink Beans with Shrimp"
+          "โอบีวัน เคโนบี"
         ]
       },
       {
         "rank": 55,
-        "name": "แกงเหลืองปลา",
+        "name": "Chewbacca",
         "aliases": [
-          "Southern Yellow Fish Curry"
+          "ชิวแบคคา"
         ]
       },
       {
         "rank": 56,
-        "name": "ใบเหลียงผัดไข่",
+        "name": "R2-D2",
         "aliases": [
-          "Bai Liang with Egg"
+          "อาร์ทูดีทู"
         ]
       },
       {
         "rank": 57,
-        "name": "หมูฮ้อง",
+        "name": "C-3PO",
         "aliases": [
-          "Moo Hong"
+          "ซีทรีพีโอ"
         ]
       },
       {
         "rank": 58,
-        "name": "แกงฮังเล",
+        "name": "Rey",
         "aliases": [
-          "Hang Lay Curry"
+          "เรย์"
         ]
       },
       {
         "rank": 59,
-        "name": "น้ำพริกอ่อง",
+        "name": "Kylo Ren",
         "aliases": [
-          "Nam Prik Ong"
+          "Ben Solo",
+          "ไคโล เรน"
         ]
       },
       {
         "rank": 60,
-        "name": "น้ำพริกหนุ่ม",
+        "name": "The Mandalorian",
         "aliases": [
-          "Nam Prik Noom"
+          "Din Djarin",
+          "แมนดาโลเรียน"
         ]
       },
       {
         "rank": 61,
-        "name": "ไส้อั่ว",
+        "name": "Frodo Baggins",
         "aliases": [
-          "Sai Ua"
+          "โฟรโด แบ๊กกิ้นส์"
         ]
       },
       {
         "rank": 62,
-        "name": "แคบหมู",
+        "name": "Gandalf",
         "aliases": [
-          "Pork Crackling"
+          "แกนดัล์ฟ"
         ]
       },
       {
         "rank": 63,
-        "name": "ลาบเหนือ",
+        "name": "Aragorn",
         "aliases": [
-          "Northern Larb"
+          "อารากอร์น"
         ]
       },
       {
         "rank": 64,
-        "name": "ข้าวซอยเนื้อ",
+        "name": "Legolas",
         "aliases": [
-          "Beef Khao Soi"
+          "เลโกลัส"
         ]
       },
       {
         "rank": 65,
-        "name": "ตำปูปลาร้า",
+        "name": "Gimli",
         "aliases": [
-          "Papaya Salad with Fermented Fish"
+          "กิมลี"
         ]
       },
       {
         "rank": 66,
-        "name": "ตำข้าวโพด",
+        "name": "Gollum",
         "aliases": [
-          "Corn Som Tam"
+          "Sméagol",
+          "กอลลัม"
         ]
       },
       {
         "rank": 67,
-        "name": "ตำแตง",
+        "name": "Samwise Gamgee",
         "aliases": [
-          "Cucumber Som Tam"
+          "แซมไวส์"
         ]
       },
       {
         "rank": 68,
-        "name": "ซุปหน่อไม้",
+        "name": "Bilbo Baggins",
         "aliases": [
-          "Bamboo Shoot Salad"
+          "บิลโบ แบ๊กกิ้นส์"
         ]
       },
       {
         "rank": 69,
-        "name": "ต้มแซ่บกระดูกอ่อน",
+        "name": "Saruman",
         "aliases": [
-          "Spicy Pork Rib Soup"
+          "ซารูมาน"
         ]
       },
       {
         "rank": 70,
-        "name": "แกงอ่อมไก่",
+        "name": "Sauron",
         "aliases": [
-          "Isan Chicken Herb Soup"
+          "เซารอน"
         ]
       },
       {
         "rank": 71,
-        "name": "จิ้มจุ่ม",
+        "name": "Hermione Granger",
         "aliases": [
-          "Jim Jum Hot Pot"
+          "เฮอร์ไมโอนี่ เกรนเจอร์"
         ]
       },
       {
         "rank": 72,
-        "name": "หมูกระทะ",
+        "name": "Ron Weasley",
         "aliases": [
-          "Moo Krata"
+          "รอน วีสลีย์"
         ]
       },
       {
         "rank": 73,
-        "name": "ก้อยเนื้อ",
+        "name": "Albus Dumbledore",
         "aliases": [
-          "Spicy Beef Koi"
+          "อัลบัส ดัมเบิลดอร์"
         ]
       },
       {
         "rank": 74,
-        "name": "ข้าวเหนียวไก่ทอด",
+        "name": "Severus Snape",
         "aliases": [
-          "Sticky Rice with Fried Chicken"
+          "เซเวอรัส สเนป"
         ]
       },
       {
         "rank": 75,
-        "name": "ข้าวเหนียวหมูปิ้ง",
+        "name": "Voldemort",
         "aliases": [
-          "Sticky Rice with Grilled Pork"
+          "Tom Riddle",
+          "โวลเดอมอร์"
         ]
       },
       {
         "rank": 76,
-        "name": "ข้าวเหนียวหมูทอด",
+        "name": "Draco Malfoy",
         "aliases": [
-          "Sticky Rice with Fried Pork"
+          "เดรโก มัลฟอย"
         ]
       },
       {
         "rank": 77,
-        "name": "กะเพราไก่",
+        "name": "Hagrid",
         "aliases": [
-          "Chicken Basil Rice"
+          "Rubeus Hagrid",
+          "แฮกริด"
         ]
       },
       {
         "rank": 78,
-        "name": "กะเพราทะเล",
+        "name": "Newt Scamander",
         "aliases": [
-          "Seafood Basil Rice"
+          "นิวท์ สคามันเดอร์"
         ]
       },
       {
         "rank": 79,
-        "name": "ผัดพริกแกงหมู",
+        "name": "Jack Dawson",
         "aliases": [
-          "Pork Red Curry Stir Fry"
+          "แจ็ค ดอว์สัน"
         ]
       },
       {
         "rank": 80,
-        "name": "ผัดพริกเผาทะเล",
+        "name": "Rose DeWitt Bukater",
         "aliases": [
-          "Seafood Chili Paste Stir Fry"
+          "โรส เดวิตต์ บูคาเตอร์"
         ]
       },
       {
         "rank": 81,
-        "name": "ผัดผักบุ้งไฟแดง",
+        "name": "The Godfather",
         "aliases": [
-          "Stir Fried Morning Glory"
+          "Vito Corleone",
+          "ดอน วีโต"
         ]
       },
       {
         "rank": 82,
-        "name": "ผัดคะน้าหมูกรอบ",
+        "name": "Michael Corleone",
         "aliases": [
-          "Chinese Kale with Crispy Pork"
+          "ไมเคิล คอร์เลโอเน"
         ]
       },
       {
         "rank": 83,
-        "name": "ผัดเปรี้ยวหวานหมู",
+        "name": "Tony Montana",
         "aliases": [
-          "Sweet and Sour Pork Thai Style"
+          "โทนี่ มอนทาน่า"
         ]
       },
       {
         "rank": 84,
-        "name": "ผัดเม็ดมะม่วงไก่",
+        "name": "Travis Bickle",
         "aliases": [
-          "Cashew Chicken Thai Style"
+          "ทราวิส บิคเคิล"
         ]
       },
       {
         "rank": 85,
-        "name": "แกงจืดเต้าหู้หมูสับ",
+        "name": "Tyler Durden",
         "aliases": [
-          "Tofu and Minced Pork Soup"
+          "ไทเลอร์ เดอร์เดน"
         ]
       },
       {
         "rank": 86,
-        "name": "ต้มจับฉ่าย",
+        "name": "The Bride",
         "aliases": [
-          "Jab Chai Vegetable Stew"
+          "Beatrix Kiddo",
+          "เดอะไบรด์"
         ]
       },
       {
         "rank": 87,
-        "name": "แกงเลียงกุ้งสด",
+        "name": "Jules Winnfield",
         "aliases": [
-          "Thai Vegetable Soup with Shrimp"
+          "จูลส์ วินน์ฟิลด์"
         ]
       },
       {
         "rank": 88,
-        "name": "แกงคั่วหอยขม",
+        "name": "Vincent Vega",
         "aliases": [
-          "Snail Coconut Curry"
+          "วินเซนต์ เวกา"
         ]
       },
       {
         "rank": 89,
-        "name": "ฉู่ฉี่ปลา",
+        "name": "Marty McFly",
         "aliases": [
-          "Chu Chee Fish"
+          "มาร์ตี้ แม็กฟลาย"
         ]
       },
       {
         "rank": 90,
-        "name": "ปลาดุกฟู",
+        "name": "Doc Brown",
         "aliases": [
-          "Crispy Catfish Salad"
+          "Emmett Brown",
+          "ด็อก บราวน์"
         ]
       },
       {
         "rank": 91,
-        "name": "ยำมะม่วง",
+        "name": "Willy Wonka",
         "aliases": [
-          "Spicy Green Mango Salad"
+          "วิลลี่ วองก้า"
         ]
       },
       {
         "rank": 92,
-        "name": "ยำทะเล",
+        "name": "Mary Poppins",
         "aliases": [
-          "Spicy Seafood Salad"
+          "แมรี่ ป๊อปปิ้นส์"
         ]
       },
       {
         "rank": 93,
-        "name": "พล่ากุ้ง",
+        "name": "Barbie",
         "aliases": [
-          "Spicy Shrimp Herb Salad"
+          "บาร์บี้"
         ]
       },
       {
         "rank": 94,
-        "name": "กุ้งแช่น้ำปลา",
+        "name": "Ken",
         "aliases": [
-          "Raw Shrimp in Fish Sauce"
+          "เคน"
         ]
       },
       {
         "rank": 95,
-        "name": "หอยทอด",
+        "name": "Oppenheimer",
         "aliases": [
-          "Thai Oyster Omelette"
+          "J. Robert Oppenheimer",
+          "ออปเพนไฮเมอร์"
         ]
       },
       {
         "rank": 96,
-        "name": "ขนมครก",
+        "name": "Maverick",
         "aliases": [
-          "Coconut Rice Pancakes"
+          "Pete Mitchell",
+          "มาเวอริค"
         ]
       },
       {
         "rank": 97,
-        "name": "บัวลอยไข่หวาน",
+        "name": "Po",
         "aliases": [
-          "Bua Loy with Sweet Egg"
+          "Kung Fu Panda",
+          "โป"
         ]
       },
       {
         "rank": 98,
-        "name": "ทับทิมกรอบ",
+        "name": "Shrek",
         "aliases": [
-          "Red Rubies Dessert"
+          "เชร็ค"
         ]
       },
       {
         "rank": 99,
-        "name": "ลอดช่องน้ำกะทิ",
+        "name": "Elsa",
         "aliases": [
-          "Lod Chong in Coconut Milk"
+          "เอลซ่า"
         ]
       },
       {
         "rank": 100,
-        "name": "กล้วยบวชชี",
+        "name": "Anna",
         "aliases": [
-          "Bananas in Coconut Milk"
+          "แอนนา"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "global_foods",
+    "title": "Top 100 อาหารยอดนิยมทั่วโลก",
+    "items": [
+      {
+        "rank": 1,
+        "name": "Pizza",
+        "aliases": [
+          "พิซซ่า"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "Burger",
+        "aliases": [
+          "Hamburger",
+          "เบอร์เกอร์"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "Sushi",
+        "aliases": [
+          "ซูชิ"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "Ramen",
+        "aliases": [
+          "ราเมง"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "Tacos",
+        "aliases": [
+          "ทาโก้"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "Steak",
+        "aliases": [
+          "สเต๊ก"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "Pasta",
+        "aliases": [
+          "พาสต้า"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "Dim Sum",
+        "aliases": [
+          "ติ่มซำ"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "Croissant",
+        "aliases": [
+          "ครัวซองต์"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "Fried Chicken",
+        "aliases": [
+          "ไก่ทอด"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "French Fries",
+        "aliases": [
+          "เฟรนช์ฟรายส์"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "Ice Cream",
+        "aliases": [
+          "ไอศกรีม"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "Chocolate",
+        "aliases": [
+          "ช็อกโกแลต"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "Sandwich",
+        "aliases": [
+          "แซนด์วิช"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "Hot Dog",
+        "aliases": [
+          "ฮอตดอก"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "Kebab",
+        "aliases": [
+          "เคบับ"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "Biryani",
+        "aliases": [
+          "ข้าวหมกบริยานี"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "Butter Chicken",
+        "aliases": [
+          "บัตเตอร์ชิกเกน"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "Curry",
+        "aliases": [
+          "แกงกะหรี่"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "Pad Thai",
+        "aliases": [
+          "ผัดไทย"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "Tom Yum",
+        "aliases": [
+          "ต้มยำ"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "Pho",
+        "aliases": [
+          "เฝอ"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "Banh Mi",
+        "aliases": [
+          "บั๋นหมี่"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "Bibimbap",
+        "aliases": [
+          "บิบิมบับ"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "Kimchi",
+        "aliases": [
+          "กิมจิ"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "Korean Barbecue",
+        "aliases": [
+          "ปิ้งย่างเกาหลี"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "Jajangmyeon",
+        "aliases": [
+          "จาจังมยอน"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "Tteokbokki",
+        "aliases": [
+          "ต๊อกบกกี"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "Udon",
+        "aliases": [
+          "อุด้ง"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "Soba",
+        "aliases": [
+          "โซบะ"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "Tempura",
+        "aliases": [
+          "เทมปุระ"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "Yakitori",
+        "aliases": [
+          "ยากิโทริ"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "Okonomiyaki",
+        "aliases": [
+          "โอโคโนมิยากิ"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "Takoyaki",
+        "aliases": [
+          "ทาโกะยากิ"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "Onigiri",
+        "aliases": [
+          "โอนิกิริ"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "Gyoza",
+        "aliases": [
+          "เกี๊ยวซ่า"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "Peking Duck",
+        "aliases": [
+          "เป็ดปักกิ่ง"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "Kung Pao Chicken",
+        "aliases": [
+          "ไก่กงเป่า"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "Mapo Tofu",
+        "aliases": [
+          "มาโปเต้าหู้"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "Hot Pot",
+        "aliases": [
+          "หม้อไฟ"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "Spring Rolls",
+        "aliases": [
+          "ปอเปี๊ยะ"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "Chow Mein",
+        "aliases": [
+          "ผัดหมี่จีน"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "Fried Rice",
+        "aliases": [
+          "ข้าวผัด"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "Wonton Soup",
+        "aliases": [
+          "ซุปเกี๊ยว"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "Congee",
+        "aliases": [
+          "โจ๊ก"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "Xiao Long Bao",
+        "aliases": [
+          "เสี่ยวหลงเปา"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "Char Siu",
+        "aliases": [
+          "หมูแดง"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "Hainanese Chicken Rice",
+        "aliases": [
+          "ข้าวมันไก่ไหหลำ"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "Satay",
+        "aliases": [
+          "สะเต๊ะ"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "Nasi Goreng",
+        "aliases": [
+          "นาซีโกเร็ง"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "Rendang",
+        "aliases": [
+          "เรนดัง"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "Laksa",
+        "aliases": [
+          "ลักซา"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "Hummus",
+        "aliases": [
+          "ฮัมมุส"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "Falafel",
+        "aliases": [
+          "ฟาลาเฟล"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "Shawarma",
+        "aliases": [
+          "ชาวาร์มา"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "Pita Bread",
+        "aliases": [
+          "ขนมปังพิต้า"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "Paella",
+        "aliases": [
+          "ปาเอญ่า"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "Tapas",
+        "aliases": [
+          "ทาปาส"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "Gazpacho",
+        "aliases": [
+          "กัซปาโช"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "Lasagna",
+        "aliases": [
+          "ลาซานญ่า"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "Risotto",
+        "aliases": [
+          "รีซอตโต"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "Gnocchi",
+        "aliases": [
+          "ญ็อกกี"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "Carbonara",
+        "aliases": [
+          "คาโบนาร่า"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "Tiramisu",
+        "aliases": [
+          "ทีรามิสุ"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "Gelato",
+        "aliases": [
+          "เจลาโต"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "Focaccia",
+        "aliases": [
+          "โฟคัชชา"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "Bruschetta",
+        "aliases": [
+          "บรูสเกตต้า"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "Ravioli",
+        "aliases": [
+          "ราวิโอลี"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "Macaroni and Cheese",
+        "aliases": [
+          "มักกะโรนีชีส"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "Barbecue Ribs",
+        "aliases": [
+          "ซี่โครงบาร์บีคิว"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "Buffalo Wings",
+        "aliases": [
+          "บัฟฟาโลวิงส์"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "Clam Chowder",
+        "aliases": [
+          "ซุปหอยลาย"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "Pancakes",
+        "aliases": [
+          "แพนเค้ก"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "Waffles",
+        "aliases": [
+          "วาฟเฟิล"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "Donuts",
+        "aliases": [
+          "โดนัท"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "Cheesecake",
+        "aliases": [
+          "ชีสเค้ก"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "Apple Pie",
+        "aliases": [
+          "พายแอปเปิล"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "Brownies",
+        "aliases": [
+          "บราวนี่"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "Churros",
+        "aliases": [
+          "ชูโรส"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "Crepes",
+        "aliases": [
+          "เครป"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "Quiche",
+        "aliases": [
+          "คีช"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "Ratatouille",
+        "aliases": [
+          "ราตาตูย"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "Beef Bourguignon",
+        "aliases": [
+          "บูร์กินญง"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "Coq au Vin",
+        "aliases": [
+          "ก๊อกโอแวง"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "Fish and Chips",
+        "aliases": [
+          "ฟิชแอนด์ชิปส์"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "Shepherd's Pie",
+        "aliases": [
+          "เชพเพิร์ดพาย"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "Sunday Roast",
+        "aliases": [
+          "ซันเดย์โรสต์"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "Schnitzel",
+        "aliases": [
+          "ชนิทเซล"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "Bratwurst",
+        "aliases": [
+          "บราทเวิร์สต์"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "Pretzel",
+        "aliases": [
+          "เพรตเซล"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "Goulash",
+        "aliases": [
+          "กูลาช"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "Pierogi",
+        "aliases": [
+          "เปียโรกี"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "Borscht",
+        "aliases": [
+          "บอร์ชต์"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "Moussaka",
+        "aliases": [
+          "มูซากา"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "Gyros",
+        "aliases": [
+          "ไจโร"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "Souvlaki",
+        "aliases": [
+          "ซูฟลากี"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "Ceviche",
+        "aliases": [
+          "เซวิเช"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "Empanadas",
+        "aliases": [
+          "เอมปานาดา"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "Arepas",
+        "aliases": [
+          "อาเรปัส"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "Poutine",
+        "aliases": [
+          "ปูตีน"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "thai_travel",
+    "title": "Top 100 สถานที่ท่องเที่ยวในไทย",
+    "items": [
+      {
+        "rank": 1,
+        "name": "วัดพระแก้ว",
+        "aliases": [
+          "Temple of the Emerald Buddha"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "ดอยอินทนนท์",
+        "aliases": [
+          "Doi Inthanon"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "เกาะพีพี",
+        "aliases": [
+          "Phi Phi Islands"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "ประตูท่าแพ",
+        "aliases": [
+          "Tha Phae Gate"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "วัดร่องขุ่น",
+        "aliases": [
+          "White Temple"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "ภูทับเบิก",
+        "aliases": [
+          "Phu Thap Boek"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "อุทยานประวัติศาสตร์พระนครศรีอยุธยา",
+        "aliases": [
+          "Ayutthaya Historical Park",
+          "อยุธยา"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "วัดอรุณราชวราราม",
+        "aliases": [
+          "Wat Arun",
+          "วัดอรุณ"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "พระบรมมหาราชวัง",
+        "aliases": [
+          "Grand Palace"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "วัดโพธิ์",
+        "aliases": [
+          "Wat Pho"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "ตลาดน้ำดำเนินสะดวก",
+        "aliases": [
+          "Damnoen Saduak Floating Market"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "ตลาดน้ำอัมพวา",
+        "aliases": [
+          "Amphawa Floating Market"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "คลองบางหลวง",
+        "aliases": [
+          "Khlong Bang Luang"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "ถนนข้าวสาร",
+        "aliases": [
+          "Khao San Road"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "เยาวราช",
+        "aliases": [
+          "Yaowarat"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "ไอคอนสยาม",
+        "aliases": [
+          "ICONSIAM"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "เอเชียทีค เดอะ ริเวอร์ฟร้อนท์",
+        "aliases": [
+          "Asiatique"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "สวนลุมพินี",
+        "aliases": [
+          "Lumphini Park"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "ภูเขาทอง",
+        "aliases": [
+          "Golden Mount"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "วัดไตรมิตร",
+        "aliases": [
+          "Wat Traimit"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "วัดเบญจมบพิตร",
+        "aliases": [
+          "Marble Temple"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "พิพิธภัณฑสถานแห่งชาติ พระนคร",
+        "aliases": [
+          "Bangkok National Museum"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "บ้านจิม ทอมป์สัน",
+        "aliases": [
+          "Jim Thompson House"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "สนามหลวง",
+        "aliases": [
+          "Sanam Luang"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "บางปู",
+        "aliases": [
+          "Bang Pu Recreation Center"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "พระปฐมเจดีย์",
+        "aliases": [
+          "Phra Pathom Chedi"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "ตลาดร่มหุบ",
+        "aliases": [
+          "Maeklong Railway Market"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "พระราชวังบางปะอิน",
+        "aliases": [
+          "Bang Pa-In Palace"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "วัดมหาธาตุ อยุธยา",
+        "aliases": [
+          "Wat Mahathat Ayutthaya"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "วัดไชยวัฒนาราม",
+        "aliases": [
+          "Wat Chaiwatthanaram"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "อุทยานประวัติศาสตร์สุโขทัย",
+        "aliases": [
+          "Sukhothai Historical Park"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "วัดศรีชุม",
+        "aliases": [
+          "Wat Si Chum"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "อุทยานประวัติศาสตร์ศรีสัชนาลัย",
+        "aliases": [
+          "Si Satchanalai Historical Park"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "วัดพระธาตุดอยสุเทพ",
+        "aliases": [
+          "Doi Suthep Temple"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "ดอยสุเทพ-ปุย",
+        "aliases": [
+          "Doi Suthep-Pui National Park"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "ม่อนแจ่ม",
+        "aliases": [
+          "Mon Jam"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "แม่กำปอง",
+        "aliases": [
+          "Mae Kampong"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "ดอยหลวงเชียงดาว",
+        "aliases": [
+          "Doi Luang Chiang Dao"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "เชียงดาว",
+        "aliases": [
+          "Chiang Dao"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "น้ำพุร้อนสันกำแพง",
+        "aliases": [
+          "San Kamphaeng Hot Springs"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "เชียงคาน",
+        "aliases": [
+          "Chiang Khan"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "ภูเรือ",
+        "aliases": [
+          "Phu Ruea"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "ภูกระดึง",
+        "aliases": [
+          "Phu Kradueng"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "ภูชี้ฟ้า",
+        "aliases": [
+          "Phu Chi Fa"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "ดอยผาตั้ง",
+        "aliases": [
+          "Doi Pha Tang"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "สามเหลี่ยมทองคำ",
+        "aliases": [
+          "Golden Triangle Thailand"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "วัดพระธาตุผาซ่อนแก้ว",
+        "aliases": [
+          "Wat Pha Sorn Kaew"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "เขาค้อ",
+        "aliases": [
+          "Khao Kho"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "อุทยานแห่งชาติภูหินร่องกล้า",
+        "aliases": [
+          "Phu Hin Rong Kla"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "อุทยานแห่งชาติน้ำหนาว",
+        "aliases": [
+          "Nam Nao National Park"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "ปาย",
+        "aliases": [
+          "Pai Thailand"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "สะพานประวัติศาสตร์ปาย",
+        "aliases": [
+          "Pai Memorial Bridge"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "ปางอุ๋ง",
+        "aliases": [
+          "Pang Ung"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "บ้านรักไทย",
+        "aliases": [
+          "Ban Rak Thai"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "ทุ่งบัวตองดอยแม่อูคอ",
+        "aliases": [
+          "Doi Mae U Kho Sunflower Fields"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "ถ้ำหลวงขุนน้ำนางนอน",
+        "aliases": [
+          "Tham Luang Cave"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "วัดห้วยปลากั้ง",
+        "aliases": [
+          "Wat Huay Pla Kang"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "บ้านดำ เชียงราย",
+        "aliases": [
+          "Baan Dam Museum"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "สิงห์ปาร์ค เชียงราย",
+        "aliases": [
+          "Singha Park Chiang Rai"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "อุทยานแห่งชาติแม่วงก์",
+        "aliases": [
+          "Mae Wong National Park"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "น้ำตกเอราวัณ",
+        "aliases": [
+          "Erawan Falls"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "สะพานข้ามแม่น้ำแคว",
+        "aliases": [
+          "Bridge on the River Kwai"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "ทางรถไฟสายมรณะ",
+        "aliases": [
+          "Death Railway"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "เมืองมัลลิกา ร.ศ. 124",
+        "aliases": [
+          "Mallika R.E. 124"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "เขื่อนศรีนครินทร์",
+        "aliases": [
+          "Srinakarin Dam"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "อุทยานแห่งชาติเขาใหญ่",
+        "aliases": [
+          "Khao Yai National Park"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "ปาลิโอ เขาใหญ่",
+        "aliases": [
+          "Palio Khao Yai"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "อุทยานแห่งชาติหาดเจ้าไหม",
+        "aliases": [
+          "Hat Chao Mai National Park"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "วังน้ำเขียว",
+        "aliases": [
+          "Wang Nam Khiao"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "หาดบางแสน",
+        "aliases": [
+          "Bang Saen Beach"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "เกาะล้าน",
+        "aliases": [
+          "Koh Larn"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "ปราสาทสัจธรรม",
+        "aliases": [
+          "Sanctuary of Truth"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "สวนนงนุช",
+        "aliases": [
+          "Nong Nooch Tropical Garden"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "เกาะเสม็ด",
+        "aliases": [
+          "Koh Samet"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "เกาะช้าง",
+        "aliases": [
+          "Koh Chang"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "น้ำตกพลิ้ว",
+        "aliases": [
+          "Namtok Phlio"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "อุทยานประวัติศาสตร์พนมรุ้ง",
+        "aliases": [
+          "Phanom Rung Historical Park"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "ปราสาทหินพิมาย",
+        "aliases": [
+          "Phimai Historical Park"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "สามพันโบก",
+        "aliases": [
+          "Sam Phan Bok"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "ผาแต้ม",
+        "aliases": [
+          "Pha Taem"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "ทะเลบัวแดง",
+        "aliases": [
+          "Red Lotus Sea"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "ภูพระบาท",
+        "aliases": [
+          "Phu Phra Bat"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "อุทยานแห่งชาติแก่งกระจาน",
+        "aliases": [
+          "Kaeng Krachan National Park"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "ตลาดฉัตรไชย",
+        "aliases": [
+          "Chatchai Market"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "หัวหิน",
+        "aliases": [
+          "Hua Hin"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "ถ้ำพระยานคร",
+        "aliases": [
+          "Phraya Nakhon Cave"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "อุทยานแห่งชาติเขาสามร้อยยอด",
+        "aliases": [
+          "Khao Sam Roi Yot National Park"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "เกาะเต่า",
+        "aliases": [
+          "Koh Tao"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "เกาะสมุย",
+        "aliases": [
+          "Koh Samui"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "เกาะพะงัน",
+        "aliases": [
+          "Koh Phangan"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "อุทยานแห่งชาติหมู่เกาะอ่างทอง",
+        "aliases": [
+          "Ang Thong Marine Park"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "หาดไร่เลย์",
+        "aliases": [
+          "Railay Beach"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "เกาะลันตา",
+        "aliases": [
+          "Koh Lanta"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "สระมรกต กระบี่",
+        "aliases": [
+          "Emerald Pool Krabi"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "อ่าวพังงา",
+        "aliases": [
+          "Phang Nga Bay"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "เกาะตะปู",
+        "aliases": [
+          "James Bond Island"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "หาดป่าตอง",
+        "aliases": [
+          "Patong Beach"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "แหลมพรหมเทพ",
+        "aliases": [
+          "Promthep Cape"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "หมู่เกาะสิมิลัน",
+        "aliases": [
+          "Similan Islands"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "หมู่เกาะสุรินทร์",
+        "aliases": [
+          "Surin Islands"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "world_travel",
+    "title": "Top 100 สถานที่ท่องเที่ยวทั่วโลก",
+    "items": [
+      {
+        "rank": 1,
+        "name": "หอไอเฟล",
+        "aliases": [
+          "Eiffel Tower"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "กำแพงเมืองจีน",
+        "aliases": [
+          "Great Wall of China"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "พีระมิดกิซา",
+        "aliases": [
+          "Pyramids of Giza"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "เทพีเสรีภาพ",
+        "aliases": [
+          "Statue of Liberty"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "โคลอสเซียม",
+        "aliases": [
+          "Colosseum"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "ภูเขาไฟฟูจิ",
+        "aliases": [
+          "Mount Fuji",
+          "ฟูจิ"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "ทัชมาฮาล",
+        "aliases": [
+          "Taj Mahal"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "มาชูปิกชู",
+        "aliases": [
+          "Machu Picchu"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "นครวัด",
+        "aliases": [
+          "Angkor Wat"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "หอนาฬิกาบิ๊กเบน",
+        "aliases": [
+          "Big Ben"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "พระราชวังบักกิงแฮม",
+        "aliases": [
+          "Buckingham Palace"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "ลอนดอนอาย",
+        "aliases": [
+          "London Eye"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "สะพานทาวเวอร์บริดจ์",
+        "aliases": [
+          "Tower Bridge"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "สโตนเฮนจ์",
+        "aliases": [
+          "Stonehenge"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "พิพิธภัณฑ์ลูฟวร์",
+        "aliases": [
+          "Louvre Museum"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "ประตูชัยฝรั่งเศส",
+        "aliases": [
+          "Arc de Triomphe"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "พระราชวังแวร์ซาย",
+        "aliases": [
+          "Palace of Versailles"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "มหาวิหารนอเทรอดาม",
+        "aliases": [
+          "Notre-Dame Cathedral"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "มงแซ็งมีแชล",
+        "aliases": [
+          "Mont Saint-Michel"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "โบสถ์ซากราดาฟามีเลีย",
+        "aliases": [
+          "Sagrada Familia"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "สวนกูเอล",
+        "aliases": [
+          "Park Güell"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "พระราชวังอาลัมบรา",
+        "aliases": [
+          "Alhambra"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "พิพิธภัณฑ์ปราโด",
+        "aliases": [
+          "Prado Museum"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "น้ำพุเทรวี",
+        "aliases": [
+          "Trevi Fountain"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "นครวาติกัน",
+        "aliases": [
+          "Vatican City"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "มหาวิหารเซนต์ปีเตอร์",
+        "aliases": [
+          "St. Peter's Basilica"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "วิหารแพนธีออน",
+        "aliases": [
+          "Pantheon Rome"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "หอเอนเมืองปิซา",
+        "aliases": [
+          "Leaning Tower of Pisa"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "คลองเวนิส",
+        "aliases": [
+          "Venice Grand Canal"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "จัตุรัสเซนต์มาร์ก",
+        "aliases": [
+          "St. Mark's Square"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "มหาวิหารดูโอโม ฟลอเรนซ์",
+        "aliases": [
+          "Florence Cathedral"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "ชายฝั่งอามาลฟี",
+        "aliases": [
+          "Amalfi Coast"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "ซานโตรินี",
+        "aliases": [
+          "Santorini"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "อะโครโพลิส",
+        "aliases": [
+          "Acropolis of Athens"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "เกาะมิโคนอส",
+        "aliases": [
+          "Mykonos"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "นครโบราณปอมเปอี",
+        "aliases": [
+          "Pompeii"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "ปราสาทนอยชวานชไตน์",
+        "aliases": [
+          "Neuschwanstein Castle"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "ประตูบรันเดินบวร์ค",
+        "aliases": [
+          "Brandenburg Gate"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "มหาวิหารโคโลญ",
+        "aliases": [
+          "Cologne Cathedral"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "เทือกเขาแอลป์",
+        "aliases": [
+          "Alps"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "ยอดเขาแมตเทอร์ฮอร์น",
+        "aliases": [
+          "Matterhorn"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "เมืองฮัลล์ชตัทท์",
+        "aliases": [
+          "Hallstatt"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "พระราชวังเชินบรุนน์",
+        "aliases": [
+          "Schönbrunn Palace"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "สะพานชาร์ลส์",
+        "aliases": [
+          "Charles Bridge"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "จัตุรัสเมืองเก่าปราก",
+        "aliases": [
+          "Old Town Square Prague"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "คลองอัมสเตอร์ดัม",
+        "aliases": [
+          "Amsterdam Canals"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "สวนเคอเคนฮอฟ",
+        "aliases": [
+          "Keukenhof"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "โบสถ์ฮัลล์กรีมสคิร์กยา",
+        "aliases": [
+          "Hallgrímskirkja"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "บลูลากูน ไอซ์แลนด์",
+        "aliases": [
+          "Blue Lagoon Iceland"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "น้ำตกกุลล์ฟอสส์",
+        "aliases": [
+          "Gullfoss"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "แสงเหนือเมืองทรอมโซ",
+        "aliases": [
+          "Tromsø Northern Lights"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "ฟยอร์ดไกแรงเกอร์",
+        "aliases": [
+          "Geirangerfjord"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "ราชวังฤดูหนาว",
+        "aliases": [
+          "Winter Palace"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "จัตุรัสแดง",
+        "aliases": [
+          "Red Square Moscow"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "มหาวิหารเซนต์เบซิล",
+        "aliases": [
+          "Saint Basil's Cathedral"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "พระราชวังโทพคาปึ",
+        "aliases": [
+          "Topkapi Palace"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "ฮาเกียโซเฟีย",
+        "aliases": [
+          "Hagia Sophia"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "คัปปาโดเกีย",
+        "aliases": [
+          "Cappadocia"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "ปามุคคาเล",
+        "aliases": [
+          "Pamukkale"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "เพตรา",
+        "aliases": [
+          "Petra Jordan"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "ทะเลเดดซี",
+        "aliases": [
+          "Dead Sea"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "เบิร์จคาลิฟา",
+        "aliases": [
+          "Burj Khalifa"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "พิพิธภัณฑ์แห่งอนาคต ดูไบ",
+        "aliases": [
+          "Museum of the Future Dubai"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "มัสยิดชีคซาเยด",
+        "aliases": [
+          "Sheikh Zayed Grand Mosque"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "ป้อมอัครา",
+        "aliases": [
+          "Agra Fort"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "ชัยปุระ",
+        "aliases": [
+          "Jaipur"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "พระราชวังไมซอร์",
+        "aliases": [
+          "Mysore Palace"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "วิหารทองคำอมฤตสาร์",
+        "aliases": [
+          "Golden Temple Amritsar"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "เอเวอเรสต์เบสแคมป์",
+        "aliases": [
+          "Everest Base Camp"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "วัดสเวยัมภูนาถ",
+        "aliases": [
+          "Swayambhunath"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "พระราชวังโปตาลา",
+        "aliases": [
+          "Potala Palace"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "พระราชวังต้องห้าม",
+        "aliases": [
+          "Forbidden City"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "จัตุรัสเทียนอันเหมิน",
+        "aliases": [
+          "Tiananmen Square"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "ทหารดินเผา",
+        "aliases": [
+          "Terracotta Army"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "หาดไว่ทัน",
+        "aliases": [
+          "The Bund Shanghai"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "ดิสนีย์แลนด์ฮ่องกง",
+        "aliases": [
+          "Hong Kong Disneyland"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "เมอร์ไลออน",
+        "aliases": [
+          "Merlion"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "มารีนาเบย์แซนด์ส",
+        "aliases": [
+          "Marina Bay Sands"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "การ์เดนส์บายเดอะเบย์",
+        "aliases": [
+          "Gardens by the Bay"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "ตึกแฝดเปโตรนาส",
+        "aliases": [
+          "Petronas Towers"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "วัดโบรโบดูร์",
+        "aliases": [
+          "Borobudur"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "ภูเขาไฟโบรโม",
+        "aliases": [
+          "Mount Bromo"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "อ่าวฮาลอง",
+        "aliases": [
+          "Ha Long Bay"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "ฮอยอัน",
+        "aliases": [
+          "Hoi An"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "พระราชวังเคียงบกกุง",
+        "aliases": [
+          "Gyeongbokgung Palace"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "เกาะเชจู",
+        "aliases": [
+          "Jeju Island"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "หอคอยโตเกียว",
+        "aliases": [
+          "Tokyo Tower"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "โตเกียวสกายทรี",
+        "aliases": [
+          "Tokyo Skytree"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "ศาลเจ้าฟูชิมิอินาริ",
+        "aliases": [
+          "Fushimi Inari Shrine"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "วัดคิโยมิซุ",
+        "aliases": [
+          "Kiyomizu-dera"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "ปราสาทโอซาก้า",
+        "aliases": [
+          "Osaka Castle"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "ยูนิเวอร์แซลสตูดิโอญี่ปุ่น",
+        "aliases": [
+          "Universal Studios Japan"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "แกรนด์แคนยอน",
+        "aliases": [
+          "Grand Canyon"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "น้ำตกไนแอการา",
+        "aliases": [
+          "Niagara Falls"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "ไทม์สแควร์",
+        "aliases": [
+          "Times Square"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "สะพานโกลเดนเกต",
+        "aliases": [
+          "Golden Gate Bridge"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "ดิสนีย์แลนด์แคลิฟอร์เนีย",
+        "aliases": [
+          "Disneyland California"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "รูปปั้นพระเยซูคริสต์",
+        "aliases": [
+          "Christ the Redeemer"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "น้ำตกอีกวาซู",
+        "aliases": [
+          "Iguazu Falls"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "โรงอุปรากรซิดนีย์",
+        "aliases": [
+          "Sydney Opera House"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "global_brands",
+    "title": "Top 100 แบรนด์ดังทั่วโลก",
+    "items": [
+      {
+        "rank": 1,
+        "name": "Apple",
+        "aliases": [
+          "แอปเปิล"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "Google",
+        "aliases": [
+          "กูเกิล"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "Nike",
+        "aliases": [
+          "ไนกี้"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "Coca-Cola",
+        "aliases": [
+          "โคคาโคล่า",
+          "โค้ก"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "Samsung",
+        "aliases": [
+          "ซัมซุง"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "Toyota",
+        "aliases": [
+          "โตโยต้า"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "Louis Vuitton",
+        "aliases": [
+          "หลุยส์ วิตตอง"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "Microsoft",
+        "aliases": [
+          "ไมโครซอฟท์"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "Amazon",
+        "aliases": [
+          "แอมะซอน"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "McDonald's",
+        "aliases": [
+          "แมคโดนัลด์"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "Disney",
+        "aliases": [
+          "ดิสนีย์"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "Adidas",
+        "aliases": [
+          "อาดิดาส"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "Starbucks",
+        "aliases": [
+          "สตาร์บัคส์"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "Netflix",
+        "aliases": [
+          "เน็ตฟลิกซ์"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "Meta",
+        "aliases": [
+          "เมตา"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "Tesla",
+        "aliases": [
+          "เทสลา"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "BMW",
+        "aliases": [
+          "บีเอ็มดับเบิลยู"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "Mercedes-Benz",
+        "aliases": [
+          "เมอร์เซเดส-เบนซ์"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "Honda",
+        "aliases": [
+          "ฮอนด้า"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "Sony",
+        "aliases": [
+          "โซนี่"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "Intel",
+        "aliases": [
+          "อินเทล"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "Nvidia",
+        "aliases": [
+          "เอ็นวิเดีย"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "IBM",
+        "aliases": [
+          "ไอบีเอ็ม"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "Visa",
+        "aliases": [
+          "วีซ่า"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "Mastercard",
+        "aliases": [
+          "มาสเตอร์การ์ด"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "PayPal",
+        "aliases": [
+          "เพย์พาล"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "YouTube",
+        "aliases": [
+          "ยูทูบ"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "TikTok",
+        "aliases": [
+          "ติ๊กต็อก"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "Instagram",
+        "aliases": [
+          "อินสตาแกรม"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "Facebook",
+        "aliases": [
+          "เฟซบุ๊ก"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "WhatsApp",
+        "aliases": [
+          "วอตส์แอป"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "Uber",
+        "aliases": [
+          "อูเบอร์"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "Airbnb",
+        "aliases": [
+          "แอร์บีเอ็นบี"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "Spotify",
+        "aliases": [
+          "สปอติฟาย"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "Lego",
+        "aliases": [
+          "เลโก้"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "Nintendo",
+        "aliases": [
+          "นินเทนโด"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "PlayStation",
+        "aliases": [
+          "เพลย์สเตชัน"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "Xbox",
+        "aliases": [
+          "เอกซ์บอกซ์"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "Gucci",
+        "aliases": [
+          "กุชชี่"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "Chanel",
+        "aliases": [
+          "ชาแนล"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "Hermès",
+        "aliases": [
+          "แอร์เมส"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "Prada",
+        "aliases": [
+          "พราด้า"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "Dior",
+        "aliases": [
+          "ดิออร์"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "Burberry",
+        "aliases": [
+          "เบอร์เบอรี่"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "Rolex",
+        "aliases": [
+          "โรเล็กซ์"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "Cartier",
+        "aliases": [
+          "คาร์เทียร์"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "Tiffany & Co.",
+        "aliases": [
+          "ทิฟฟานี่"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "Zara",
+        "aliases": [
+          "ซาร่า"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "H&M",
+        "aliases": [
+          "เอชแอนด์เอ็ม"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "Uniqlo",
+        "aliases": [
+          "ยูนิโคล่"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "IKEA",
+        "aliases": [
+          "อิเกีย"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "Walmart",
+        "aliases": [
+          "วอลมาร์ต"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "Costco",
+        "aliases": [
+          "คอสต์โก"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "Target",
+        "aliases": [
+          "ทาร์เก็ต"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "KFC",
+        "aliases": [
+          "เคเอฟซี"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "Burger King",
+        "aliases": [
+          "เบอร์เกอร์คิง"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "Subway",
+        "aliases": [
+          "ซับเวย์"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "Pizza Hut",
+        "aliases": [
+          "พิซซ่าฮัท"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "Domino's",
+        "aliases": [
+          "โดมิโน่พิซซ่า"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "Pepsi",
+        "aliases": [
+          "เป๊ปซี่"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "Red Bull",
+        "aliases": [
+          "เรดบูล"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "Nestlé",
+        "aliases": [
+          "เนสท์เล่"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "Nescafé",
+        "aliases": [
+          "เนสกาแฟ"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "KitKat",
+        "aliases": [
+          "คิทแคท"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "Oreo",
+        "aliases": [
+          "โอรีโอ"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "Lay's",
+        "aliases": [
+          "เลย์"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "Pringles",
+        "aliases": [
+          "พริงเกิลส์"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "Heineken",
+        "aliases": [
+          "ไฮเนเก้น"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "Budweiser",
+        "aliases": [
+          "บัดไวเซอร์"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "Porsche",
+        "aliases": [
+          "ปอร์เช่"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "Ferrari",
+        "aliases": [
+          "เฟอร์รารี่"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "Lamborghini",
+        "aliases": [
+          "ลัมโบร์กินี"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "Audi",
+        "aliases": [
+          "อาวดี้"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "Volkswagen",
+        "aliases": [
+          "โฟล์คสวาเกน"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "Ford",
+        "aliases": [
+          "ฟอร์ด"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "Chevrolet",
+        "aliases": [
+          "เชฟโรเลต"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "Hyundai",
+        "aliases": [
+          "ฮุนได"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "Kia",
+        "aliases": [
+          "เกีย"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "Nissan",
+        "aliases": [
+          "นิสสัน"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "Mazda",
+        "aliases": [
+          "มาสด้า"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "Lexus",
+        "aliases": [
+          "เลกซัส"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "Volvo",
+        "aliases": [
+          "วอลโว่"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "Boeing",
+        "aliases": [
+          "โบอิ้ง"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "Emirates",
+        "aliases": [
+          "เอมิเรตส์"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "Singapore Airlines",
+        "aliases": [
+          "สิงคโปร์แอร์ไลน์"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "Qatar Airways",
+        "aliases": [
+          "กาตาร์แอร์เวย์"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "FedEx",
+        "aliases": [
+          "เฟดเอ็กซ์"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "DHL",
+        "aliases": [
+          "ดีเอชแอล"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "UPS",
+        "aliases": [
+          "ยูพีเอส"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "Canon",
+        "aliases": [
+          "แคนนอน"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "Nikon",
+        "aliases": [
+          "นิคอน"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "Panasonic",
+        "aliases": [
+          "พานาโซนิค"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "LG",
+        "aliases": [
+          "แอลจี"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "Xiaomi",
+        "aliases": [
+          "เสียวหมี่"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "Huawei",
+        "aliases": [
+          "หัวเว่ย"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "Oppo",
+        "aliases": [
+          "ออปโป้"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "Vivo",
+        "aliases": [
+          "วีโว่"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "Dell",
+        "aliases": [
+          "เดลล์"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "HP",
+        "aliases": [
+          "เอชพี"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "Lenovo",
+        "aliases": [
+          "เลอโนโว"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "popular_apps",
+    "title": "Top 100 แอปพลิเคชันยอดนิยม",
+    "items": [
+      {
+        "rank": 1,
+        "name": "YouTube",
+        "aliases": [
+          "ยูทูบ"
+        ]
+      },
+      {
+        "rank": 2,
+        "name": "TikTok",
+        "aliases": [
+          "ติ๊กต็อก"
+        ]
+      },
+      {
+        "rank": 3,
+        "name": "Facebook",
+        "aliases": [
+          "เฟซบุ๊ก"
+        ]
+      },
+      {
+        "rank": 4,
+        "name": "LINE",
+        "aliases": [
+          "ไลน์"
+        ]
+      },
+      {
+        "rank": 5,
+        "name": "Instagram",
+        "aliases": [
+          "อินสตาแกรม"
+        ]
+      },
+      {
+        "rank": 6,
+        "name": "Google Maps",
+        "aliases": [
+          "กูเกิลแมปส์"
+        ]
+      },
+      {
+        "rank": 7,
+        "name": "Spotify",
+        "aliases": [
+          "สปอติฟาย"
+        ]
+      },
+      {
+        "rank": 8,
+        "name": "Netflix",
+        "aliases": [
+          "เน็ตฟลิกซ์"
+        ]
+      },
+      {
+        "rank": 9,
+        "name": "WhatsApp",
+        "aliases": [
+          "วอตส์แอป"
+        ]
+      },
+      {
+        "rank": 10,
+        "name": "Messenger",
+        "aliases": [
+          "เฟซบุ๊กเมสเซนเจอร์"
+        ]
+      },
+      {
+        "rank": 11,
+        "name": "Telegram",
+        "aliases": [
+          "เทเลแกรม"
+        ]
+      },
+      {
+        "rank": 12,
+        "name": "X",
+        "aliases": [
+          "Twitter",
+          "ทวิตเตอร์"
+        ]
+      },
+      {
+        "rank": 13,
+        "name": "Threads",
+        "aliases": [
+          "เธรดส์"
+        ]
+      },
+      {
+        "rank": 14,
+        "name": "Reddit",
+        "aliases": [
+          "เรดดิต"
+        ]
+      },
+      {
+        "rank": 15,
+        "name": "Discord",
+        "aliases": [
+          "ดิสคอร์ด"
+        ]
+      },
+      {
+        "rank": 16,
+        "name": "Snapchat",
+        "aliases": [
+          "สแนปแชต"
+        ]
+      },
+      {
+        "rank": 17,
+        "name": "Pinterest",
+        "aliases": [
+          "พินเทอเรสต์"
+        ]
+      },
+      {
+        "rank": 18,
+        "name": "LinkedIn",
+        "aliases": [
+          "ลิงก์อิน"
+        ]
+      },
+      {
+        "rank": 19,
+        "name": "Twitch",
+        "aliases": [
+          "ทวิช"
+        ]
+      },
+      {
+        "rank": 20,
+        "name": "WeChat",
+        "aliases": [
+          "วีแชต"
+        ]
+      },
+      {
+        "rank": 21,
+        "name": "Viber",
+        "aliases": [
+          "ไวเบอร์"
+        ]
+      },
+      {
+        "rank": 22,
+        "name": "Signal",
+        "aliases": [
+          "ซิกนัล"
+        ]
+      },
+      {
+        "rank": 23,
+        "name": "Zoom",
+        "aliases": [
+          "ซูม"
+        ]
+      },
+      {
+        "rank": 24,
+        "name": "Google Meet",
+        "aliases": [
+          "กูเกิลมีต"
+        ]
+      },
+      {
+        "rank": 25,
+        "name": "Microsoft Teams",
+        "aliases": [
+          "ไมโครซอฟท์ทีมส์"
+        ]
+      },
+      {
+        "rank": 26,
+        "name": "Gmail",
+        "aliases": [
+          "จีเมล"
+        ]
+      },
+      {
+        "rank": 27,
+        "name": "Outlook",
+        "aliases": [
+          "เอาต์ลุก"
+        ]
+      },
+      {
+        "rank": 28,
+        "name": "Google Drive",
+        "aliases": [
+          "กูเกิลไดรฟ์"
+        ]
+      },
+      {
+        "rank": 29,
+        "name": "Dropbox",
+        "aliases": [
+          "ดรอปบ็อกซ์"
+        ]
+      },
+      {
+        "rank": 30,
+        "name": "OneDrive",
+        "aliases": [
+          "วันไดรฟ์"
+        ]
+      },
+      {
+        "rank": 31,
+        "name": "Google Photos",
+        "aliases": [
+          "กูเกิลโฟโต้"
+        ]
+      },
+      {
+        "rank": 32,
+        "name": "iCloud",
+        "aliases": [
+          "ไอคลาวด์"
+        ]
+      },
+      {
+        "rank": 33,
+        "name": "Google Calendar",
+        "aliases": [
+          "กูเกิลคาเลนดาร์"
+        ]
+      },
+      {
+        "rank": 34,
+        "name": "Notion",
+        "aliases": [
+          "โนชัน"
+        ]
+      },
+      {
+        "rank": 35,
+        "name": "Evernote",
+        "aliases": [
+          "เอเวอร์โน้ต"
+        ]
+      },
+      {
+        "rank": 36,
+        "name": "Trello",
+        "aliases": [
+          "เทรลโล"
+        ]
+      },
+      {
+        "rank": 37,
+        "name": "Asana",
+        "aliases": [
+          "อาสนะ"
+        ]
+      },
+      {
+        "rank": 38,
+        "name": "Slack",
+        "aliases": [
+          "สแลก"
+        ]
+      },
+      {
+        "rank": 39,
+        "name": "Canva",
+        "aliases": [
+          "แคนวา"
+        ]
+      },
+      {
+        "rank": 40,
+        "name": "CapCut",
+        "aliases": [
+          "แคปคัต"
+        ]
+      },
+      {
+        "rank": 41,
+        "name": "Adobe Photoshop Express",
+        "aliases": [
+          "โฟโต้ชอปเอ็กซ์เพรส"
+        ]
+      },
+      {
+        "rank": 42,
+        "name": "Lightroom",
+        "aliases": [
+          "ไลต์รูม"
+        ]
+      },
+      {
+        "rank": 43,
+        "name": "VSCO",
+        "aliases": [
+          "วีเอสซีโอ"
+        ]
+      },
+      {
+        "rank": 44,
+        "name": "Picsart",
+        "aliases": [
+          "พิคส์อาร์ต"
+        ]
+      },
+      {
+        "rank": 45,
+        "name": "Snapseed",
+        "aliases": [
+          "สแนปซีด"
+        ]
+      },
+      {
+        "rank": 46,
+        "name": "InShot",
+        "aliases": [
+          "อินช็อต"
+        ]
+      },
+      {
+        "rank": 47,
+        "name": "KineMaster",
+        "aliases": [
+          "ไคน์มาสเตอร์"
+        ]
+      },
+      {
+        "rank": 48,
+        "name": "ChatGPT",
+        "aliases": [
+          "แชตจีพีที"
+        ]
+      },
+      {
+        "rank": 49,
+        "name": "Google Gemini",
+        "aliases": [
+          "เจมิไน"
+        ]
+      },
+      {
+        "rank": 50,
+        "name": "Microsoft Copilot",
+        "aliases": [
+          "โคไพลอต"
+        ]
+      },
+      {
+        "rank": 51,
+        "name": "Perplexity",
+        "aliases": [
+          "เพอร์เพล็กซิตี"
+        ]
+      },
+      {
+        "rank": 52,
+        "name": "Duolingo",
+        "aliases": [
+          "ดูโอลิงโก"
+        ]
+      },
+      {
+        "rank": 53,
+        "name": "Kahoot!",
+        "aliases": [
+          "คาฮูต"
+        ]
+      },
+      {
+        "rank": 54,
+        "name": "Coursera",
+        "aliases": [
+          "คอร์สเซรา"
+        ]
+      },
+      {
+        "rank": 55,
+        "name": "Udemy",
+        "aliases": [
+          "ยูเดมี"
+        ]
+      },
+      {
+        "rank": 56,
+        "name": "Kindle",
+        "aliases": [
+          "คินเดิล"
+        ]
+      },
+      {
+        "rank": 57,
+        "name": "Audible",
+        "aliases": [
+          "ออดิเบิล"
+        ]
+      },
+      {
+        "rank": 58,
+        "name": "Apple Music",
+        "aliases": [
+          "แอปเปิลมิวสิก"
+        ]
+      },
+      {
+        "rank": 59,
+        "name": "SoundCloud",
+        "aliases": [
+          "ซาวด์คลาวด์"
+        ]
+      },
+      {
+        "rank": 60,
+        "name": "Shazam",
+        "aliases": [
+          "ชาแซม"
+        ]
+      },
+      {
+        "rank": 61,
+        "name": "Disney+",
+        "aliases": [
+          "ดิสนีย์พลัส"
+        ]
+      },
+      {
+        "rank": 62,
+        "name": "Prime Video",
+        "aliases": [
+          "ไพรม์วิดีโอ"
+        ]
+      },
+      {
+        "rank": 63,
+        "name": "HBO Max",
+        "aliases": [
+          "เอชบีโอแม็กซ์"
+        ]
+      },
+      {
+        "rank": 64,
+        "name": "Viu",
+        "aliases": [
+          "วิว"
+        ]
+      },
+      {
+        "rank": 65,
+        "name": "iQIYI",
+        "aliases": [
+          "อ้ายฉีอี้"
+        ]
+      },
+      {
+        "rank": 66,
+        "name": "WeTV",
+        "aliases": [
+          "วีทีวี"
+        ]
+      },
+      {
+        "rank": 67,
+        "name": "YouTube Music",
+        "aliases": [
+          "ยูทูบมิวสิก"
+        ]
+      },
+      {
+        "rank": 68,
+        "name": "Google Chrome",
+        "aliases": [
+          "กูเกิลโครม"
+        ]
+      },
+      {
+        "rank": 69,
+        "name": "Firefox",
+        "aliases": [
+          "ไฟร์ฟ็อกซ์"
+        ]
+      },
+      {
+        "rank": 70,
+        "name": "Safari",
+        "aliases": [
+          "ซาฟารี"
+        ]
+      },
+      {
+        "rank": 71,
+        "name": "Opera",
+        "aliases": [
+          "โอเปรา"
+        ]
+      },
+      {
+        "rank": 72,
+        "name": "Waze",
+        "aliases": [
+          "เวซ"
+        ]
+      },
+      {
+        "rank": 73,
+        "name": "Grab",
+        "aliases": [
+          "แกร็บ"
+        ]
+      },
+      {
+        "rank": 74,
+        "name": "Uber",
+        "aliases": [
+          "อูเบอร์"
+        ]
+      },
+      {
+        "rank": 75,
+        "name": "Bolt",
+        "aliases": [
+          "โบลต์"
+        ]
+      },
+      {
+        "rank": 76,
+        "name": "Foodpanda",
+        "aliases": [
+          "ฟู้ดแพนด้า"
+        ]
+      },
+      {
+        "rank": 77,
+        "name": "Lalamove",
+        "aliases": [
+          "ลาลามูฟ"
+        ]
+      },
+      {
+        "rank": 78,
+        "name": "Shopee",
+        "aliases": [
+          "ช้อปปี้"
+        ]
+      },
+      {
+        "rank": 79,
+        "name": "Lazada",
+        "aliases": [
+          "ลาซาด้า"
+        ]
+      },
+      {
+        "rank": 80,
+        "name": "Amazon Shopping",
+        "aliases": [
+          "แอมะซอนช้อปปิ้ง"
+        ]
+      },
+      {
+        "rank": 81,
+        "name": "eBay",
+        "aliases": [
+          "อีเบย์"
+        ]
+      },
+      {
+        "rank": 82,
+        "name": "Etsy",
+        "aliases": [
+          "เอ็ตซี"
+        ]
+      },
+      {
+        "rank": 83,
+        "name": "Temu",
+        "aliases": [
+          "เทมู"
+        ]
+      },
+      {
+        "rank": 84,
+        "name": "SHEIN",
+        "aliases": [
+          "ชีอิน"
+        ]
+      },
+      {
+        "rank": 85,
+        "name": "AliExpress",
+        "aliases": [
+          "อาลีเอ็กซ์เพรส"
+        ]
+      },
+      {
+        "rank": 86,
+        "name": "Airbnb",
+        "aliases": [
+          "แอร์บีเอ็นบี"
+        ]
+      },
+      {
+        "rank": 87,
+        "name": "Booking.com",
+        "aliases": [
+          "บุ๊กกิ้งดอตคอม"
+        ]
+      },
+      {
+        "rank": 88,
+        "name": "Agoda",
+        "aliases": [
+          "อโกด้า"
+        ]
+      },
+      {
+        "rank": 89,
+        "name": "Trip.com",
+        "aliases": [
+          "ทริปดอตคอม"
+        ]
+      },
+      {
+        "rank": 90,
+        "name": "Skyscanner",
+        "aliases": [
+          "สกายสแกนเนอร์"
+        ]
+      },
+      {
+        "rank": 91,
+        "name": "Google Translate",
+        "aliases": [
+          "กูเกิลแปลภาษา"
+        ]
+      },
+      {
+        "rank": 92,
+        "name": "Google Earth",
+        "aliases": [
+          "กูเกิลเอิร์ธ"
+        ]
+      },
+      {
+        "rank": 93,
+        "name": "PayPal",
+        "aliases": [
+          "เพย์พาล"
+        ]
+      },
+      {
+        "rank": 94,
+        "name": "TrueMoney Wallet",
+        "aliases": [
+          "ทรูมันนี่วอลเล็ท"
+        ]
+      },
+      {
+        "rank": 95,
+        "name": "K PLUS",
+        "aliases": [
+          "กสิกรไทยเคพลัส"
+        ]
+      },
+      {
+        "rank": 96,
+        "name": "SCB EASY",
+        "aliases": [
+          "ไทยพาณิชย์อีซี่"
+        ]
+      },
+      {
+        "rank": 97,
+        "name": "Krungthai NEXT",
+        "aliases": [
+          "กรุงไทยเน็กซ์"
+        ]
+      },
+      {
+        "rank": 98,
+        "name": "Binance",
+        "aliases": [
+          "ไบแนนซ์"
+        ]
+      },
+      {
+        "rank": 99,
+        "name": "Robinhood",
+        "aliases": [
+          "โรบินฮูด"
+        ]
+      },
+      {
+        "rank": 100,
+        "name": "Strava",
+        "aliases": [
+          "สตราวา"
         ]
       }
     ]

@@ -141,6 +141,8 @@ function eventMessage(event: GameEvent, currentPlayerId: string): string {
       return `เลข ${value} ไม่อยู่ในกองจั่วแล้ว ลองตัดช้อยส์ใหม่!`;
     case "ROUND_RESULT":
       return "รู้ผลรอบนี้แล้ว!";
+    case "TOP100_GUESS_RESULT":
+      return "";
   }
 }
 
@@ -168,6 +170,8 @@ function eventIcon(event: GameEvent): string {
       return "🤫";
     case "ROUND_RESULT":
       return "🏆";
+    case "TOP100_GUESS_RESULT":
+      return "";
   }
 }
 
@@ -189,7 +193,7 @@ export function GameAnnouncer({ events, currentPlayerId }: GameAnnouncerProps) {
       return;
     }
 
-    const incoming = unseen.filter((event) => event.event_type !== "ROUND_RESULT" && !isMajorEvent(event)).map((event) => ({
+    const incoming = unseen.filter((event) => event.event_type !== "ROUND_RESULT" && event.event_type !== "TOP100_GUESS_RESULT" && !isMajorEvent(event)).map((event) => ({
       id: nextIdRef.current++,
       icon: eventIcon(event),
       message: eventMessage(event, currentPlayerId),

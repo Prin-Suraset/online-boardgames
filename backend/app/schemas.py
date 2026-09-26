@@ -25,6 +25,7 @@ GameEventType = Literal[
     "CENTER_REVEALED_FROM_GUESS",
     "GUESS_HELD_BY_ANOTHER",
     "ROUND_RESULT",
+    "TOP100_GUESS_RESULT",
 ]
 
 

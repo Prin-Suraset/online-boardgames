@@ -352,6 +352,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   players={room.players}
                   playerId={profile.playerId}
                   sendAction={sendAction}
+                  gameEvents={gameEvents}
                   chatMessages={chatMessages}
                   sendChat={sendChat}
                   canRematch={currentPlayer?.is_host === true || user.is_admin}

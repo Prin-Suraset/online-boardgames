@@ -1,10 +1,12 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Top 1-100 by ChatGPT guess console width and score placement.
-* **State**: Ready for test (frontend build passes)
+* **Active Task**: Install a frontend design skill.
+* **State**: In-Progress (project installation complete; global skills directory is read-only)
 
 ## 2. Completed in this Session
+* [x] Installed Anthropic's `frontend-design` skill and Apache 2.0 license under `skills/frontend-design/`, and linked it from `AGENTS.md` for project frontend design tasks. The files match the browser downloads. Commit `2299d34` is in `/tmp/TheBoardGame-readme-git.git` because repository Git metadata is read-only.
+* [x] Added `README.md` with the current games, features, technology stack, local setup, and verification commands. Its documentation commit is `9194388` in `/tmp/TheBoardGame-readme-git.git` because the repository `.git` index is read-only.
 * [x] Moved the turn status and private score into a header above the Top100 guess form. The input now fills its own row on mobile and tablet, with Submit and Pass below it; on desktop, the input takes the remaining width beside the buttons.
 * [x] Verified `cd frontend && npm run build` (0 errors) and `git diff --check`. UI change committed as `0116919` (`fix(top100): expand guess input with separate score header`) in `/tmp/TheBoardGame-top100-input-layout.git` because the workspace `.git` index is read-only.
 * [x] Added `PASS_TURN` to the deterministic Top100 engine. A pass records `{player_id, action: "PASS", round}` in private turn history, awards no points, and advances through round 10 using the existing turn order and finish logic.
@@ -120,6 +122,9 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] If a global install is needed, copy `skills/frontend-design/` to `/home/prin/.codex/skills/frontend-design/` when that directory is writable; the command-line installer also could not resolve GitHub from this environment.
+* [ ] Sync project skill commit `2299d34` and this handoff update from `/tmp/TheBoardGame-readme-git.git` into writable repository Git metadata before pushing.
+* [ ] Sync README commit `9194388` and this handoff update from `/tmp/TheBoardGame-readme-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync pass-turn commit `e68f8a8` and this handoff update from `/tmp/TheBoardGame-pass-turn-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync five-tier commit `0a9ac7f` and this handoff update from `/tmp/TheBoardGame-five-tier-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync normalization commit `6c700e8` and this handoff update from `/tmp/TheBoardGame-normalization-git.git` into writable repository Git metadata before pushing.

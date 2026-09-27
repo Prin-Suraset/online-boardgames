@@ -30,6 +30,8 @@
   * **Transient / Cache**: In-Memory structures or Redis (for active rooms and match states)
 * **Networking**: REST API (Lobby & User Management) + WebSockets (Real-time Room & Game State Sync)
 
+For frontend design work in this repository, read and apply `skills/frontend-design/SKILL.md`.
+
 ---
 
 ## 4. <Goldenrule>

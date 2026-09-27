@@ -1,13 +1,10 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Reskin the You Or Me room and shared chat with the SAO Alicization Stacia / Sacred Arts theme.
-* **State**: Ready for Test (visual styling complete; dependency installation and browser verification are blocked by registry DNS failure)
+* **Active Task**: Install a frontend design skill.
+* **State**: In-Progress (project installation complete; global skills directory is read-only)
 
 ## 2. Completed in this Session
-* [x] Updated the You Or Me arena, player pods, active-turn glow, bankroll treatment, phase and room badges, cards, betting controls, desktop chat rail, and mobile chat drawer using midnight, ice-blue, gold, and elemental colors. Preserved all existing React handlers, state, game values, and responsive layout classes. Commit `5779be1` is in `/tmp/TheBoardGame-stacia-git/.git` because the workspace Git index is read-only.
-* [x] Kept the existing `+5`, `+10`, and `+20` quick-raise amounts and all-in action; only their appearance changed. The current UI has no 25/100/500 chip denominations or separate progress bar.
-* [x] Verified `git diff --check`. Frontend build/lint could not start because `tsc` and `eslint` are absent; both offline and regular `npm ci` failed on `zod-validation-error` (`ENOTCACHED` and `EAI_AGAIN`, including the approved outside-sandbox attempt).
 * [x] Installed Anthropic's `frontend-design` skill and Apache 2.0 license under `skills/frontend-design/`, and linked it from `AGENTS.md` for project frontend design tasks. The files match the browser downloads. Commit `2299d34` is in `/tmp/TheBoardGame-readme-git.git` because repository Git metadata is read-only.
 * [x] Added `README.md` with the current games, features, technology stack, local setup, and verification commands. Its documentation commit is `9194388` in `/tmp/TheBoardGame-readme-git.git` because the repository `.git` index is read-only.
 * [x] Moved the turn status and private score into a header above the Top100 guess form. The input now fills its own row on mobile and tablet, with Submit and Pass below it; on desktop, the input takes the remaining width beside the buttons.
@@ -125,8 +122,6 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
-* [ ] When registry access works, run `cd frontend && npm ci --no-audit --no-fund && npm run build && npm run lint`.
-* [ ] On a reachable frontend, inspect the You Or Me room at desktop, tablet, and mobile sizes, especially the ivory card treatment, card selection, betting controls, and chat drawer.
 * [ ] If a global install is needed, copy `skills/frontend-design/` to `/home/prin/.codex/skills/frontend-design/` when that directory is writable; the command-line installer also could not resolve GitHub from this environment.
 * [ ] Sync project skill commit `2299d34` and this handoff update from `/tmp/TheBoardGame-readme-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync README commit `9194388` and this handoff update from `/tmp/TheBoardGame-readme-git.git` into writable repository Git metadata before pushing.
@@ -155,7 +150,6 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
-* The requested exact `h-[100dvh] overflow-hidden` room root would change the existing header-plus-board viewport layout. The existing `h-[calc(100dvh-9rem)]`, `min-h-0`, `flex-1`, and overflow structure remains intact; the requested midnight and aurora colors are applied within it.
 * `TURN_PASSED` adds optional `player_id` and `player_name` fields to the shared event contract; existing `actor_id` and `actor_name` remain populated for compatibility. Turn history remains server-side and is not added to the player view.
 * The five-tier matcher does not generate arbitrary English-to-Thai transliterations; the shipped topic aliases provide cross-script equivalents. Unrecognized partial or ambiguous guesses receive 0 points.
 * The case/punctuation change is backend-only; the frontend contract and UI did not change. The ten-topic bank validates with the new normalization and has no normalized answer or alias collisions.

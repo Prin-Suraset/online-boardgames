@@ -12,7 +12,7 @@ export function Navbar() {
   );
 
   return (
-    <nav className="relative z-50 border-b border-sky-400/20 bg-[#0B0F19]/80 shadow-lg shadow-black/10 backdrop-blur-lg">
+    <nav className="relative z-50 border-b border-slate-800/80 bg-[#0B0F19]/90 shadow-lg shadow-black/10 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="/" className="group flex items-center gap-3 text-white">
           <span className="grid size-9 place-items-center rounded-xl border border-[#E5A93C]/60 bg-[#1C212D] text-xl shadow-[0_0_20px_rgba(229,169,60,0.25)] transition-transform duration-200 group-hover:rotate-6" aria-hidden="true">

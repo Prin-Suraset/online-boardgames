@@ -38,7 +38,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
           setReadMessageCount(messages.length);
           setIsOpen(true);
         }}
-        className="fixed top-3 right-3 z-40 flex items-center justify-center rounded-full border border-sky-300/70 bg-gradient-to-br from-sky-500 to-blue-700 p-3 text-white shadow-[0_0_18px_rgba(56,189,248,0.4)] transition-transform hover:scale-105 hover:from-sky-400 focus-visible:outline-sky-300 xl:hidden"
+        className="fixed top-3 right-3 z-40 flex items-center justify-center rounded-full bg-indigo-600 p-3 text-white shadow-xl transition-transform hover:scale-105 hover:bg-indigo-500 focus-visible:outline-indigo-300 xl:hidden"
         aria-label={unreadCount > 0 ? `เปิดแชต มีข้อความใหม่ ${String(unreadCount)} ข้อความ` : "เปิดแชต"}
         aria-expanded={isOpen}
       >
@@ -56,7 +56,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
       >
         <button
           type="button"
-          className={`absolute inset-0 bg-[#070A12]/75 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-0 bg-slate-950/65 transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`}
           onClick={() => {
             setReadMessageCount(messages.length);
             setIsOpen(false);
@@ -65,7 +65,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
           tabIndex={isOpen ? 0 : -1}
         />
         <aside
-          className={`absolute inset-y-0 right-0 flex w-80 max-w-[calc(100vw-3.5rem)] flex-col border-l border-sky-400/30 bg-[#070A12]/90 p-4 shadow-2xl backdrop-blur-xl transition-transform duration-300 sm:w-96 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+          className={`absolute inset-y-0 right-0 flex w-80 max-w-[calc(100vw-3.5rem)] flex-col border-l border-slate-800 bg-slate-900/95 p-4 shadow-2xl backdrop-blur-xl transition-transform duration-300 sm:w-96 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
           aria-label="แชตในห้อง"
         >
           <div className="mb-3 flex items-center justify-between">
@@ -76,7 +76,7 @@ export function ChatDrawer({ messages, currentPlayerId, onSend }: ChatDrawerProp
                 setReadMessageCount(messages.length);
                 setIsOpen(false);
               }}
-              className="grid size-10 place-items-center rounded-full border border-sky-400/30 bg-[#141B2D]/80 text-xl text-slate-200 transition hover:bg-sky-500/20 hover:text-white"
+              className="grid size-10 place-items-center rounded-full border border-slate-700 bg-slate-800 text-xl text-slate-200 transition hover:bg-slate-700 hover:text-white"
               aria-label="ปิดแชต"
             >
               ✕

@@ -29,7 +29,7 @@ export function ChatBox({ messages, currentPlayerId, onSend }: ChatBoxProps) {
   };
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col rounded-2xl border border-white/10 bg-slate-950/50 p-4">
+    <section className="flex min-h-0 flex-1 flex-col rounded-2xl border border-sky-400/20 bg-[#0B0F19]/60 p-4">
       <h3 className="font-black text-white">💬 คุยกันในห้อง</h3>
       <div className="mt-3 min-h-24 flex-1 space-y-2 overflow-y-auto pr-1" aria-live="polite">
         {messages.length === 0 && (
@@ -45,10 +45,10 @@ export function ChatBox({ messages, currentPlayerId, onSend }: ChatBoxProps) {
               <div className={cn(
                 "max-w-[85%] rounded-2xl px-3 py-2 text-xs shadow",
                 isOwn
-                  ? "rounded-br-sm bg-cyan-500/20 text-cyan-50"
-                  : "rounded-bl-sm bg-white/[0.07] text-slate-200",
+                  ? "rounded-tr-[2px] border border-sky-400/30 bg-gradient-to-r from-sky-600/80 to-blue-600/80 text-white"
+                  : "rounded-tl-[2px] border border-slate-700/50 bg-[#141B2D]/80 text-slate-200",
               )}>
-                <p className={cn("mb-0.5 text-[10px] font-bold", isOwn ? "text-cyan-300" : "text-amber-300")}>
+                <p className={cn("mb-0.5 text-[10px] font-bold", isOwn ? "text-sky-100" : "text-amber-300")}>
                   {isOwn ? "คุณ" : message.sender_name}
                 </p>
                 <p className="break-words leading-5">{message.text}</p>

@@ -125,27 +125,27 @@ function PlayerPod({
   return (
     <article
       className={cn(
-        "flex w-full items-center gap-2 rounded-2xl border p-2 text-left shadow-[0_12px_26px_rgba(0,0,0,0.48)] transition-all sm:gap-3 sm:p-2.5",
+        "flex w-full items-center gap-2 rounded-2xl border border-sky-400/30 bg-[#141B2D]/80 p-2 text-left text-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md transition-all sm:gap-3 sm:p-2.5",
         isLocal ? "max-w-[24rem]" : "max-w-[20rem]",
         isTurn
-          ? "border-[#E5A93C] bg-[#161B26]/95 text-white ring-2 ring-[#E5A93C] ring-offset-2 ring-offset-emerald-950 shadow-[0_0_20px_rgba(229,169,60,0.5)]"
-          : "border-slate-700/70 bg-[#161B26]/95 text-white",
-        isLocal && !isTurn && "border-slate-700/70",
+          ? "border-amber-400 bg-[#141B2D]/90 text-white ring-2 ring-amber-400 ring-offset-2 ring-offset-[#070A12] shadow-[0_0_20px_rgba(245,158,11,0.45)]"
+          : "border-sky-400/30 bg-[#141B2D]/80 text-slate-100",
+        isLocal && !isTurn && "border-sky-400/30",
       )}
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span
             className={cn(
-              "grid size-9 shrink-0 place-items-center rounded-full border-2 border-amber-200/50 bg-gradient-to-br from-amber-300/35 to-rose-950 text-lg shadow-inner sm:size-10 sm:text-xl",
-              isTurn && "border-amber-200 shadow-[0_0_16px_rgba(251,191,36,0.7)]",
+              "grid size-9 shrink-0 place-items-center rounded-full border-2 border-sky-300/60 bg-gradient-to-br from-sky-400/30 to-[#0B0F19] text-lg shadow-inner sm:size-10 sm:text-xl",
+              isTurn && "border-amber-300 shadow-[0_0_16px_rgba(251,191,36,0.7)]",
             )}
           >
             {player?.avatar ?? "?"}
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs font-black text-white">{nameOf(player)}</p>
-            <p className="truncate text-[9px] font-bold tracking-[0.12em] text-amber-200/65 uppercase">
+            <p className="truncate text-[9px] font-bold tracking-[0.12em] text-sky-200/75 uppercase">
               {isLocal ? "ที่นั่งของคุณ" : gamePlayer.is_folded ? "หมอบแล้ว" : isTurn ? "ถึงตาเล่น" : "กำลังรอ"}
             </p>
           </div>
@@ -153,10 +153,10 @@ function PlayerPod({
         </div>
 
         <div className="mt-1.5 flex items-center justify-between gap-1 text-[9px] font-black sm:mt-2 sm:gap-2 sm:text-[10px]">
-          <span className="rounded-full border border-rose-300/20 bg-rose-950/70 px-2 py-1 text-rose-100">
+          <span className="rounded-full border border-emerald-300 bg-gradient-to-r from-emerald-400 via-sky-400 to-amber-400 px-2 py-1 text-slate-950 shadow-[0_0_10px_rgba(16,185,129,0.35)]">
             ❤️ {String(gamePlayer.coins)} เหรียญ
           </span>
-          <span className="rounded-full border border-amber-300/20 bg-amber-950/65 px-2 py-1 text-amber-100">
+          <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2 py-1 text-amber-200 shadow-[0_0_10px_rgba(251,191,36,0.2)]">
             ลงแล้ว: {String(gamePlayer.round_bet)}
           </span>
         </div>
@@ -168,7 +168,7 @@ function PlayerPod({
             card={selectedCard}
             faceDown={!showCardFace}
             className={cn(
-              "w-10 border-amber-200/70 sm:w-11",
+              "w-10 border-sky-300/80 sm:w-11",
               showCardFace ? "animate-[card-flip_700ms_ease-out]" : "animate-[deal-card_550ms_ease-out]",
             )}
           />
@@ -276,7 +276,7 @@ export function YouOrMeBoard({
 
       {activeRoundResult !== null && showdownStage === "winner" && (
         <div className="pointer-events-none fixed inset-0 z-[60] grid place-items-center p-4">
-          <section className="w-full max-w-xl rounded-[2rem] border border-slate-700/60 bg-[#161B26]/95 p-6 text-center shadow-[0_0_70px_rgba(229,169,60,0.35)] backdrop-blur-xl animate-[modal-pop_240ms_ease-out_both]">
+          <section className="w-full max-w-xl rounded-[2rem] border border-amber-400/50 bg-[#141B2D]/95 p-6 text-center shadow-[0_0_70px_rgba(245,158,11,0.35)] backdrop-blur-xl animate-[modal-pop_240ms_ease-out_both]">
             <p className="text-xs font-black tracking-[0.25em] text-amber-300 uppercase">ผลรอบที่ {String(activeRoundResult.round_number)}</p>
             <h2 className="mt-3 text-2xl font-black text-amber-50 sm:text-3xl">
               {activeRoundResult.is_tie
@@ -299,15 +299,15 @@ export function YouOrMeBoard({
         </div>
       )}
 
-      <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-slate-700/70 bg-[#161B26]/95 shadow-2xl sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
-        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#0B0F19]">
+      <div className="relative flex h-[calc(100dvh-9rem)] min-h-0 w-full flex-1 overflow-hidden rounded-3xl border border-sky-400/25 bg-[#070A12] text-slate-100 shadow-[0_0_40px_rgba(56,189,248,0.12)] sm:h-[calc(100dvh-7.5rem)] xl:flex-row">
+        <main className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-[#070A12] bg-[radial-gradient(ellipse_at_50%_30%,rgba(56,189,248,0.12)_0%,rgba(7,10,18,0.95)_75%)]">
           <div className="w-full flex-1 min-h-0 relative p-2 sm:p-4 overflow-hidden flex items-center justify-center">
-            <div className="w-full h-full rounded-[40px] md:rounded-[70px] border-4 md:border-8 border-slate-700/70 shadow-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800 via-emerald-950 to-slate-950 flex flex-col justify-between items-center p-3 sm:p-5 relative overflow-hidden">
-              <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-amber-500/20 md:rounded-[120px]" />
-              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(52,211,153,0.15),transparent_35%),linear-gradient(110deg,transparent_20%,rgba(255,255,255,0.03),transparent_80%)]" />
+            <div className="w-full h-full rounded-[40px] md:rounded-[70px] border-4 md:border-8 border-sky-400/25 shadow-[0_0_40px_rgba(56,189,248,0.12)] bg-gradient-to-b from-[#0F172A]/90 via-[#0B0F19]/90 to-[#0A0E1A]/95 backdrop-blur-md flex flex-col justify-between items-center p-3 sm:p-5 relative overflow-hidden">
+              <div className="pointer-events-none absolute inset-4 rounded-[80px] border border-sky-300/25 md:rounded-[120px]" />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(56,189,248,0.12)_0%,rgba(7,10,18,0)_75%)]" />
               {showdownStage === "inspection" && (
                 <div className="pointer-events-none absolute top-1/2 left-1/2 z-40 w-[min(92%,34rem)] -translate-x-1/2 -translate-y-1/2 text-center">
-                  <div className="rounded-2xl border border-[#E5A93C]/70 bg-[#161B26]/95 px-4 py-3 text-base font-black text-amber-50 shadow-[0_0_42px_rgba(229,169,60,0.38)] sm:px-6 sm:py-4 sm:text-xl">
+                  <div className="rounded-2xl border border-amber-400/70 bg-[#141B2D]/95 px-4 py-3 text-base font-black text-amber-50 shadow-[0_0_42px_rgba(245,158,11,0.38)] sm:px-6 sm:py-4 sm:text-xl">
                     🃏 ปิดเดิมพันแล้ว! มาหงายไพ่กัน...
                   </div>
                 </div>
@@ -329,8 +329,8 @@ export function YouOrMeBoard({
               </div>
 
               <div className="my-auto flex flex-col items-center justify-center gap-1 z-10">
-                <div className="flex w-[min(100%,22rem)] flex-col items-center gap-1 rounded-[2rem] border border-slate-700/70 bg-[#161B26]/90 px-3 py-2 text-center shadow-[0_0_42px_rgba(229,169,60,0.17)] backdrop-blur-sm sm:px-5 sm:py-3">
-                  <div className="flex items-center justify-center gap-2 text-rose-100">
+                <div className="flex w-[min(100%,22rem)] flex-col items-center gap-1 rounded-[2rem] border border-sky-400/30 bg-[#141B2D]/80 px-3 py-2 text-center shadow-[0_0_40px_rgba(56,189,248,0.12)] backdrop-blur-md sm:px-5 sm:py-3">
+                  <div className="flex items-center justify-center gap-2 text-amber-100">
                     <HandCoins className="size-4 text-amber-300 sm:size-5" />
                     <span className="text-sm font-black sm:text-lg">❤️ กองกลาง: {String(game.pot)} เหรียญ</span>
                   </div>
@@ -338,11 +338,11 @@ export function YouOrMeBoard({
                     <span>🪙</span><span>🪙</span><span>🔴</span><span>🪙</span>
                   </div>
                   <div className="flex items-center justify-center gap-2">
-                    <span className="rounded-full border border-amber-300/50 bg-amber-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-amber-100 uppercase">
+                    <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)] uppercase">
                       รอบที่ {String(game.round_number)} / {String(game.total_rounds)}
                     </span>
                   </div>
-                  <p className="text-[10px] font-black text-emerald-100 sm:text-xs">{phaseLabel(game.phase)}</p>
+                  <p className="rounded-full border border-amber-400/40 bg-amber-400/10 text-[10px] font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)] sm:text-xs">{phaseLabel(game.phase)}</p>
                   {game.phase === "BETTING" && (
                     <p className="text-[9px] font-bold text-amber-200/60">เดิมพันตอนนี้: {String(game.current_bet)} ❤️</p>
                   )}
@@ -378,8 +378,8 @@ export function YouOrMeBoard({
                               selectable={canSelect}
                               onClick={() => { selectCard(card.id); }}
                               className={cn(
-                                "h-15 w-11 shadow-2xl transition-transform sm:h-18 sm:w-13 md:h-19 md:w-14",
-                                canSelect ? "cursor-pointer hover:-translate-y-3" : "pointer-events-none",
+                                "h-15 w-11 shadow-md transition-transform sm:h-18 sm:w-13 md:h-19 md:w-14",
+                                canSelect ? "cursor-pointer hover:-translate-y-1.5" : "pointer-events-none",
                               )}
                             />
                           );
@@ -391,7 +391,7 @@ export function YouOrMeBoard({
               </div>
 
           {isBettingTurn && (
-            <div className="absolute right-3 bottom-3 z-30 w-[calc(100%-1.5rem)] max-w-[20rem] rounded-2xl border border-slate-700/70 bg-[#161B26]/95 p-3 shadow-[0_18px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:right-5 sm:bottom-5 sm:p-4 lg:right-7 lg:w-80">
+            <div className="absolute right-3 bottom-3 z-30 w-[calc(100%-1.5rem)] max-w-[20rem] rounded-2xl border border-sky-400/30 bg-[#141B2D]/90 p-3 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-xl sm:right-5 sm:bottom-5 sm:p-4 lg:right-7 lg:w-80">
               <div className="flex items-center justify-between gap-2">
                 <p className="flex items-center gap-2 text-xs font-black tracking-[0.16em] text-amber-100 uppercase">
                   <CircleDollarSign className="size-4 text-amber-300" /> ถึงตาคุณแล้ว!
@@ -400,19 +400,19 @@ export function YouOrMeBoard({
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {game.current_bet === 0 ? (
-                  <button type="button" onClick={() => { sendAction("CHECK", {}); }} className="secondary-button min-h-10 px-2 text-xs">
+                  <button type="button" onClick={() => { sendAction("CHECK", {}); }} className="min-h-10 rounded-xl border-b-2 border-blue-800 bg-gradient-to-r from-sky-500 to-blue-600 px-2 text-xs font-bold text-white shadow-[0_0_16px_rgba(14,165,233,0.4)] transition-all active:translate-y-0.5 active:scale-95">
                     <ShieldCheck className="size-4 text-emerald-300" /> ผ่าน (Check)
                   </button>
                 ) : (
-                  <button type="button" onClick={() => { sendAction("CALL", {}); }} className="min-h-10 rounded-xl border border-emerald-300/40 bg-emerald-700/80 px-2 text-xs font-black text-emerald-50 transition hover:bg-emerald-600">
+                  <button type="button" onClick={() => { sendAction("CALL", {}); }} className="min-h-10 rounded-xl border-b-2 border-blue-800 bg-gradient-to-r from-sky-500 to-blue-600 px-2 text-xs font-bold text-white shadow-[0_0_16px_rgba(14,165,233,0.4)] transition-all active:translate-y-0.5 active:scale-95">
                     <PhoneCall className="mr-1 inline size-4" /> สู้ (Call) {String(callAmount)}
                   </button>
                 )}
-                <button type="button" onClick={() => { if (window.confirm("หมอบรอบนี้เลยไหม?")) sendAction("FOLD", {}); }} className="min-h-10 rounded-xl border border-red-300/35 bg-red-700/70 px-2 text-xs font-black text-red-50 transition hover:bg-red-600">
+                <button type="button" onClick={() => { if (window.confirm("หมอบรอบนี้เลยไหม?")) sendAction("FOLD", {}); }} className="min-h-10 rounded-xl border border-slate-600/50 bg-slate-800/80 px-2 text-xs font-black text-slate-300 transition-all hover:bg-slate-700/60 active:scale-95">
                   🛑 หมอบ (Fold)
                 </button>
               </div>
-              <div className="mt-3 rounded-xl border border-amber-300/15 bg-amber-950/35 p-2.5">
+              <div className="mt-3 rounded-xl border border-sky-400/20 bg-[#0B0F19]/70 p-2.5">
                 <div className="flex items-center justify-between gap-2">
                   <label htmlFor="you-or-me-raise" className="flex items-center gap-1 text-[10px] font-black tracking-wider text-amber-100/75 uppercase">
                     <ChevronUp className="size-3" /> {game.current_bet === 0 ? "ลงเดิมพัน" : "เกทับ"}
@@ -431,22 +431,22 @@ export function YouOrMeBoard({
                       const val = event.target.value.replace(/[^0-9]/g, "");
                       setBetAmount(val);
                     }}
-                    className="w-32 px-4 py-2 bg-slate-900 border border-amber-500/50 rounded-xl text-center text-lg font-bold text-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-32 px-4 py-2 bg-[#070A12] border border-sky-400/50 rounded-xl text-center text-lg font-bold text-amber-300 focus:outline-none focus:ring-2 focus:ring-sky-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <button type="button" onClick={submitRaise} className="primary-button min-h-10 shrink-0 px-3 text-xs">ยืนยัน</button>
+                  <button type="button" onClick={submitRaise} className="min-h-10 shrink-0 rounded-xl border-b-2 border-amber-700 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 px-3 text-xs font-black text-slate-950 shadow-[0_0_18px_rgba(245,158,11,0.45)] transition-all active:translate-y-0.5 active:scale-95">ยืนยัน</button>
                 </div>
                 <div className="mt-2 grid grid-cols-4 gap-1">
                   {[5, 10, 20].map((increment) => (
-                    <button key={increment} type="button" onClick={() => { setQuickRaise(increment); }} className="rounded-lg border border-amber-200/15 bg-white/5 px-1 py-1.5 text-[10px] font-black text-amber-100 transition hover:border-amber-300/50 hover:bg-amber-300/10">+{String(increment)}</button>
+                    <button key={increment} type="button" onClick={() => { setQuickRaise(increment); }} className={cn("rounded-lg px-1 py-1.5 text-[10px] font-black text-white transition-all active:scale-95", increment === 5 ? "border border-emerald-300 bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-[0_0_10px_rgba(16,185,129,0.35)]" : increment === 10 ? "border border-sky-300 bg-gradient-to-br from-sky-400 to-blue-600 shadow-[0_0_10px_rgba(56,189,248,0.35)]" : "border border-rose-300 bg-gradient-to-br from-rose-500 to-amber-500 shadow-[0_0_10px_rgba(244,63,94,0.35)]")}>+{String(increment)}</button>
                   ))}
-                  <button type="button" onClick={() => { setBetAmount(String(maxRaise)); }} className="rounded-lg border border-rose-300/25 bg-rose-950/50 px-1 py-1.5 text-[10px] font-black text-rose-100 transition hover:bg-rose-800/70">หมดหน้าตัก</button>
+                  <button type="button" onClick={() => { setBetAmount(String(maxRaise)); }} className="rounded-lg border-b-2 border-rose-800 bg-gradient-to-r from-rose-500 to-amber-500 px-1 py-1.5 text-[10px] font-bold text-white shadow-[0_0_16px_rgba(244,63,94,0.4)] transition-all active:translate-y-0.5 active:scale-95">หมดหน้าตัก</button>
                 </div>
               </div>
             </div>
           )}
 
           {game.phase === "FINISHED" && (
-            <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full border border-amber-300/45 bg-amber-950/90 px-4 py-2 text-xs font-black text-amber-100 shadow-xl">
+            <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2 rounded-full border border-amber-400/60 bg-amber-400/15 px-4 py-2 text-xs font-black text-amber-100 shadow-[0_0_20px_rgba(245,158,11,0.45)]">
               <Trophy className="size-4 text-amber-300" /> แชมป์โต๊ะนี้: {nameOf(playerMap.get(game.winner_id ?? ""))}
             </div>
           )}
@@ -454,7 +454,7 @@ export function YouOrMeBoard({
           </div>
         </main>
 
-        <aside className="hidden w-80 flex-shrink-0 flex-col border-l border-slate-700/70 bg-[#161B26]/95 p-3 xl:flex">
+        <aside className="hidden w-80 flex-shrink-0 flex-col border-l border-sky-400/30 bg-[#070A12]/90 p-3 shadow-2xl backdrop-blur-xl xl:flex">
           <ChatBox
             messages={chatMessages}
             currentPlayerId={playerId}
@@ -469,10 +469,10 @@ export function YouOrMeBoard({
             role="dialog"
             aria-modal="true"
             aria-labelledby="confirm-card-title"
-            className="w-full max-w-md animate-[modal-pop_240ms_ease-out_both] rounded-[2rem] border border-slate-700/60 bg-[#161B26]/95 p-6 text-center shadow-[0_24px_80px_rgba(0,0,0,0.7)] backdrop-blur-md"
+            className="w-full max-w-md animate-[modal-pop_240ms_ease-out_both] rounded-[2rem] border border-sky-400/30 bg-[#141B2D]/95 p-6 text-center shadow-[0_0_40px_rgba(56,189,248,0.18)] backdrop-blur-md"
           >
-            <div className="mx-auto w-fit rounded-2xl bg-amber-300/10 p-2 shadow-[0_0_32px_rgba(251,191,36,0.2)]">
-              <YouOrMeCard card={pendingCard} className="w-44 sm:w-52" />
+            <div className="mx-auto w-fit rounded-2xl bg-sky-400/10 p-2 shadow-[0_0_32px_rgba(56,189,248,0.2)]">
+              <YouOrMeCard card={pendingCard} className="w-44 -translate-y-3 border-sky-400 ring-2 ring-sky-400 shadow-[0_0_25px_rgba(56,189,248,0.7)] sm:w-52" />
             </div>
             <h2 id="confirm-card-title" className="mt-5 text-xl font-black text-amber-100 sm:text-2xl">ลงไพ่ใบนี้เลยไหม?</h2>
             <p className="mt-2 text-sm font-medium leading-6 text-amber-100/65">ยืนยันแล้วไพ่จะลงคว่ำหน้า เปลี่ยนทีหลังไม่ได้นะ</p>

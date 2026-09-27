@@ -203,15 +203,15 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
   return (
     <main className={cn(
-      "min-h-screen",
+      "min-h-screen bg-[#070A12] text-slate-100",
         isWhatNumberSession || isYouOrMeSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
     )}>
-      <div className="ambient ambient-one" />
+      <div className="ambient ambient-one !bg-[radial-gradient(ellipse_at_50%_30%,rgba(56,189,248,0.12)_0%,rgba(7,10,18,0.95)_75%)] pointer-events-none" />
       <div className={cn(
         "mx-auto w-full",
         isWhatNumberSession || isYouOrMeSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
-        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-700/60 bg-[#161B26]/90 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
+        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-sky-400/20 bg-[#0B0F19]/80 px-4 py-3 shadow-2xl backdrop-blur-lg sm:px-5">
           <div className="flex flex-wrap items-center gap-2">
             <button type="button" onClick={exitRoom} className="ghost-button">
               <ArrowLeft className="size-4" /> ออกจากห้อง
@@ -233,8 +233,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               </button>
             )}
             <div className="text-right">
-              <p className="text-[10px] font-bold tracking-[0.18em] text-amber-300/70 uppercase">รหัสห้อง</p>
-              <p className="font-mono text-lg font-black tracking-[0.2em] text-amber-100">{code.toUpperCase()}</p>
+              <p className="text-[10px] font-bold tracking-[0.18em] text-sky-300/80 uppercase">รหัสห้อง</p>
+              <p className="rounded-full border border-amber-400/40 bg-amber-400/10 font-mono text-lg font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)]">{code.toUpperCase()}</p>
             </div>
             <button type="button" onClick={() => void copyInvite()} className="icon-button size-10" aria-label="คัดลอกรหัสห้อง">
               <Clipboard className="size-4" />

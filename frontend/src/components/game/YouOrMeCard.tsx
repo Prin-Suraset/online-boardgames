@@ -64,8 +64,8 @@ export function YouOrMeCard({ card, className, selectable = false, onClick, face
       onClick={onClick}
       aria-label={isFaceDown ? "Face-down card" : `Card ${String(card.rank)}`}
       className={cn(
-        "relative z-10 grid aspect-[2/3] w-16 shrink-0 overflow-hidden rounded-xl border border-sky-300/80 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 text-slate-900 opacity-100 brightness-100 contrast-100 shadow-md transition-transform",
-        selectable && "cursor-pointer hover:-translate-y-1.5 hover:border-sky-400 hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]",
+        "relative z-10 grid aspect-[2/3] w-16 shrink-0 overflow-hidden rounded-xl border-2 border-amber-300/80 bg-[#20162b] opacity-100 brightness-100 contrast-100 shadow-[0_8px_22px_rgba(0,0,0,0.35)] transition",
+        selectable && "cursor-pointer hover:-translate-y-3 hover:scale-105 hover:border-yellow-200 hover:shadow-[0_0_24px_rgba(250,204,21,0.55)]",
         !selectable && "pointer-events-none cursor-default",
         className,
       )}
@@ -83,19 +83,19 @@ export function YouOrMeCard({ card, className, selectable = false, onClick, face
           className={cn(
             "absolute inset-0 grid place-items-center p-1 text-center font-black",
             isFaceDown
-              ? "bg-[repeating-linear-gradient(45deg,#0F172A_0,#0F172A_8px,#1E3A5F_8px,#1E3A5F_16px)] text-sky-100"
-              : "bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 text-slate-900",
+              ? "bg-[repeating-linear-gradient(45deg,#261b40_0,#261b40_8px,#51302e_8px,#51302e_16px)] text-amber-100"
+              : "bg-[radial-gradient(circle_at_50%_30%,#fff7d6,#d9902f_72%,#7a351f)] text-rose-950",
           )}
         >
           {isFaceDown ? (
-            <span className="rounded-full border border-sky-300/60 px-2 py-1 text-lg">?</span>
+            <span className="rounded-full border border-amber-200/50 px-2 py-1 text-lg">?</span>
           ) : (
             <span className="text-3xl drop-shadow-md">{rankLabel(card.rank ?? 0)}</span>
           )}
         </span>
       )}
       {!isFaceDown && (
-        <span className="absolute top-1 left-1 rounded-full border border-sky-300/80 bg-slate-50/90 px-1.5 py-0.5 text-[9px] font-black text-slate-900">
+        <span className="absolute top-1 left-1 rounded-full border border-amber-100/60 bg-rose-950/75 px-1.5 py-0.5 text-[9px] font-black text-amber-100">
           {String(card.rank)}
         </span>
       )}

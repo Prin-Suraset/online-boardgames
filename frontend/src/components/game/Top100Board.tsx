@@ -161,20 +161,20 @@ export function Top100Board({
   };
 
   return (
-    <div className="flex h-[calc(100dvh-9rem)] min-h-[33rem] w-full gap-4 bg-[#070A12] text-slate-100">
-      <section aria-label="โต๊ะเกม Top 1-100" className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-sky-400/25 bg-gradient-to-b from-[#0F172A]/90 via-[#0B0F19]/90 to-[#0A0E1A]/95 shadow-[0_0_40px_rgba(56,189,248,0.12)] backdrop-blur-md">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(56,189,248,0.12)_0%,rgba(7,10,18,0.95)_75%)]" />
+    <div className="flex h-[calc(100dvh-9rem)] min-h-[33rem] w-full gap-4 bg-[#0B0F19] text-white">
+      <section aria-label="โต๊ะเกม Top 1-100" className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-amber-300/20 bg-[radial-gradient(ellipse_at_50%_12%,#243145_0%,#121a29_48%,#0B0F19_100%)] shadow-[inset_0_0_70px_rgba(0,0,0,0.25)]">
+        <div className="pointer-events-none absolute top-16 left-1/2 h-64 w-80 -translate-x-1/2 rounded-full bg-amber-400/10 blur-3xl" />
 
-        <header className="relative z-10 border-b border-sky-400/20 bg-[#0B0F19]/80 px-4 py-4 pr-16 backdrop-blur-lg sm:px-6 sm:pr-6">
+        <header className="relative z-10 border-b border-amber-200/10 bg-[#101725]/75 px-4 py-4 pr-16 sm:px-6 sm:pr-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-bold tracking-[0.25em] text-amber-300 uppercase">Top 1-100 by ChatGPT</p>
               <div className="mt-1 flex flex-wrap items-center gap-2 text-sm font-bold text-slate-200">
-                <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)]">ห้อง {roomCode}</span>
-                <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)]">รอบ {game.round_number}/10</span>
+                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">ห้อง {roomCode}</span>
+                <span className="rounded-full border border-amber-400/25 bg-amber-400/10 px-3 py-1 text-amber-200">รอบ {game.round_number}/10</span>
               </div>
             </div>
-            <div className="min-w-36 rounded-2xl border border-sky-400/30 bg-[#141B2D]/80 px-4 py-2.5 sm:min-w-44">
+            <div className="min-w-36 rounded-2xl border border-amber-400/20 bg-slate-950/70 px-4 py-2.5 sm:min-w-44">
               <div className="flex items-center justify-between gap-3 text-sm font-black">
                 <span className="flex items-center gap-1.5 text-slate-300"><Clock3 className="size-4 text-amber-300" /> เวลา</span>
                 <span role="timer" aria-label="เวลาที่เหลือ" className={secondsRemaining <= 10 ? "text-rose-300" : "text-amber-200"}>
@@ -191,8 +191,8 @@ export function Top100Board({
               <span key={player.id} className={cn(
                 "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold",
                 player.id === game.turn_player_id
-                  ? "border-amber-400 bg-amber-400/10 text-amber-300 ring-2 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.45)]"
-                  : "border-sky-400/30 bg-[#141B2D]/80 text-slate-400",
+                  ? "border-amber-300 bg-amber-400/15 text-amber-100 shadow-[0_0_12px_rgba(229,169,60,0.25)]"
+                  : "border-white/10 bg-white/5 text-slate-400",
               )}>
                 <span aria-hidden="true">{player.avatar}</span>
                 {player.id === playerId ? "คุณ" : player.name}
@@ -216,10 +216,10 @@ export function Top100Board({
               <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-3">
                 {game.revealed_chronological_items.map((item, index) => (
                   <article key={`${String(index)}-${item.name}`} className={cn(
-                    "rounded-2xl border p-4 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md",
+                    "rounded-2xl border p-4 shadow-lg",
                     item.is_mine
-                      ? "border-amber-400/60 bg-gradient-to-br from-amber-400/20 to-[#141B2D]"
-                      : "border-sky-400/30 bg-[#141B2D]/80",
+                      ? "border-amber-300/60 bg-gradient-to-br from-amber-400/20 to-[#1A2230] shadow-amber-500/10"
+                      : "border-cyan-200/15 bg-[#182536]/85 shadow-black/20",
                   )}>
                     <div className="flex items-start gap-3">
                       <span className={cn("grid size-8 shrink-0 place-items-center rounded-full text-xs font-black", item.is_mine ? "bg-amber-300 text-slate-950" : "bg-cyan-300/15 text-cyan-100")}>
@@ -247,7 +247,7 @@ export function Top100Board({
           )}
         </div>
 
-        <div className="relative z-10 shrink-0 border-t border-sky-400/20 bg-[#0B0F19]/90 px-4 py-4 shadow-[0_-15px_45px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-7">
+        <div className="relative z-10 shrink-0 border-t border-amber-300/20 bg-[#0D1422]/95 px-4 py-4 shadow-[0_-15px_45px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-7">
           <div className="mx-auto w-full max-w-6xl">
             <div className="mb-1.5 flex w-full flex-wrap items-center justify-between gap-2 px-1 text-xs sm:text-sm">
               <label htmlFor="top100-guess" className="font-medium text-amber-300">

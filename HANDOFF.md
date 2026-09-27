@@ -1,12 +1,10 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: SAO Alicization visual theme for game rooms and boards.
-* **State**: Ready for browser test (frontend build passes)
+* **Active Task**: Top 1-100 by ChatGPT guess console width and score placement.
+* **State**: Ready for test (frontend build passes)
 
 ## 2. Completed in this Session
-* [x] Applied the midnight, Blue Rose, and sacred gold palette to the room shell, navigation, Tic-Tac-Toe, What Number, Top100, You or Me, shared cards, buttons, and chat surfaces. Preserved game actions, state, payloads, layout wrappers, and responsive breakpoints. Committed as `647eedd` (`refactor(ui): apply Alicization sacred arts theme`) in `/tmp/TheBoardGame-sao-theme.git` because the workspace `.git` index is read-only.
-* [x] Verified `cd frontend && npm run build` and `git diff --check`. Lint findings were confirmed in the unchanged HEAD version of the affected files.
 * [x] Moved the turn status and private score into a header above the Top100 guess form. The input now fills its own row on mobile and tablet, with Submit and Pass below it; on desktop, the input takes the remaining width beside the buttons.
 * [x] Verified `cd frontend && npm run build` (0 errors) and `git diff --check`. UI change committed as `0116919` (`fix(top100): expand guess input with separate score header`) in `/tmp/TheBoardGame-top100-input-layout.git` because the workspace `.git` index is read-only.
 * [x] Added `PASS_TURN` to the deterministic Top100 engine. A pass records `{player_id, action: "PASS", round}` in private turn history, awards no points, and advances through round 10 using the existing turn order and finish logic.
@@ -122,8 +120,6 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
-* [ ] Sync theme commit `647eedd` and this handoff update from `/tmp/TheBoardGame-sao-theme.git` into writable repository Git metadata.
-* [ ] Browser-check the Alicization theme at desktop, tablet, and mobile sizes, including arena fit, card selection, betting controls, and chat drawer, once a reachable build is available.
 * [ ] Sync pass-turn commit `e68f8a8` and this handoff update from `/tmp/TheBoardGame-pass-turn-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync five-tier commit `0a9ac7f` and this handoff update from `/tmp/TheBoardGame-five-tier-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync normalization commit `6c700e8` and this handoff update from `/tmp/TheBoardGame-normalization-git.git` into writable repository Git metadata before pushing.
@@ -149,9 +145,6 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
-* For the Alicization theme, `npm run lint` reports four pre-existing errors (`Top100Board.tsx:109` twice and `room.tsx:137,141`) and one pre-existing Fast Refresh warning (`YouOrMeCard.tsx:14`). None are in changed behavior. `npm run build` passes.
-* Local Vite startup still fails with `listen EPERM` on `127.0.0.1:5173` inside and outside the sandbox, so responsive browser verification of this theme remains pending.
-* You or Me currently offers quick bet increments of 5, 10, and 20. Their actions and amounts were kept intact; crystal colors were applied to the existing controls and decorative pot chips.
 * `TURN_PASSED` adds optional `player_id` and `player_name` fields to the shared event contract; existing `actor_id` and `actor_name` remain populated for compatibility. Turn history remains server-side and is not added to the player view.
 * The five-tier matcher does not generate arbitrary English-to-Thai transliterations; the shipped topic aliases provide cross-script equivalents. Unrecognized partial or ambiguous guesses receive 0 points.
 * The case/punctuation change is backend-only; the frontend contract and UI did not change. The ten-topic bank validates with the new normalization and has no normalized answer or alias collisions.

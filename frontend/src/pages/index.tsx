@@ -34,6 +34,7 @@ function isRoomLookup(value: unknown): value is RoomLookup {
 export function HubPage() {
   const { user, openAuthModal } = useAuth();
   const [roomCode, setRoomCode] = useState("");
+  const [joinAsSpectator, setJoinAsSpectator] = useState(false);
   const [selectedGame, setSelectedGame] = useState<GameType>("tictactoe");
   const [isGameModalOpen, setIsGameModalOpen] = useState(false);
   const [ruleGame, setRuleGame] = useState<GameType | null>(null);
@@ -95,7 +96,7 @@ export function HubPage() {
       if (!response.ok) {
         throw new Error(response.status === 404 ? "Room not found." : "Unable to check that room.");
       }
-      navigate(`/room/${code}`);
+      navigate(`/room/${code}${joinAsSpectator ? "?role=spectator" : ""}`);
     } catch (caught: unknown) {
       setNotice(caught instanceof Error ? caught.message : "Unable to join the room.");
     } finally {
@@ -182,6 +183,10 @@ export function HubPage() {
                 aria-label="Room code"
                 className="text-input mt-2 w-full text-center font-mono text-xl font-black tracking-[0.35em] uppercase"
               />
+            </label>
+            <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-sky-100/80">
+              <input type="checkbox" checked={joinAsSpectator} onChange={(event) => { setJoinAsSpectator(event.target.checked); }} className="size-4 accent-sky-400" />
+              เข้าชมเกม (Spectate)
             </label>
               <button type="button" onClick={() => { void joinRoom(); }} disabled={busyAction !== null} className="primary-button mt-5 w-full rounded-lg px-6 py-3 font-black tracking-wider text-[#0B0F19] shadow-lg shadow-amber-500/20">
                 {busyAction === "join" ? <LoaderCircle className="size-4 animate-spin" /> : <ArrowRight className="size-4" />}

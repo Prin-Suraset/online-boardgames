@@ -18,7 +18,7 @@ export interface TicTacToeView {
   current_player: string;
   status: "in_progress" | "won" | "draw";
   winner: string | null;
-  your_mark: PlayerMark;
+  your_mark: PlayerMark | null;
 }
 
 export type WhatNumberPhase = "THINKING" | "ATTACK" | "PENALTY" | "FINISHED";
@@ -151,6 +151,9 @@ export interface RoomState {
   status: RoomStatus;
   host_id: string;
   players: readonly Player[];
+  spectators: readonly Player[];
+  capacity: number;
+  is_active_player: boolean;
   game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | null;
   result: GameOverResult | null;
 }

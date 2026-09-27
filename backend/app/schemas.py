@@ -81,6 +81,9 @@ class RoomStateView(StrictModel):
     status: Literal["LOBBY", "PLAYING", "FINISHED"]
     host_id: str
     players: tuple[PlayerView, ...]
+    spectators: tuple[PlayerView, ...]
+    capacity: int
+    is_active_player: bool
     game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | None
     result: GameOverResult | None
 
@@ -88,6 +91,7 @@ class RoomStateView(StrictModel):
 class JoinRoomPayload(StrictModel):
     player_name: str = Field(min_length=2, max_length=24)
     avatar: str = Field(min_length=1, max_length=8)
+    role: Literal["player", "spectator"] = "player"
 
 
 class ToggleReadyPayload(StrictModel):
@@ -161,12 +165,26 @@ class LeaveRoomMessage(StrictModel):
     payload: EmptyPayload
 
 
+class SwitchToSpectatorMessage(StrictModel):
+    type: Literal["SWITCH_TO_SPECTATOR"]
+    player_id: str = Field(min_length=1, max_length=128)
+    payload: EmptyPayload
+
+
+class SwitchToPlayerMessage(StrictModel):
+    type: Literal["SWITCH_TO_PLAYER"]
+    player_id: str = Field(min_length=1, max_length=128)
+    payload: EmptyPayload
+
+
 ClientMessage = Annotated[
     JoinRoomMessage
     | ToggleReadyMessage
     | StartGameMessage
     | GameActionMessage
-    | LeaveRoomMessage,
+    | LeaveRoomMessage
+    | SwitchToSpectatorMessage
+    | SwitchToPlayerMessage,
     Field(discriminator="type"),
 ]
 

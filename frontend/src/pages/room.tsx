@@ -13,6 +13,7 @@ import {
   Play,
   Radio,
   UserRound,
+  Eye,
 } from "lucide-react";
 
 import { TicTacToeBoard } from "../components/TicTacToeBoard";
@@ -125,6 +126,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     toggleReady,
     startGame,
     leaveRoom,
+    switchToSpectator,
+    switchToPlayer,
   } = useRoomSocket(code, profile, token);
 
   useEffect(() => {
@@ -151,6 +154,10 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
   }, [clearTransientState, room?.status]);
 
   const currentPlayer = room?.players.find((player) => player.id === profile.playerId);
+  const isSpectator = room?.spectators.some((spectator) => spectator.id === profile.playerId) === true;
+  const hasSeat = room !== null && room.players.length < room.capacity;
+  const gameViewerId = room?.is_active_player === true ? profile.playerId : "";
+  const gamePlayers = room === null ? [] : [...room.players, ...room.spectators];
   const minPlayers = room?.game_type === "what_number" ? 3 : 2;
   const maxPlayers = room?.game_type === "what_number" || room?.game_type === "top100" ? 8 : room?.game_type === "you_or_me" ? 4 : 2;
   const allPlayersReady =
@@ -160,6 +167,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     room?.status === "PLAYING" &&
     room.game !== null &&
     isTicTacToeView(room.game) &&
+    currentPlayer !== undefined &&
     room.game.current_player === profile.playerId;
   const wasForceEnded = room?.result?.details.forced === true;
   const isWhatNumberSession = room?.game_type === "what_number" && room.status !== "LOBBY";
@@ -221,8 +229,33 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                 <BookOpen className="size-4" /> ดูกติกา
               </button>
             )}
+            {room !== null && (
+                <details className="group relative">
+                  <summary className="flex cursor-pointer list-none items-center gap-1 rounded-xl border border-sky-300/30 bg-sky-300/5 px-2.5 py-2 text-xs font-bold text-sky-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-300">
+                    <Eye className="size-4" /> ผู้ชม ({room.spectators.length})
+                  </summary>
+                  <div className="absolute right-0 top-full z-50 mt-2 min-w-44 rounded-xl border border-sky-300/25 bg-[#161B26] p-2 text-xs text-slate-200 shadow-xl">
+                    {room.spectators.length === 0 ? <p className="px-2 py-1 text-slate-400">ยังไม่มีผู้ชม</p> : room.spectators.map((spectator) => (
+                      <p key={spectator.id} className="truncate px-2 py-1">{spectator.avatar} {spectator.name}</p>
+                    ))}
+                  </div>
+                </details>
+            )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {room !== null && (
+              <div className="flex items-center gap-2">
+                {currentPlayer !== undefined ? (
+                  <button type="button" onClick={switchToSpectator} className="rounded-xl border border-sky-300/40 bg-sky-300/5 px-2.5 py-2 text-xs font-bold text-sky-100 transition hover:bg-sky-300/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-300">
+                    เป็นผู้ชม (Spectate)
+                  </button>
+                ) : isSpectator && (
+                  <button type="button" onClick={switchToPlayer} disabled={!hasSeat} className="rounded-xl border border-sky-300/40 bg-sky-300/10 px-2.5 py-2 text-xs font-bold text-sky-100 transition hover:bg-sky-300/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sky-300 disabled:cursor-not-allowed disabled:opacity-50">
+                    {hasSeat ? "ลงเล่น (Join as Player)" : "โต๊ะเต็ม (Table Full)"}
+                  </button>
+                )}
+              </div>
+            )}
             {room?.status === "PLAYING" && user.is_admin && (
               <button
                 type="button"
@@ -242,7 +275,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
           </div>
           <div
             className={cn(
-              "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold",
+              "hidden items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold lg:flex",
               connectionStatus === "CONNECTED" ? "bg-mint/10 text-mint" : "bg-white/5 text-slate-400",
             )}
           >
@@ -284,26 +317,27 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               })}
             </div>
 
-            <div className="panel mt-5 flex flex-col items-stretch justify-between gap-4 p-5 sm:flex-row sm:items-center">
+            {currentPlayer !== undefined && <div className="panel mt-5 flex flex-col items-stretch justify-between gap-4 p-5 sm:flex-row sm:items-center">
               <div className="flex items-center gap-3">
-                {currentPlayer?.is_ready === true ? (
+                {currentPlayer.is_ready ? (
                   <Check className="size-5 text-mint" />
                 ) : (
                   <CircleDashed className="size-5 text-slate-500" />
                 )}
                 <div>
-                  <p className="font-bold text-white">{currentPlayer?.is_ready === true ? "พร้อมลุยแล้ว!" : "พร้อมเล่นหรือยัง?"}</p>
+                  <p className="font-bold text-white">{currentPlayer.is_ready ? "พร้อมลุยแล้ว!" : "พร้อมเล่นหรือยัง?"}</p>
                   <p className="text-xs text-slate-500">เปลี่ยนใจได้จนกว่าเกมจะเริ่มนะ</p>
                 </div>
               </div>
               <button
                 type="button"
-                onClick={() => { toggleReady(currentPlayer?.is_ready !== true); }}
-                className={currentPlayer?.is_ready === true ? "secondary-button" : "primary-button"}
+                onClick={() => { toggleReady(!currentPlayer.is_ready); }}
+                className={currentPlayer.is_ready ? "secondary-button" : "primary-button"}
               >
-                {currentPlayer?.is_ready === true ? "ยังไม่พร้อม" : "พร้อมแล้ว!"}
+                {currentPlayer.is_ready ? "ยังไม่พร้อม" : "พร้อมแล้ว!"}
               </button>
-            </div>
+            </div>}
+            {isSpectator && <p className="mt-5 text-center text-sm text-sky-100/75">กำลังชมเกมอยู่ เลือกลงเล่นเมื่อมีที่นั่งว่าง</p>}
 
             {currentPlayer?.is_host === true && (
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -349,8 +383,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                 <Top100Board
                   roomCode={room.room_code}
                   game={room.game}
-                  players={room.players}
-                  playerId={profile.playerId}
+                  players={gamePlayers}
+                  playerId={gameViewerId}
                   sendAction={sendAction}
                   gameEvents={gameEvents}
                   chatMessages={chatMessages}
@@ -362,8 +396,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               ) : isYouOrMeView(room.game) ? (
                 <YouOrMeBoard
                   game={room.game}
-                  players={room.players}
-                  playerId={profile.playerId}
+                  players={gamePlayers}
+                  playerId={gameViewerId}
                   sendAction={sendAction}
                   notify={setNotice}
                   gameEvents={gameEvents}
@@ -373,15 +407,19 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               ) : (
                 <WhatNumberGame
                   game={room.game}
-                  players={room.players}
-                  playerId={profile.playerId}
-                  isTimerAuthority={room.host_id === profile.playerId}
+                  players={gamePlayers}
+                  playerId={gameViewerId}
+                  isTimerAuthority={room.host_id === profile.playerId && room.is_active_player}
                   sendAction={sendAction}
                   notify={setNotice}
                   chatMessages={chatMessages}
                   sendChat={sendChat}
                 />
               )
+            )}
+
+            {currentPlayer !== undefined && !room.is_active_player && room.status === "PLAYING" && (
+              <p className="mt-2 text-center text-sm text-sky-100/75">ที่นั่งนี้เริ่มเล่นได้ในเกมถัดไป</p>
             )}
 
             {room.status === "FINISHED" && room.game !== null && !(isTop100View(room.game) && room.game.status === "FINISHED") && (

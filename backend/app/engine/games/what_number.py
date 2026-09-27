@@ -239,14 +239,26 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
         raise GameRuleError(MoveErrorCode.INVALID_ACTION, "unsupported action")
 
     @classmethod
+    def surrender(cls, state: WhatNumberState, player_id: str) -> WhatNumberState:
+        player = cls._player(state, player_id)
+        if state.phase == "FINISHED" or player.status == "ELIMINATED":
+            return state
+        updated = player.model_copy(update={"status": "ELIMINATED"})
+        next_state = cls._replace_player(state, updated)
+        if state.active_player_id == player_id or state.pending_penalty_player_id == player_id:
+            next_state = cls._next_turn(next_state)
+        return cls._finish_if_one_remains(next_state)
+
+    @classmethod
     def get_player_view(
         cls,
         state: WhatNumberState,
-        player_id: str,
+        player_id: str | None,
         is_admin: bool = False,
         display_names: Mapping[str, str] | None = None,
     ) -> WhatNumberView:
-        cls._player(state, player_id)
+        if player_id is not None:
+            cls._player(state, player_id)
         player_views: list[WhatNumberPlayerView] = []
         for game_player in state.players:
             can_see_all = is_admin or game_player.player_id == player_id
@@ -615,15 +627,15 @@ class WhatNumberEngine(BaseGame[WhatNumberState, WhatNumberAction, WhatNumberVie
     @classmethod
     def _finish_if_one_remains(cls, state: WhatNumberState) -> WhatNumberState:
         active = [player.player_id for player in state.players if player.status == "ACTIVE"]
-        if len(active) != 1:
+        if len(active) > 1:
             return state
         return state.model_copy(
             update={
                 "phase": "FINISHED",
-                "winner_id": active[0],
+                "winner_id": active[0] if active else None,
                 "active_player_id": None,
                 "pending_penalty_player_id": None,
-                "event_log": state.event_log + (f"{active[0]} won the game.",),
+                "event_log": state.event_log + ((f"{active[0]} won the game." if active else "No players remain."),),
             }
         )
 

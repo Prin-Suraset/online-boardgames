@@ -30,6 +30,8 @@ from app.schemas import (
     RoomSummary,
     SendChatMessage,
     StartGameMessage,
+    SwitchToPlayerMessage,
+    SwitchToSpectatorMessage,
     ToggleReadyMessage,
 )
 
@@ -190,7 +192,11 @@ def create_app(
                             "Chat messages cannot be empty.",
                         )
                         continue
-                    player = rooms.get_room(code).players[joined_player_id]
+                    chat_room = rooms.get_room(code)
+                    player = chat_room.players.get(joined_player_id) or chat_room.spectators.get(joined_player_id)
+                    if player is None:
+                        await hub.send_error(websocket, "INVALID_PLAYER", "Join the room before chatting.")
+                        continue
                     await hub.broadcast_chat(
                         code,
                         ChatMessageData(
@@ -230,6 +236,7 @@ def create_app(
                                 name=message.payload.player_name,
                                 avatar=message.payload.avatar,
                             ),
+                            role=message.payload.role,
                             is_admin=(
                                 authenticated_user is not None
                                 and authenticated_user.id == message.player_id
@@ -259,6 +266,10 @@ def create_app(
                             message.player_id,
                             message.payload.ready,
                         )
+                    elif isinstance(message, SwitchToSpectatorMessage):
+                        rooms.switch_to_spectator(code, message.player_id)
+                    elif isinstance(message, SwitchToPlayerMessage):
+                        rooms.switch_to_player(code, message.player_id)
                     elif isinstance(message, StartGameMessage):
                         rooms.start_game(code, message.player_id)
                         started_room = rooms.get_room(code)

@@ -32,10 +32,12 @@ interface UseRoomSocketResult {
   toggleReady: (ready: boolean) => void;
   startGame: () => void;
   leaveRoom: () => void;
+  switchToSpectator: () => void;
+  switchToPlayer: () => void;
 }
 
 interface ClientEnvelope {
-  type: "JOIN_ROOM" | "GAME_ACTION" | "TOGGLE_READY" | "START_GAME" | "LEAVE_ROOM";
+  type: "JOIN_ROOM" | "GAME_ACTION" | "TOGGLE_READY" | "START_GAME" | "LEAVE_ROOM" | "SWITCH_TO_SPECTATOR" | "SWITCH_TO_PLAYER";
   player_id: string;
   payload: object;
 }
@@ -227,7 +229,7 @@ function isTicTacToeView(value: unknown): value is TicTacToeView {
     typeof value.current_player === "string" &&
     (value.status === "in_progress" || value.status === "won" || value.status === "draw") &&
     (value.winner === null || typeof value.winner === "string") &&
-    (value.your_mark === "X" || value.your_mark === "O")
+    (value.your_mark === "X" || value.your_mark === "O" || value.your_mark === null)
   );
 }
 
@@ -294,6 +296,10 @@ function isRoomState(value: unknown): value is RoomState {
     typeof value.host_id === "string" &&
     Array.isArray(value.players) &&
     value.players.every(isPlayer) &&
+    Array.isArray(value.spectators) &&
+    value.spectators.every(isPlayer) &&
+    typeof value.capacity === "number" &&
+    typeof value.is_active_player === "boolean" &&
     (value.game === null ||
       (value.game_type === "tictactoe"
         ? isTicTacToeView(value.game)
@@ -389,6 +395,7 @@ export function useRoomSocket(
         payload: {
           player_name: profile.playerName,
           avatar: profile.avatar,
+          role: new URLSearchParams(window.location.search).get("role") === "spectator" ? "spectator" : "player",
         },
       };
       socket.send(JSON.stringify(envelope));
@@ -492,6 +499,14 @@ export function useRoomSocket(
     send({ type: "LEAVE_ROOM", player_id: profile.playerId, payload: {} });
   }, [profile.playerId, send]);
 
+  const switchToSpectator = useCallback((): void => {
+    send({ type: "SWITCH_TO_SPECTATOR", player_id: profile.playerId, payload: {} });
+  }, [profile.playerId, send]);
+
+  const switchToPlayer = useCallback((): void => {
+    send({ type: "SWITCH_TO_PLAYER", player_id: profile.playerId, payload: {} });
+  }, [profile.playerId, send]);
+
   return {
     room,
     connectionStatus,
@@ -507,5 +522,7 @@ export function useRoomSocket(
     toggleReady,
     startGame,
     leaveRoom,
+    switchToSpectator,
+    switchToPlayer,
   };
 }

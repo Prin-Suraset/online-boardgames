@@ -220,13 +220,13 @@ export function YouOrMeBoard({
     }, SHOWDOWN_INSPECTION_MS);
     const timer = window.setTimeout(() => {
       setShowdownStage("complete");
-      sendAction("SHOWDOWN_COMPLETE", {});
+      if (playerId !== "") sendAction("SHOWDOWN_COMPLETE", {});
     }, SHOWDOWN_INSPECTION_MS + SHOWDOWN_WINNER_HOLD_MS);
     return () => {
       window.clearTimeout(inspectionTimer);
       window.clearTimeout(timer);
     };
-  }, [game.phase, game.round_number, sendAction]);
+  }, [game.phase, game.round_number, playerId, sendAction]);
 
   const roundResult = useMemo(() => {
     const latest = [...gameEvents].reverse().find(

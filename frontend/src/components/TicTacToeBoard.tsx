@@ -44,7 +44,7 @@ export function TicTacToeBoard({
       <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
         <div>
           <p className="eyebrow">สัญลักษณ์ของคุณ</p>
-          <p className="mt-1 text-lg font-bold text-white">คุณเล่นเป็น {game.your_mark}</p>
+          <p className="mt-1 text-lg font-bold text-white">{game.your_mark === null ? "กำลังชมกระดาน" : `คุณเล่นเป็น ${game.your_mark}`}</p>
         </div>
         <div className="text-right">
           <span
@@ -61,7 +61,7 @@ export function TicTacToeBoard({
                 canMove ? "animate-pulse bg-mint" : "bg-slate-500",
               )}
             />
-            {canMove ? "ตาคุณแล้ว!" : "รอเพื่อนลงก่อน"}
+            {canMove ? "ตาคุณแล้ว!" : game.your_mark === null ? "โหมดผู้ชม" : "รอเพื่อนลงก่อน"}
           </span>
         </div>
       </div>

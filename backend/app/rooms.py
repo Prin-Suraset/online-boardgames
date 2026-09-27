@@ -74,6 +74,8 @@ class Room:
     host_id: str
     game_type: GameType
     players: dict[str, PlayerRecord] = field(default_factory=dict)
+    spectators: dict[str, PlayerRecord] = field(default_factory=dict)
+    surrendered_ids: set[str] = field(default_factory=set)
     status: RoomStatus = "LOBBY"
     game_state: GameState | None = None
     game_over_result: GameOverResult | None = None
@@ -131,6 +133,7 @@ class Room:
         self.finished_at = None
         self.history_saved = False
         self.turn_deadline = None
+        self.surrendered_ids.clear()
         for room_player in self.players.values():
             room_player.is_ready = room_player.is_bot
         return True
@@ -205,22 +208,108 @@ class RoomManager:
         )
 
     def join_room(
-        self, room_code: str, player: PlayerInput, *, is_admin: bool = False,
+        self,
+        room_code: str,
+        player: PlayerInput,
+        *,
+        role: Literal["player", "spectator"] = "player",
+        is_admin: bool = False,
     ) -> Room:
         room = self.get_room(room_code)
-        existing = room.players.get(player.id)
+        existing = room.players.get(player.id) or room.spectators.get(player.id)
         if existing is not None:
             existing.name = player.name
             existing.avatar = player.avatar
             existing.is_admin = existing.is_admin or is_admin
             return room
-        if room.status != "LOBBY":
-            raise RoomError("GAME_ALREADY_STARTED", "This game has already started.")
-        if len(room.players) >= room.max_players:
-            raise RoomError("ROOM_FULL", "This room is already full.")
-        room.players[player.id] = PlayerRecord(
+        as_player = (
+            role == "player"
+            and room.status == "LOBBY"
+            and len(room.players) < room.max_players
+        )
+        record = PlayerRecord(
             id=player.id, name=player.name, avatar=player.avatar, is_admin=is_admin,
         )
+        (room.players if as_player else room.spectators)[player.id] = record
+        return room
+
+    def switch_to_spectator(self, room_code: str, player_id: str) -> Room:
+        room = self.get_room(room_code)
+        player = self._require_player(room, player_id)
+        if player.is_bot:
+            raise RoomError("INVALID_ACTION", "Bots cannot switch roles.")
+        state = room.game_state
+        if room.status == "PLAYING" and state is not None:
+            if self._is_match_participant(state, player_id):
+                room.surrendered_ids.add(player_id)
+            if (
+                isinstance(state, TicTacToeState)
+                and state.status == "in_progress"
+                and player_id in state.players
+            ):
+                winner = next(pid for pid in state.players if pid != player_id)
+                room.game_state = state.model_copy(update={"status": "won", "winner": winner})
+                room.status = "FINISHED"
+                room.finished_at = _utc_now()
+            elif isinstance(state, WhatNumberState) and any(p.player_id == player_id for p in state.players):
+                room.game_state = WhatNumberEngine.surrender(state, player_id)
+                if room.game_state.phase == "FINISHED":
+                    room.status = "FINISHED"
+                    room.finished_at = _utc_now()
+            elif isinstance(state, YouOrMeState) and any(p.player_id == player_id for p in state.players):
+                room.game_state = YouOrMeEngine.surrender(state, player_id)
+                self._record_you_or_me_transition(room, state, room.game_state)
+                self._run_bot_actions(room)
+                if isinstance(room.game_state, YouOrMeState) and room.game_state.phase == "FINISHED":
+                    room.status = "FINISHED"
+                    room.finished_at = _utc_now()
+            elif isinstance(state, Top100State) and player_id in state.player_ids:
+                self._skip_surrendered_top100_turns(room)
+                self._reset_top100_deadline(room)
+            self._log_action(room, "SURRENDER", actor_id=player_id)
+        del room.players[player_id]
+        player.is_ready = False
+        player.is_host = False
+        room.spectators[player_id] = player
+        if (
+            room.status == "PLAYING"
+            and isinstance(room.game_state, YouOrMeState)
+            and room.game_state.phase == "SHOWDOWN"
+            and not any(
+                player_id not in room.surrendered_ids
+                and self._is_match_participant(room.game_state, player_id)
+                for player_id in room.players
+            )
+        ):
+            room.game_state = YouOrMeEngine.apply_action(
+                room.game_state, player_id, YouOrMeAction(action_type="SHOWDOWN_COMPLETE")
+            )
+            room.status = "FINISHED"
+            room.finished_at = _utc_now()
+        if room.host_id == player_id and room.players:
+            next_host = next(
+                (candidate for candidate in room.players.values()
+                 if candidate.id not in room.surrendered_ids
+                 and (room.game_state is None or self._is_match_participant(room.game_state, candidate.id))),
+                next(iter(room.players.values())),
+            )
+            next_host.is_host = True
+            room.host_id = next_host.id
+        return room
+
+    def switch_to_player(self, room_code: str, player_id: str) -> Room:
+        room = self.get_room(room_code)
+        player = room.spectators.get(player_id)
+        if player is None:
+            raise RoomError("INVALID_ROLE", "Only spectators can take a seat.")
+        if len(room.players) >= room.max_players:
+            raise RoomError("ROOM_FULL", "This table is full.")
+        del room.spectators[player_id]
+        player.is_ready = False
+        if not room.players:
+            player.is_host = True
+            room.host_id = player_id
+        room.players[player_id] = player
         return room
 
     def toggle_ready(self, room_code: str, player_id: str, ready: bool) -> Room:
@@ -259,6 +348,7 @@ class RoomManager:
                 seed=secrets.randbits(64),
             )
         room.status = "PLAYING"
+        room.surrendered_ids.clear()
         room.game_over_result = None
         room.action_logs.clear()
         room.pending_events.clear()
@@ -303,6 +393,10 @@ class RoomManager:
         room = self.get_room(room_code)
         if room.status != "PLAYING" or room.game_state is None:
             raise RoomError("GAME_NOT_ACTIVE", "The game is not currently active.")
+        if player_id not in room.players or player_id in room.surrendered_ids:
+            raise RoomError("INVALID_PLAYER", "Only active players can act.")
+        if not self._is_match_participant(room.game_state, player_id):
+            raise RoomError("INVALID_PLAYER", "Your seat becomes playable next game.")
         if room.game_type == "tictactoe":
             if action_type != "MAKE_MOVE":
                 raise RoomError("INVALID_ACTION", "This game does not support that action.")
@@ -333,6 +427,7 @@ class RoomManager:
             else:
                 self._record_top100_guess(room, player_id, action.guess, previous_state, room.game_state)
             self._run_bot_actions(room)
+            self._skip_surrendered_top100_turns(room)
             self._reset_top100_deadline(room)
         else:
             raise RoomError("GAME_NOT_ACTIVE", "The selected game is not active.")
@@ -360,6 +455,7 @@ class RoomManager:
         )
         self._log_action(room, "TURN_TIMEOUT", actor_id=actor_id)
         self._run_bot_actions(room)
+        self._skip_surrendered_top100_turns(room)
         self._reset_top100_deadline(room)
         if isinstance(room.game_state, Top100State) and room.game_state.status == "FINISHED":
             room.status = "FINISHED"
@@ -405,24 +501,38 @@ class RoomManager:
         room = self.get_room(room_code)
         if room.status != "LOBBY":
             return room
-        self._require_player(room, player_id)
-        del room.players[player_id]
-        if not room.players:
+        if player_id in room.spectators:
+            del room.spectators[player_id]
+        else:
+            self._require_player(room, player_id)
+            del room.players[player_id]
+        if not room.players and not room.spectators:
             del self._rooms[room.code]
             return None
         if player_id == room.host_id:
-            new_host = next(iter(room.players.values()))
+            new_host = next(iter(room.players.values()), None)
+            if new_host is None:
+                return room
             new_host.is_host = True
             room.host_id = new_host.id
         return room
 
     def player_view(self, room_code: str, player_id: str) -> RoomStateView:
         room = self.get_room(room_code)
-        self._require_player(room, player_id)
+        if player_id not in room.players and player_id not in room.spectators:
+            raise RoomError("INVALID_PLAYER", "Join the room first.")
+        viewer_id = (
+            player_id
+            if room.game_state is not None
+            and player_id in room.players
+            and player_id not in room.surrendered_ids
+            and self._is_match_participant(room.game_state, player_id)
+            else None
+        )
         game_view: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | None = None
         result = room.game_over_result
         if isinstance(room.game_state, TicTacToeState):
-            game_view = TicTacToeGame.get_player_view(room.game_state, player_id)
+            game_view = TicTacToeGame.get_player_view(room.game_state, viewer_id)
             if room.status == "FINISHED" and result is None:
                 result = GameOverResult(
                     outcome="DRAW" if room.game_state.status == "draw" else "WIN",
@@ -431,20 +541,23 @@ class RoomManager:
         elif isinstance(room.game_state, WhatNumberState):
             game_view = WhatNumberEngine.get_player_view(
                 room.game_state,
-                player_id,
+                viewer_id,
                 display_names={
                     player.id: player.name
-                    for player in room.players.values()
+                    for player in (*room.players.values(), *room.spectators.values())
                 },
             )
             if room.status == "FINISHED" and result is None:
-                result = GameOverResult(outcome="WIN", winner_id=room.game_state.winner_id)
+                result = GameOverResult(
+                    outcome="WIN" if room.game_state.winner_id is not None else "DRAW",
+                    winner_id=room.game_state.winner_id,
+                )
         elif isinstance(room.game_state, YouOrMeState):
-            game_view = YouOrMeEngine.get_player_view(room.game_state, player_id)
+            game_view = YouOrMeEngine.get_player_view(room.game_state, viewer_id)
             if room.status == "FINISHED" and result is None:
                 result = GameOverResult(outcome="WIN", winner_id=room.game_state.winner_id)
         elif isinstance(room.game_state, Top100State):
-            game_view = Top100Engine.get_player_view(room.game_state, player_id)
+            game_view = Top100Engine.get_player_view(room.game_state, viewer_id)
             if room.status == "PLAYING" and room.turn_deadline is not None:
                 game_view = game_view.model_copy(update={
                     "turn_timer": min(room.game_state.timer, max(0, ceil(room.turn_deadline - time.monotonic())))
@@ -459,8 +572,39 @@ class RoomManager:
             room_code=room.code, game_type=room.game_type, status=room.status,
             host_id=room.host_id,
             players=tuple(player.view() for player in room.players.values()),
+            spectators=tuple(player.view() for player in room.spectators.values()),
+            capacity=room.max_players,
+            is_active_player=viewer_id is not None,
             game=game_view, result=result,
         )
+
+    @staticmethod
+    def _is_match_participant(state: GameState, player_id: str) -> bool:
+        if isinstance(state, TicTacToeState):
+            return player_id in state.players
+        if isinstance(state, Top100State):
+            return player_id in state.player_ids
+        return any(player.player_id == player_id for player in state.players)
+
+    def _skip_surrendered_top100_turns(self, room: Room) -> None:
+        state = room.game_state
+        while isinstance(state, Top100State) and state.status == "PLAYING":
+            actor_id = state.turn_player_id
+            if actor_id is None:
+                break
+            if actor_id not in room.surrendered_ids:
+                actor = room.players.get(actor_id)
+                if actor is None or not actor.is_bot:
+                    break
+                self._run_bot_actions(room)
+                state = room.game_state
+                continue
+            state = Top100Engine.apply_action(state, actor_id, Top100Action(action_type="PASS_TURN"))
+            self._log_action(room, "PASS_TURN", actor_id=actor_id)
+            room.game_state = state
+        if isinstance(state, Top100State) and state.status == "FINISHED":
+            room.status = "FINISHED"
+            room.finished_at = room.finished_at or _utc_now()
 
     def _run_bot_actions(self, room: Room) -> None:
         """Resolve active bot attacks and penalties with a bounded heuristic."""
@@ -579,16 +723,17 @@ class RoomManager:
             return
         result = after.round_history[-1]
         before_players = {player.player_id: player for player in before.players}
+        participants = {**room.spectators, **room.players}
         winners = [
             {
                 "id": player_id,
-                "name": room.players[player_id].name,
+                "name": participants[player_id].name,
                 "won_amount": result.payouts.get(player_id, 0),
             }
             for player_id in result.winner_ids
         ]
         eliminated_players = [
-            {"id": player.player_id, "name": room.players[player.player_id].name}
+            {"id": player.player_id, "name": participants[player.player_id].name}
             for player in after.players
             if player.status == "ELIMINATED"
             and before_players[player.player_id].status != "ELIMINATED"
@@ -604,7 +749,7 @@ class RoomManager:
             )
             overall_winner = {
                 "id": winner.player_id,
-                "name": room.players[winner.player_id].name,
+                "name": participants[winner.player_id].name,
                 "total_coins": winner.coins,
             }
         self._emit_event(
@@ -727,8 +872,8 @@ class RoomManager:
         value: JsonValue = None,
         is_correct: bool | None = None,
     ) -> None:
-        actor = room.players.get(actor_id or "")
-        target = room.players.get(target_id or "")
+        actor = room.players.get(actor_id or "") or room.spectators.get(actor_id or "")
+        target = room.players.get(target_id or "") or room.spectators.get(target_id or "")
         event = GameEventData(
             event_type=event_type,
             actor_id=actor_id,
@@ -760,8 +905,8 @@ class RoomManager:
         value: JsonValue = None,
         result: JsonValue = None,
     ) -> None:
-        actor = room.players.get(actor_id or "")
-        target = room.players.get(target_id or "")
+        actor = room.players.get(actor_id or "") or room.spectators.get(actor_id or "")
+        target = room.players.get(target_id or "") or room.spectators.get(target_id or "")
         room.action_logs.append(
             {
                 "timestamp": _utc_now(),

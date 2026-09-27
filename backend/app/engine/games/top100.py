@@ -323,8 +323,8 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
         })
 
     @classmethod
-    def get_player_view(cls, state: Top100State, player_id: str) -> Top100View:
-        if player_id not in state.player_ids:
+    def get_player_view(cls, state: Top100State, player_id: str | None) -> Top100View:
+        if player_id is not None and player_id not in state.player_ids:
             raise GameRuleError(MoveErrorCode.INVALID_PLAYER, "player is not in this game")
         finished = state.status == "FINISHED"
         return Top100View(
@@ -333,7 +333,7 @@ class Top100Engine(BaseGameEngine[Top100State, Top100Action, Top100View]):
             turn_player_id=state.turn_player_id,
             turn_timer=state.timer,
             round_number=state.round_number,
-            my_score=state.player_scores[player_id],
+            my_score=state.player_scores[player_id] if player_id is not None else 0,
             other_player_scores=dict(state.player_scores) if finished else None,
             revealed_chronological_items=tuple(
                 RevealedItemView(

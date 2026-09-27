@@ -72,7 +72,7 @@ class TicTacToeView(BaseModel):
     current_player: str
     status: GameStatus
     winner: str | None
-    your_mark: Mark
+    your_mark: Mark | None
 
 
 class TicTacToeGame(BaseGame[TicTacToeState, TicTacToeMove, TicTacToeView]):
@@ -115,14 +115,14 @@ class TicTacToeGame(BaseGame[TicTacToeState, TicTacToeMove, TicTacToeView]):
 
     @classmethod
     def get_player_view(
-        cls, state: TicTacToeState, player_id: str
+        cls, state: TicTacToeState, player_id: str | None
     ) -> TicTacToeView:
-        if player_id not in state.players:
+        if player_id is not None and player_id not in state.players:
             raise GameRuleError(
                 MoveErrorCode.INVALID_PLAYER,
                 "player is not a participant in this game",
             )
-        mark: Mark = "X" if player_id == state.players[0] else "O"
+        mark: Mark | None = None if player_id is None else "X" if player_id == state.players[0] else "O"
         return TicTacToeView(
             board=state.board,
             current_player=state.current_player,

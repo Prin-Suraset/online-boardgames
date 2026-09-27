@@ -1,10 +1,12 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Install a frontend design skill.
-* **State**: In-Progress (project installation complete; global skills directory is read-only)
+* **Active Task**: Spectator seats and player/spectator role switching.
+* **State**: Ready for Test (implementation committed; live viewport check pending)
 
 ## 2. Completed in this Session
+* [x] Added spectator roster, join-role selection, seat switching, forfeits, safe spectator game views, and room broadcasts. Added hub spectator entry and compact room controls. Commit `5eae9a3` is in `/tmp/TheBoardGame-spectator-git/.git` because the workspace `.git` index is read-only.
+* [x] Verified 79 backend tests, frontend production build, and `git diff --check`. Frontend lint still reports four pre-existing errors and one warning in unchanged code.
 * [x] Installed Anthropic's `frontend-design` skill and Apache 2.0 license under `skills/frontend-design/`, and linked it from `AGENTS.md` for project frontend design tasks. The files match the browser downloads. Commit `2299d34` is in `/tmp/TheBoardGame-readme-git.git` because repository Git metadata is read-only.
 * [x] Added `README.md` with the current games, features, technology stack, local setup, and verification commands. Its documentation commit is `9194388` in `/tmp/TheBoardGame-readme-git.git` because the repository `.git` index is read-only.
 * [x] Moved the turn status and private score into a header above the Top100 guess form. The input now fills its own row on mobile and tablet, with Submit and Pass below it; on desktop, the input takes the remaining width beside the buttons.
@@ -122,6 +124,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] Browser-check spectator header wrapping and table clearance at mobile/tablet sizes once a local or deployed site can be reached; local Vite binding fails with `EPERM` even outside the sandbox.
+* [ ] Sync or push spectator commit `5eae9a3` from temporary Git metadata when repository Git metadata/network access is available.
 * [ ] If a global install is needed, copy `skills/frontend-design/` to `/home/prin/.codex/skills/frontend-design/` when that directory is writable; the command-line installer also could not resolve GitHub from this environment.
 * [ ] Sync project skill commit `2299d34` and this handoff update from `/tmp/TheBoardGame-readme-git.git` into writable repository Git metadata before pushing.
 * [ ] Sync README commit `9194388` and this handoff update from `/tmp/TheBoardGame-readme-git.git` into writable repository Git metadata before pushing.
@@ -150,6 +154,8 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
+* The room WebSocket contract now includes `spectators`, `capacity`, and `is_active_player`; `JOIN_ROOM` accepts optional `role`, and `SWITCH_TO_SPECTATOR` / `SWITCH_TO_PLAYER` use empty payloads. A seat taken during an active match becomes playable next match.
+* Tests mutate `data/boardgame.db` locally; it was restored to `HEAD` after the final run and is not part of the spectator commit.
 * `TURN_PASSED` adds optional `player_id` and `player_name` fields to the shared event contract; existing `actor_id` and `actor_name` remain populated for compatibility. Turn history remains server-side and is not added to the player view.
 * The five-tier matcher does not generate arbitrary English-to-Thai transliterations; the shipped topic aliases provide cross-script equivalents. Unrecognized partial or ambiguous guesses receive 0 points.
 * The case/punctuation change is backend-only; the frontend contract and UI did not change. The ten-topic bank validates with the new normalization and has no normalized answer or alias collisions.

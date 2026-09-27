@@ -44,7 +44,7 @@ class WireGameView(BaseModel):
     current_player: str
     status: Literal["in_progress", "won", "draw"]
     winner: str | None
-    your_mark: Literal["X", "O"]
+    your_mark: Literal["X", "O"] | None
 
 
 class WireRoomState(BaseModel):
@@ -55,6 +55,9 @@ class WireRoomState(BaseModel):
     status: Literal["LOBBY", "PLAYING", "FINISHED"]
     host_id: str
     players: list[PlayerView]
+    spectators: list[PlayerView]
+    capacity: int
+    is_active_player: bool
     game: WireGameView | None
     result: GameOverResult | None
 
@@ -503,3 +506,45 @@ async def test_only_authenticated_admin_can_force_end_and_reset_game(
         "START_GAME",
         "FORCE_END_GAME",
     ]
+
+
+@pytest.mark.anyio
+async def test_websocket_role_switch_broadcasts_and_spectator_chat() -> None:
+    app = create_app()
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://testserver") as client:
+        room_code = await create_room(client)
+
+    watcher = {"id": "watcher-id", "name": "Watcher", "avatar": "W"}
+    async with ASGIWebSocket(app, f"/ws/rooms/{room_code}") as host_socket:
+        await host_socket.send_json(join_message(HOST))
+        await host_socket.receive_json()
+        async with ASGIWebSocket(app, f"/ws/rooms/{room_code}") as watcher_socket:
+            watcher_join = join_message(watcher)
+            assert isinstance(watcher_join["payload"], dict)
+            watcher_join["payload"]["role"] = "spectator"
+            await watcher_socket.send_json(watcher_join)
+            host_view = StateEnvelope.model_validate(await host_socket.receive_json()).payload
+            watcher_view = StateEnvelope.model_validate(await watcher_socket.receive_json()).payload
+            assert [person.id for person in host_view.spectators] == [watcher["id"]]
+            assert watcher_view.is_active_player is False
+
+            await watcher_socket.send_json({"action": "SEND_CHAT", "payload": {"text": "Watching"}})
+            assert ChatEnvelope.model_validate(await host_socket.receive_json()).data.text == "Watching"
+            await watcher_socket.receive_json()
+
+            await watcher_socket.send_json({
+                "type": "SWITCH_TO_PLAYER", "player_id": watcher["id"], "payload": {},
+            })
+            host_view = StateEnvelope.model_validate(await host_socket.receive_json()).payload
+            watcher_view = StateEnvelope.model_validate(await watcher_socket.receive_json()).payload
+            assert len(host_view.players) == 2
+            assert watcher_view.spectators == []
+
+            await watcher_socket.send_json({
+                "type": "SWITCH_TO_SPECTATOR", "player_id": watcher["id"], "payload": {},
+            })
+            host_view = StateEnvelope.model_validate(await host_socket.receive_json()).payload
+            watcher_view = StateEnvelope.model_validate(await watcher_socket.receive_json()).payload
+            assert len(host_view.players) == 1
+            assert watcher_view.spectators[0].id == watcher["id"]

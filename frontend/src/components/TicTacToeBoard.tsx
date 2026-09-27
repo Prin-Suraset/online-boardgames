@@ -13,7 +13,7 @@ function Mark({ mark }: { mark: PlayerMark }) {
     <span
       className={cn(
         "font-display text-5xl font-black sm:text-6xl",
-        mark === "X" ? "text-coral" : "text-cyan",
+        mark === "X" ? "text-rose-400" : "text-sky-400",
       )}
     >
       {mark}
@@ -41,7 +41,7 @@ export function TicTacToeBoard({
 
   return (
     <section aria-label="กระดานโอเอกซ์" className="mx-auto w-full max-w-xl">
-      <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
+      <div className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-sky-400/30 bg-[#141B2D]/80 px-5 py-4 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md">
         <div>
           <p className="eyebrow">สัญลักษณ์ของคุณ</p>
           <p className="mt-1 text-lg font-bold text-white">คุณเล่นเป็น {game.your_mark}</p>
@@ -49,16 +49,16 @@ export function TicTacToeBoard({
         <div className="text-right">
           <span
             className={cn(
-              "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold",
+              "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold tracking-wider",
               canMove
-                ? "bg-mint/15 text-mint"
-                : "bg-white/8 text-slate-300",
+                ? "border-amber-400/40 bg-amber-400/10 text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)]"
+                : "border-slate-600/50 bg-slate-800/80 text-slate-300",
             )}
           >
             <span
               className={cn(
                 "size-2 rounded-full",
-                canMove ? "animate-pulse bg-mint" : "bg-slate-500",
+                canMove ? "animate-pulse bg-amber-400" : "bg-slate-500",
               )}
             />
             {canMove ? "ตาคุณแล้ว!" : "รอเพื่อนลงก่อน"}
@@ -66,7 +66,7 @@ export function TicTacToeBoard({
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 rounded-[2rem] border border-white/10 bg-slate-950/60 p-3 shadow-2xl shadow-cyan-950/20 sm:gap-3 sm:p-4">
+      <div className="grid grid-cols-3 gap-2 rounded-[2rem] border border-sky-400/25 bg-gradient-to-b from-[#0F172A]/90 via-[#0B0F19]/90 to-[#0A0E1A]/95 p-3 shadow-[0_0_40px_rgba(56,189,248,0.12)] backdrop-blur-md sm:gap-3 sm:p-4">
         {game.board.map((cell, index) => (
           <button
             type="button"
@@ -75,8 +75,8 @@ export function TicTacToeBoard({
             aria-label={`ช่องที่ ${String(index + 1)}${cell === null ? " ยังว่าง" : ` เป็น ${cell}`}`}
             className={cn(
               "aspect-square rounded-2xl border text-center transition duration-200",
-              "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-cyan/35 hover:bg-cyan/8",
-              cell === null && canMove && "cursor-pointer shadow-[inset_0_0_0_1px_rgba(94,234,212,0.03)]",
+              "border-sky-400/25 bg-[#141B2D]/80 hover:-translate-y-0.5 hover:border-sky-400/60 hover:bg-sky-400/10",
+              cell === null && canMove && "cursor-pointer shadow-[inset_0_0_0_1px_rgba(56,189,248,0.08)]",
               cell !== null && "cursor-default",
             )}
           >

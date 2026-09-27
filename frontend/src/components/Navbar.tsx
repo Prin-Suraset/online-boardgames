@@ -12,10 +12,10 @@ export function Navbar() {
   );
 
   return (
-    <nav className="relative z-50 border-b border-slate-800/80 bg-[#0B0F19]/90 shadow-lg shadow-black/10 backdrop-blur-md">
+    <nav className="relative z-50 border-b border-sky-400/20 bg-[#0B0F19]/80 shadow-lg shadow-black/10 backdrop-blur-lg">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="/" className="group flex items-center gap-3 text-white">
-          <span className="grid size-9 place-items-center rounded-xl border border-[#E5A93C]/60 bg-[#1C212D] text-xl shadow-[0_0_20px_rgba(229,169,60,0.25)] transition-transform duration-200 group-hover:rotate-6" aria-hidden="true">
+          <span className="grid size-9 place-items-center rounded-xl border border-sky-400/60 bg-[#141B2D] text-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] transition-transform duration-200 group-hover:rotate-6" aria-hidden="true">
             🎲
           </span>
           <span className="font-display text-sm font-extrabold tracking-wider text-white uppercase sm:text-base">Online Board Games</span>
@@ -32,9 +32,9 @@ export function Navbar() {
               type="button"
               onClick={() => { setMenuOpen((open) => !open); }}
               aria-expanded={isMenuOpen}
-              className="flex items-center gap-3 rounded-full border border-slate-700/80 bg-[#1C212D] p-1.5 pr-3 text-left shadow-lg shadow-black/10 transition hover:border-[#E5A93C]/50"
+              className="flex items-center gap-3 rounded-full border border-sky-400/30 bg-[#141B2D]/80 p-1.5 pr-3 text-left shadow-lg shadow-black/10 transition hover:border-amber-400/50"
             >
-              <span className="grid size-9 place-items-center rounded-full border border-[#E5A93C] bg-[#161B26] text-xs font-black text-[#E5A93C] shadow-[0_0_20px_rgba(229,169,60,0.25)]">{initials}</span>
+              <span className="grid size-9 place-items-center rounded-full border border-sky-400 bg-[#141B2D] text-xs font-black text-sky-300 shadow-[0_0_20px_rgba(56,189,248,0.25)]">{initials}</span>
               <span className="hidden sm:block">
                 <span className="block max-w-36 truncate text-sm font-bold text-slate-100">{user.display_name}</span>
                 <span className="mt-0.5 inline-flex w-fit items-center gap-1.5 rounded-full border border-slate-700 bg-[#1C212D] px-2 py-0.5 text-[9px] font-bold tracking-wider text-slate-300 uppercase"><span className={`size-1.5 rounded-full ${isGuest ? "bg-amber-400" : "bg-sky-400"}`} />{user.is_admin ? "Admin" : isGuest ? "Guest" : "Member"}</span>
@@ -43,7 +43,7 @@ export function Navbar() {
             </button>
 
             {isMenuOpen && (
-              <div className="absolute top-[calc(100%+0.6rem)] right-0 w-64 rounded-2xl border border-slate-700/60 bg-[#161B26]/90 p-2 shadow-2xl shadow-black/40 backdrop-blur-md">
+              <div className="absolute top-[calc(100%+0.6rem)] right-0 w-64 rounded-2xl border border-sky-400/30 bg-[#141B2D]/90 p-2 shadow-2xl shadow-black/40 backdrop-blur-md">
                 {isGuest ? (
                   <>
                     <button type="button" onClick={() => { setMenuOpen(false); openAuthModal("register"); }} className="menu-action text-amber-200">

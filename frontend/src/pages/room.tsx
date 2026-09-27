@@ -43,11 +43,11 @@ function isTop100View(game: TicTacToeView | WhatNumberView | YouOrMeView | Top10
 
 function PlayerSlot({ player, label }: { player: Player | undefined; label: string }) {
   return (
-    <div className="flex min-h-28 items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.035] p-4 sm:p-5">
+    <div className="flex min-h-28 items-center gap-4 rounded-2xl border border-sky-400/30 bg-[#141B2D]/80 p-4 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md sm:p-5">
       <div
         className={cn(
           "grid size-12 shrink-0 place-items-center rounded-2xl text-xl font-black",
-          player === undefined ? "border border-dashed border-white/15 text-slate-600" : "bg-cyan/15 text-cyan",
+          player === undefined ? "border border-dashed border-sky-400/25 text-slate-600" : "bg-sky-400/15 text-sky-300",
         )}
       >
         {player?.avatar ?? <UserRound className="size-5" />}
@@ -63,7 +63,7 @@ function PlayerSlot({ player, label }: { player: Player | undefined; label: stri
         <span
           className={cn(
             "rounded-full px-2.5 py-1 text-[10px] font-bold tracking-wider uppercase",
-            player.is_ready ? "bg-mint/15 text-mint" : "bg-white/5 text-slate-500",
+            player.is_ready ? "border border-emerald-400/40 bg-emerald-400/10 text-emerald-300" : "border border-slate-600/50 bg-slate-800/80 text-slate-500",
           )}
         >
           {player.is_ready ? "พร้อมแล้ว" : "ยังไม่พร้อม"}
@@ -82,7 +82,7 @@ export function RoomPage({ code }: RoomPageProps) {
 
   if (user === null || token === null) {
     return (
-      <main className="grid min-h-[calc(100vh-4rem)] place-items-center bg-[#0B0F19] px-5 text-center">
+      <main className="grid min-h-[calc(100vh-4rem)] place-items-center bg-[#070A12] px-5 text-center">
         <div>
           <LoaderCircle className="mx-auto size-8 animate-spin text-indigo-300" />
           <p className="mt-4 font-bold text-slate-300">เลือกโปรไฟล์ก่อน แล้วเข้ามาเล่นด้วยกันนะ</p>
@@ -203,7 +203,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
 
   return (
     <main className={cn(
-      "min-h-screen",
+      "relative min-h-screen bg-[#070A12] text-slate-100 before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-[100dvh] before:bg-[radial-gradient(ellipse_at_50%_30%,rgba(56,189,248,0.12)_0%,rgba(7,10,18,0.95)_75%)]",
         isWhatNumberSession || isYouOrMeSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
     )}>
       <div className="ambient ambient-one" />
@@ -211,7 +211,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         "mx-auto w-full",
         isWhatNumberSession || isYouOrMeSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
-        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-700/60 bg-[#161B26]/90 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
+        <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-sky-400/20 bg-[#0B0F19]/80 px-4 py-3 shadow-2xl backdrop-blur-lg sm:px-5">
           <div className="flex flex-wrap items-center gap-2">
             <button type="button" onClick={exitRoom} className="ghost-button">
               <ArrowLeft className="size-4" /> ออกจากห้อง
@@ -234,7 +234,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
             )}
             <div className="text-right">
               <p className="text-[10px] font-bold tracking-[0.18em] text-amber-300/70 uppercase">รหัสห้อง</p>
-              <p className="font-mono text-lg font-black tracking-[0.2em] text-amber-100">{code.toUpperCase()}</p>
+              <p className="rounded-full border border-amber-400/40 bg-amber-400/10 font-mono text-lg font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)]">{code.toUpperCase()}</p>
             </div>
             <button type="button" onClick={() => void copyInvite()} className="icon-button size-10" aria-label="คัดลอกรหัสห้อง">
               <Clipboard className="size-4" />
@@ -242,8 +242,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
           </div>
           <div
             className={cn(
-              "flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold",
-              connectionStatus === "CONNECTED" ? "bg-mint/10 text-mint" : "bg-white/5 text-slate-400",
+              "flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold tracking-wider shadow-[0_0_10px_rgba(251,191,36,0.2)]",
+              connectionStatus === "CONNECTED" ? "border-amber-400/40 bg-amber-400/10 text-amber-300" : "border-sky-400/30 bg-sky-400/5 text-slate-400",
             )}
           >
             {connectionStatus === "CONNECTING" ? (

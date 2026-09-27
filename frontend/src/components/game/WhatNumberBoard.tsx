@@ -161,7 +161,7 @@ function NumberCard({
         size === "local" && "!h-16 !w-11 !flex-none !aspect-auto sm:!h-[4.5rem] sm:!w-[3.25rem] md:!h-20 md:!w-14",
         size === "opponent" && "!h-14 !w-10 !flex-none !aspect-auto",
         size === "opponentDense" && "!h-11 !w-7 !flex-none !aspect-auto",
-        canReveal && "cursor-pointer hover:-translate-y-2 hover:rotate-1 hover:scale-105 hover:ring-2 hover:ring-amber-300",
+        canReveal && "cursor-pointer hover:-translate-y-1.5 hover:ring-2 hover:ring-sky-400 hover:shadow-[0_0_25px_rgba(56,189,248,0.7)]",
       )}
       style={{ animationDelay: `${String(index * 70)}ms` }}
       {...(canReveal ? { title: "เลือกใบนี้เพื่อหงาย" } : {})}
@@ -178,8 +178,8 @@ function NumberCard({
             "grid size-full place-items-center border font-black shadow-lg",
             compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
             isOwn
-              ? "border-emerald-200/30 bg-[radial-gradient(circle_at_50%_35%,#285e68,#102b34_65%)] text-emerald-50"
-              : "border-rose-200/30 bg-[repeating-linear-gradient(45deg,#17152f_0,#17152f_8px,#4a1f2d_8px,#4a1f2d_16px)] text-amber-100",
+              ? "border-sky-300/50 bg-[radial-gradient(circle_at_50%_35%,#1e5b7f,#0f172a_65%)] text-sky-50"
+              : "border-sky-300/30 bg-[repeating-linear-gradient(45deg,#0F172A_0,#0F172A_8px,#1E3A5F_8px,#1E3A5F_16px)] text-sky-100",
           )}
         >
           <span className={cn(
@@ -193,12 +193,12 @@ function NumberCard({
       front={
         <span
           className={cn(
-            "relative grid size-full place-items-center border border-amber-400/70 bg-[radial-gradient(circle_at_50%_35%,#fff7ed,#fed7aa_70%)] font-black text-rose-900 shadow-lg",
+            "relative grid size-full place-items-center border border-sky-300/80 bg-gradient-to-b from-slate-50 via-slate-100 to-slate-200 font-black text-slate-900 shadow-md",
             compact ? "text-sm" : "text-base sm:text-lg md:text-xl",
           )}
         >
-          <span className="pointer-events-none absolute inset-x-2 top-1.5 h-px bg-amber-700/45" />
-          <span className="pointer-events-none absolute inset-x-2 bottom-1.5 h-px bg-amber-700/45" />
+          <span className="pointer-events-none absolute inset-x-2 top-1.5 h-px bg-sky-500/45" />
+          <span className="pointer-events-none absolute inset-x-2 bottom-1.5 h-px bg-sky-500/45" />
           <span className="relative">{card.number ?? "?"}</span>
         </span>
       }
@@ -226,7 +226,7 @@ function OpponentSeat({
     <article
       style={placement.style}
       className={cn(
-        "absolute z-20 rounded-2xl border bg-[#161B26]/95 p-2 text-white shadow-xl backdrop-blur-md sm:p-2.5",
+        "absolute z-20 rounded-2xl border bg-[#141B2D]/80 p-2 text-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md sm:p-2.5",
         placement.edge === "left" && "left-2 top-1/2 -translate-y-1/2 sm:left-4 xl:left-6 xl:right-auto xl:top-1/2 xl:translate-x-0 xl:-translate-y-1/2",
         placement.edge === "right" && "right-2 top-1/2 -translate-y-1/2 sm:right-4 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
         placement.edge === "north" && "top-14 left-1/2 -translate-x-1/2 sm:top-16 xl:left-[var(--seat-x)] xl:top-[var(--seat-y)] xl:right-auto xl:-translate-x-1/2 xl:-translate-y-1/2",
@@ -236,8 +236,8 @@ function OpponentSeat({
             ? "w-36 sm:w-40 xl:w-44 2xl:w-48"
             : "w-44 sm:w-48 xl:w-56 2xl:w-60",
         isActive
-          ? "animate-[active-seat_2s_ease-in-out_infinite] border-[#E5A93C] ring-2 ring-[#E5A93C] shadow-[0_0_20px_rgba(229,169,60,0.5)]"
-          : "animate-[seat-in_450ms_ease-out_both] border-slate-700/70",
+          ? "animate-[active-seat_2s_ease-in-out_infinite] border-amber-400 ring-2 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.45)]"
+          : "animate-[seat-in_450ms_ease-out_both] border-sky-400/30",
         gamePlayer.status === "ELIMINATED" && "opacity-50 grayscale",
       )}
     >
@@ -252,7 +252,7 @@ function OpponentSeat({
           <p className="break-words text-[11px] font-black leading-tight text-white">
             {displayName(player)}
           </p>
-          <p className="text-[9px] font-bold tracking-wider text-emerald-100/45 uppercase">
+          <p className="text-[9px] font-bold tracking-wider text-sky-200/60 uppercase">
             {gamePlayer.status === "ACTIVE" ? "ยังอยู่ในเกม" : "ตกรอบแล้ว"}
           </p>
         </div>
@@ -309,7 +309,7 @@ function DeckPile({ label, accent }: { label: string; accent: "amber" | "violet"
       >
         <span className="grid size-full place-items-center"><Layers3 className="size-6 text-white/70" /></span>
       </div>
-      <p className="mt-2 text-[9px] font-black tracking-wider text-emerald-100/55 uppercase">{label}</p>
+      <p className="mt-2 text-[9px] font-black tracking-wider text-sky-200/65 uppercase">{label}</p>
     </div>
   );
 }
@@ -377,8 +377,8 @@ export function WhatNumberBoard({
 
   return (
     <>
-      <div className="fixed top-3 left-1/2 z-30 flex max-w-[calc(100vw-5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-slate-700/60 bg-[#161B26]/95 px-3 py-2 text-white shadow-lg backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
-        <span className="rounded-full bg-emerald-400/15 px-2 py-1 text-[10px] font-black tracking-wide text-emerald-200 sm:text-xs">
+      <div className="fixed top-3 left-1/2 z-30 flex max-w-[calc(100vw-5rem)] -translate-x-1/2 items-center gap-2 rounded-full border border-sky-400/30 bg-[#141B2D]/90 px-3 py-2 text-white shadow-[0_0_20px_rgba(56,189,248,0.12)] backdrop-blur-md sm:gap-3 sm:px-4 xl:hidden">
+        <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-2 py-1 text-[10px] font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)] sm:text-xs">
           T{game.turn_counter}
         </span>
         <span className="max-w-[7rem] truncate text-xs font-bold text-slate-200 sm:max-w-[10rem]">
@@ -386,7 +386,7 @@ export function WhatNumberBoard({
         </span>
         <span className={cn(
           "flex shrink-0 items-center gap-1 font-mono text-sm font-black",
-          isUrgent ? "animate-pulse text-rose-300" : "text-emerald-200",
+          isUrgent ? "animate-pulse text-rose-300" : "text-sky-200",
         )}>
           <Clock3 className="size-3.5" /> {secondsLeft}s
         </span>
@@ -413,11 +413,11 @@ export function WhatNumberBoard({
         onSend={onSendChat}
       />
 
-      <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-slate-700/70 bg-[#161B26]/95 shadow-2xl xl:flex-row">
+      <div className="relative flex h-screen h-[100dvh] min-h-[600px] w-full animate-[table-arrive_500ms_ease-out_both] flex-col overflow-hidden rounded-3xl border border-sky-400/25 bg-gradient-to-b from-[#0F172A]/90 via-[#0B0F19]/90 to-[#0A0E1A]/95 shadow-[0_0_40px_rgba(56,189,248,0.12)] backdrop-blur-md xl:flex-row">
       <section className="relative h-full w-full min-w-0 flex-1 overflow-hidden bg-[#0B0F19] p-2 sm:p-3 xl:p-5">
-        <div className="relative h-full w-full overflow-hidden rounded-[60px] border-[6px] border-slate-700/70 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/90 via-emerald-950 to-slate-950 p-2 shadow-[inset_0_0_40px_rgba(0,0,0,0.8),0_25px_70px_rgba(0,0,0,0.5)] md:rounded-[90px] md:border-8 md:p-4 xl:p-8">
-          <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_center,rgba(255,255,255,0.16)_0,transparent_52%),repeating-linear-gradient(115deg,transparent_0,transparent_6px,rgba(255,255,255,0.02)_7px)]" />
-          <div className="pointer-events-none absolute inset-3 rounded-[54px] border border-emerald-200/10 md:rounded-[82px]" />
+        <div className="relative h-full w-full overflow-hidden rounded-[60px] border-[6px] border-sky-400/25 bg-gradient-to-b from-[#0F172A]/90 via-[#0B0F19]/90 to-[#0A0E1A]/95 p-2 shadow-[inset_0_0_40px_rgba(56,189,248,0.1),0_0_40px_rgba(56,189,248,0.12)] backdrop-blur-md md:rounded-[90px] md:border-8 md:p-4 xl:p-8">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,rgba(56,189,248,0.12)_0%,rgba(7,10,18,0.95)_75%)]" />
+          <div className="pointer-events-none absolute inset-3 rounded-[54px] border border-sky-400/25 md:rounded-[82px]" />
 
           <div className="absolute inset-0">
             {opponents.map((gamePlayer, index) => {
@@ -436,19 +436,19 @@ export function WhatNumberBoard({
             })}
           </div>
 
-          <div className="absolute top-[36%] left-1/2 z-10 w-fit max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2 scale-85 rounded-[2rem] border border-emerald-200/10 bg-black/20 px-2 py-2 text-center shadow-inner sm:scale-90 sm:px-4 sm:py-3 md:top-[38%] md:scale-100 xl:top-[42%] xl:px-6 xl:py-4">
+          <div className="absolute top-[36%] left-1/2 z-10 w-fit max-w-[calc(100%-1rem)] -translate-x-1/2 -translate-y-1/2 scale-85 rounded-[2rem] border border-sky-400/25 bg-[#141B2D]/50 px-2 py-2 text-center shadow-[0_0_30px_rgba(56,189,248,0.12)] sm:scale-90 sm:px-4 sm:py-3 md:top-[38%] md:scale-100 xl:top-[42%] xl:px-6 xl:py-4">
             <div className="flex items-end justify-center gap-3 sm:gap-5">
               <DeckPile label="กองเลข" accent="amber" />
               <DeckPile label="กองสกิล" accent="violet" />
             </div>
             <CenterTable cards={game.revealed_center_cards} />
-            <div className="mt-3 flex max-w-64 items-center justify-center gap-2 rounded-full border border-emerald-200/10 bg-emerald-950/80 px-3 py-1.5 text-[10px] font-bold text-emerald-100 sm:mt-4 sm:max-w-72 sm:px-4 sm:py-2 sm:text-xs">
+            <div className="mt-3 flex max-w-64 items-center justify-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-[10px] font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)] sm:mt-4 sm:max-w-72 sm:px-4 sm:py-2 sm:text-xs">
               <Sparkles className="size-3.5 shrink-0 text-amber-300" /> {announcement}
             </div>
           </div>
 
           {isAttacker && selectedTarget !== undefined && (
-            <div className="absolute bottom-36 left-1/2 z-30 flex w-fit max-w-[95vw] -translate-x-1/2 animate-[action-rise_300ms_ease-out_both] flex-wrap items-center justify-center gap-2 rounded-2xl border border-slate-700/70 bg-[#161B26]/95 p-2 shadow-2xl backdrop-blur-md sm:bottom-40 sm:p-3 xl:bottom-44">
+            <div className="absolute bottom-36 left-1/2 z-30 flex w-fit max-w-[95vw] -translate-x-1/2 animate-[action-rise_300ms_ease-out_both] flex-wrap items-center justify-center gap-2 rounded-2xl border border-sky-400/30 bg-[#141B2D]/90 p-2 shadow-[0_4px_20px_rgba(0,0,0,0.6)] backdrop-blur-md sm:bottom-40 sm:p-3 xl:bottom-44">
               <div className="flex items-center gap-2 rounded-xl bg-rose-500/10 px-3 py-2 text-sm font-bold text-rose-100">
                 <Target className="size-4 text-rose-300" />
                 🎯 เป้าหมาย: {playerNames.get(selectedTarget.player_id) ?? "ผู้เล่นเป้าหมาย"}
@@ -476,13 +476,13 @@ export function WhatNumberBoard({
                     onSubmitGuess();
                   }
                 }}
-                className="w-36 rounded-xl border border-slate-700 bg-slate-800 px-4 py-2 text-center text-lg font-bold text-white [appearance:textfield] focus:ring-2 focus:ring-amber-400 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                className="w-36 rounded-xl border border-sky-400/50 bg-[#070A12] px-4 py-2 text-center text-lg font-bold text-white [appearance:textfield] focus:ring-2 focus:ring-sky-400 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               />
               <button
                 type="button"
                 onClick={onSubmitGuess}
                 disabled={!canSubmitGuess}
-                className="primary-button border-amber-400/60 bg-amber-600 px-4 hover:bg-amber-500"
+                className="primary-button border-amber-400/60 px-4"
               >
                 ทายเลขนี้!
               </button>
@@ -501,9 +501,9 @@ export function WhatNumberBoard({
                 "absolute bottom-2 left-1/2 z-20 flex max-h-[38%] max-w-[95vw] -translate-x-1/2 flex-col items-center gap-1.5 rounded-2xl border px-3 py-2 shadow-xl backdrop-blur-md transition-all duration-300 sm:bottom-3 sm:max-w-none sm:px-5 sm:py-2.5",
                 hasPenalty
                   ? "z-40 -translate-y-8 scale-110 border-rose-500 bg-slate-900/95 ring-4 ring-rose-500/70 shadow-2xl"
-                  : "z-20 border-slate-700/70 bg-[#161B26]/95 text-white",
+                  : "z-20 border-sky-400/30 bg-[#141B2D]/80 text-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.6)]",
                 game.active_player_id === playerId && !hasPenalty
-                  && "animate-[active-seat_2s_ease-in-out_infinite] border-[#E5A93C] ring-2 ring-[#E5A93C] shadow-[0_0_20px_rgba(229,169,60,0.5)]",
+                  && "animate-[active-seat_2s_ease-in-out_infinite] border-amber-400 ring-2 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.45)]",
                 ownView.status === "ELIMINATED" && "opacity-50 grayscale",
               )}
             >
@@ -516,7 +516,7 @@ export function WhatNumberBoard({
                     <p className="text-sm font-black text-white">
                       {displayName(players.find((player) => player.id === playerId), "คุณ")} · คุณ
                     </p>
-                    <p className="text-[9px] font-bold tracking-wider text-cyan-100/50 uppercase">
+                    <p className="text-[9px] font-bold tracking-wider text-sky-200/70 uppercase">
                       {hasPenalty ? "เลือกการ์ดที่จะหงาย" : ownView.status === "ACTIVE" ? "ยังอยู่ในเกม" : "ตกรอบแล้ว"}
                     </p>
                   </div>
@@ -585,15 +585,15 @@ export function WhatNumberBoard({
         </div>
       </section>
 
-      <aside className="hidden max-h-[42rem] w-80 max-w-full shrink-0 flex-col gap-4 border-t border-slate-700/70 bg-[#161B26]/95 p-4 xl:flex xl:max-h-none xl:border-t-0 xl:border-l">
-        <section className="rounded-2xl border border-slate-700/60 bg-[#1C212D] p-4">
+      <aside className="hidden max-h-[42rem] w-80 max-w-full shrink-0 flex-col gap-4 border-t border-sky-400/30 bg-[#070A12]/90 p-4 shadow-2xl backdrop-blur-xl xl:flex xl:max-h-none xl:border-t-0 xl:border-l">
+        <section className="rounded-2xl border border-sky-400/30 bg-[#141B2D]/80 p-4">
           <div className="flex items-center justify-between gap-3">
-            <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-[10px] font-black tracking-[0.18em] text-emerald-200 uppercase">
+            <span className="rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold tracking-wider text-amber-300 shadow-[0_0_10px_rgba(251,191,36,0.2)] uppercase">
               เทิร์นที่ {game.turn_counter}
             </span>
             <span className={cn(
               "flex items-center gap-1.5 font-mono text-xl font-black",
-              isUrgent ? "animate-pulse text-rose-300" : "text-emerald-200",
+              isUrgent ? "animate-pulse text-rose-300" : "text-sky-200",
             )}>
               <Clock3 className="size-4" /> {secondsLeft}s
             </span>

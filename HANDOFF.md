@@ -5,6 +5,7 @@
 * **State**: Ready for Test (implementation committed; live viewport check pending)
 
 ## 2. Completed in this Session
+* [x] Registered REA 6.7.0 in project-scoped `.codex/config.toml` using `npx -y rea-agents@6.7.0 mcp`. Validated TOML and confirmed `codex mcp get rea` loads the enabled stdio server. Global configuration was not modified.
 * [x] Added spectator roster, join-role selection, seat switching, forfeits, safe spectator game views, and room broadcasts. Added hub spectator entry and compact room controls. Commit `5eae9a3` is in `/tmp/TheBoardGame-spectator-git/.git` because the workspace `.git` index is read-only.
 * [x] Verified 79 backend tests, frontend production build, and `git diff --check`. Frontend lint still reports four pre-existing errors and one warning in unchanged code.
 * [x] Installed Anthropic's `frontend-design` skill and Apache 2.0 license under `skills/frontend-design/`, and linked it from `AGENTS.md` for project frontend design tasks. The files match the browser downloads. Commit `2299d34` is in `/tmp/TheBoardGame-readme-git.git` because repository Git metadata is read-only.
@@ -124,6 +125,7 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] REA installation: restore npm registry DNS access, then restart Codex in this trusted project to download and connect REA. Package download and MCP handshake could not be verified: `npm view rea-agents` failed with `EAI_AGAIN registry.npmjs.org` both normally and with elevated execution.
 * [ ] Browser-check spectator header wrapping and table clearance at mobile/tablet sizes once a local or deployed site can be reached; local Vite binding fails with `EPERM` even outside the sandbox.
 * [ ] Sync or push spectator commit `5eae9a3` from temporary Git metadata when repository Git metadata/network access is available.
 * [ ] If a global install is needed, copy `skills/frontend-design/` to `/home/prin/.codex/skills/frontend-design/` when that directory is writable; the command-line installer also could not resolve GitHub from this environment.

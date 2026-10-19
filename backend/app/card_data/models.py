@@ -61,7 +61,3 @@ class LegacyDeck:
     game_id: AreaGameId
     entries: tuple[int, ...]
     original: bytes
-
-    @property
-    def buddy_id(self) -> int | None:
-        return self.entries[0] if self.game_id == "buddyfight" and self.entries else None

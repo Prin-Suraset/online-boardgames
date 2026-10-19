@@ -7,13 +7,15 @@ import json
 import re
 from dataclasses import asdict
 from pathlib import Path, PurePosixPath
-from typing import cast
+from typing import Literal, cast
 
 from app.card_data.models import (
     AreaGameId, Asset, CatalogImportResult, Diagnostic, ImportedCard, JsonValue, SourceRecord,
 )
 
 MAX_EXPORT_BYTES = 128 * 1024 * 1024
+LiteralRole = Literal["full", "thumb"]
+LiteralExtension = Literal["png", "jpg", "gif"]
 
 
 def safe_path(root: Path, relative: str) -> Path:
@@ -98,12 +100,6 @@ def _assets(root: Path, game: AreaGameId, diagnostics: list[Diagnostic]) -> dict
     return assets
 
 
-# Aliases keep image-role validation explicit without leaking recovery metadata to engines.
-from typing import Literal
-LiteralRole = Literal["full", "thumb"]
-LiteralExtension = Literal["png", "jpg", "gif"]
-
-
 def import_catalog(source_root: Path, game_id: AreaGameId) -> CatalogImportResult:
     if game_id not in {"buddyfight", "cardfight"}:
         raise ValueError("Unknown game namespace")
@@ -114,7 +110,7 @@ def import_catalog(source_root: Path, game_id: AreaGameId) -> CatalogImportResul
     records: list[SourceRecord] = []
     for row in read_export(source_root, source):
         raw_id = row.get("id" if game_id == "buddyfight" else "card_id")
-        if type(raw_id) is not int or not 1 <= raw_id <= 2147483647:
+        if type(raw_id) is not int or not 0 <= raw_id <= 2147483647:
             diagnostics.append(Diagnostic("INVALID_SOURCE_ID", source, str(raw_id)))
             continue
         origin = str(row.get("source" if game_id == "buddyfight" else "source_file"))
@@ -132,6 +128,9 @@ def import_catalog(source_root: Path, game_id: AreaGameId) -> CatalogImportResul
     records.sort(key=lambda row: (rank.get(row.source, len(rank)), row.source, row.lines, row.card_id))
     grouped: dict[int, list[SourceRecord]] = {}
     for record in records:
+        if record.card_id == 0:
+            diagnostics.append(Diagnostic("NON_CARD_RECORD", record.source, "Scalar/config index zero retained in provenance; not a playable card", 0))
+            continue
         grouped.setdefault(record.card_id, []).append(record)
     assets = _assets(source_root, game_id, diagnostics)
     cards: list[ImportedCard] = []
@@ -145,8 +144,11 @@ def import_catalog(source_root: Path, game_id: AreaGameId) -> CatalogImportResul
                 diagnostics.append(Diagnostic("UNKNOWN_LOAD_ORDER", record.source, "Retained source record; not merged into effective values", card_id))
                 continue
             effective.update(record.fields)
+            for key in record.fields:
+                unresolved.pop(key, None)
             for key, expression in record.expressions.items():
                 if key not in record.fields:
+                    effective.pop(key, None)
                     unresolved[key] = expression
                     diagnostics.append(Diagnostic("UNRESOLVED_EXPRESSION", record.source, expression, card_id))
         full, thumb = assets.get((card_id, "full")), assets.get((card_id, "thumb"))

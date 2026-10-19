@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import math
 import struct
+from pathlib import Path
 
-from app.card_data.models import AreaGameId, LegacyDeck
+from app.card_data.models import AreaGameId, JsonValue, LegacyDeck
 
 MAX_FILE_BYTES = 256 * 1024
 MAX_ENTRIES = 4096
@@ -54,3 +55,31 @@ def validate_deck_ids(deck: LegacyDeck, known_ids: frozenset[int]) -> None:
     unknown = sorted(set(deck.entries) - known_ids)
     if unknown:
         raise ValueError(f"Unknown {deck.game_id} card IDs: {unknown}")
+
+
+def import_deck_fixtures(root: Path, game_id: AreaGameId, known_ids: frozenset[int]) -> list[dict[str, JsonValue]]:
+    """Preserve loose and already-extracted archived decks; never execute/unzip files."""
+    from app.card_data.importer import safe_path
+
+    outputs: list[dict[str, JsonValue]] = []
+    for directory in ("project/Decks", "data/decks/archived-originals"):
+        folder = safe_path(root, directory)
+        if not folder.exists():
+            continue
+        for path in sorted(folder.rglob("*")):
+            if not path.is_file() or path.suffix.lower() not in {".prfl", ".prflex"}:
+                continue
+            relative = path.relative_to(root).as_posix()
+            checked = safe_path(root, relative)
+            if checked.stat().st_size > MAX_FILE_BYTES:
+                raise ValueError(f"Oversized deck fixture: {relative}")
+            raw = checked.read_bytes()
+            deck = decode_legacy_deck(raw, game_id)
+            if encode_legacy_deck(deck) != raw:
+                raise ValueError(f"Roundtrip mismatch: {relative}")
+            unknown = sorted(set(deck.entries) - known_ids)
+            outputs.append({"source": relative, "game_id": game_id,
+                            "entries": list(deck.entries), "original_ascii": raw.decode("ascii"),
+                            "unknown_ids": unknown, "sections": "unresolved",
+                            "source_kind": "extra" if path.suffix.lower() == ".prflex" else "main-or-combined"})
+    return outputs

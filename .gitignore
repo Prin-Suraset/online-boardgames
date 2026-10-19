@@ -1,0 +1,4 @@
+# Reproducible area art: generate before the frontend build/deployment.
+frontend/public/area-games/*/art/
+__pycache__/
+.pytest_cache/

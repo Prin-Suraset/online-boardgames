@@ -129,8 +129,10 @@ class CatalogImportTests(unittest.TestCase):
         image = self.root / "project/CardSprite/n9.png"
         image.parent.mkdir(parents=True)
         image.write_bytes(png)
-        self.write("recovered/asset-manifest.json", [{"path": "CardSprite/n9.png", "format": "PNG"}])
+        (image.parent / "n9.jpg").write_bytes(b"\xff\xd8\xffalternate")
+        self.write("recovered/asset-manifest.json", [{"path": "CardSprite/n9.jpg", "format": "JPEG"}, {"path": "CardSprite/n9.png", "format": "PNG"}])
         result = import_catalog(self.root, "buddyfight")
+        self.assertEqual(next(card for card in result.cards if card.card_id == 9).full_art.source, "CardSprite/n9.png")
         output = self.root / "output"
         report = build_artifact(result, self.root, output)
         catalog = json.loads((output / "buddyfight/catalog.json").read_text())

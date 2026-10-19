@@ -94,8 +94,9 @@ def _assets(root: Path, game: AreaGameId, diagnostics: list[Diagnostic]) -> dict
         asset = Asset(relative, cast("LiteralRole", role), digest, len(raw), cast("LiteralExtension", ext))
         key = (int(identifier), role)
         if key in assets:
-            diagnostics.append(Diagnostic("MULTIPLE_ART_CANDIDATES", relative, "Kept first manifest candidate", int(identifier)))
-            continue
+            diagnostics.append(Diagnostic("MULTIPLE_ART_CANDIDATES", relative, "Preferred indexed PNG, then first manifest candidate; alternatives retained in source manifest", int(identifier)))
+            if asset.extension != "png" or assets[key].extension == "png":
+                continue
         assets[key] = asset
     return assets
 

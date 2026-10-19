@@ -11,7 +11,7 @@ from typing import cast
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.card_data.artifacts import build_artifact, write_data, write_json
+from app.card_data.artifacts import build_artifact, validate_output_roots, write_data, write_json
 from app.card_data.deck_codec import import_deck_fixtures
 from app.card_data.importer import import_catalog
 from app.card_data.models import AreaGameId, JsonValue
@@ -28,11 +28,12 @@ def main() -> int:
     games = list(names) if args.game == "both" else [args.game]
     reports: list[dict[str, JsonValue]] = []
     try:
+        validate_output_roots(args.source_root, args.output_dir, args.data_dir)
         for game in games:
             source = args.source_root / names[game] if args.game == "both" else args.source_root
             result = import_catalog(source, cast(AreaGameId, game))
             report = build_artifact(result, source, args.output_dir)
-            write_data(result, args.data_dir)
+            write_data(result, args.data_dir, source)
             decks = import_deck_fixtures(source, cast(AreaGameId, game), frozenset(card.card_id for card in result.cards))
             write_json(args.data_dir / game / "legacy-decks.json", decks)
             report["deck_fixtures"] = len(decks)

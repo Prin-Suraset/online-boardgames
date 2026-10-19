@@ -9,6 +9,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import shutil
 import struct
 import subprocess
 import sys
@@ -61,7 +62,8 @@ class CatalogImportTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.root = Path(self.tmp.name)
+        self.root = Path(self.tmp.name) / "recovery"
+        self.root.mkdir()
 
     def write(self, name: str, data: object) -> None:
         path = self.root / name
@@ -114,6 +116,48 @@ class CatalogImportTests(unittest.TestCase):
         self.assertEqual(len(result.records), 3)
         self.assertEqual(len(result.cards), 2)
 
+    def test_real_cardfight_expression_sentinel_removes_stale_literal(self) -> None:
+        from app.card_data.artifacts import build_artifact
+
+        loader = self.root / "recovered-source/embedded/scripts/0000_TextLoad.gml"
+        loader.parent.mkdir(parents=True)
+        loader.write_text("execute_string(file_read_utf8('Text/First.txt'))\nexecute_string(file_read_utf8('Text/Last.txt'))")
+        sentinel = {"expression": "16 //Angel Feather"}
+        self.write("data/cards-by-source.json", [
+            {"card_id": 6662, "source_file": "Text/First.txt", "properties": {"CardInClan": 16}, "source_lines": [1]},
+            {"card_id": 6662, "source_file": "Text/Last.txt", "properties": {"CardInClan": sentinel}, "source_lines": [2]},
+        ])
+        self.write("data/assignments.json", [])
+        self.write("data/card-image-index.json", [])
+        result = import_catalog(self.root, "cardfight")
+        self.assertNotIn("CardInClan", result.cards[0].fields)
+        self.assertEqual(result.cards[0].unresolved, {"CardInClan": "16 //Angel Feather"})
+        self.assertEqual(result.records[1].fields["CardInClan"], sentinel)
+        output = self.root.parent / (self.root.name + "-public")
+        self.addCleanup(shutil.rmtree, output, True)
+        build_artifact(result, self.root, output)
+        card = json.loads((output / "cardfight/catalog.json").read_text())["cards"][0]
+        self.assertNotIn("CardInClan", card["fields"])
+        self.assertEqual(card["unresolved_fields"], ["CardInClan"])
+
+    def test_cli_rejects_either_overlapping_output_before_any_writes(self) -> None:
+        self.bf()
+        for public, data in [(self.root / "recovered", self.root.parent / "safe-data"),
+                             (self.root.parent / "safe-public", self.root / "data"),
+                             (self.root.parent, self.root.parent / "safe-data")]:
+            command = [sys.executable, "backend/scripts/import_area_games.py", "--game", "buddyfight",
+                       "--source-root", str(self.root), "--output-dir", str(public), "--data-dir", str(data)]
+            run = subprocess.run(command, capture_output=True, text=True, check=False)
+            self.assertNotEqual(run.returncode, 0)
+            self.assertFalse((public / "buddyfight").exists())
+            self.assertFalse((data / "buddyfight").exists())
+        from app.card_data.artifacts import build_artifact, write_data
+        result = import_catalog(self.root, "buddyfight")
+        with self.assertRaises(ValueError):
+            build_artifact(result, self.root, self.root / "recovered")
+        with self.assertRaises(ValueError):
+            write_data(result, self.root / "data", self.root)
+
     def test_missing_art_falls_back_and_manifest_traversal_is_rejected(self) -> None:
         self.bf()
         self.write("recovered/asset-manifest.json", [{"path": "../outside.png", "format": "PNG"}])
@@ -133,7 +177,7 @@ class CatalogImportTests(unittest.TestCase):
         self.write("recovered/asset-manifest.json", [{"path": "CardSprite/n9.jpg", "format": "JPEG"}, {"path": "CardSprite/n9.png", "format": "PNG"}])
         result = import_catalog(self.root, "buddyfight")
         self.assertEqual(next(card for card in result.cards if card.card_id == 9).full_art.source, "CardSprite/n9.png")
-        output = self.root / "output"
+        output = self.root.parent / "output"
         report = build_artifact(result, self.root, output)
         catalog = json.loads((output / "buddyfight/catalog.json").read_text())
         card = next(row for row in catalog["cards"] if row["card_id"] == 9)
@@ -159,7 +203,7 @@ class CatalogImportTests(unittest.TestCase):
         deck_path.parent.mkdir(parents=True)
         raw = (struct.pack("<II", 301, 4) + b"".join(struct.pack("<IdI", 0, value, 0) for value in [5450, 9, 9, 3251])).hex().encode()
         deck_path.write_bytes(raw)
-        output, data = self.root / "public", self.root / "data-out"
+        output, data = self.root.parent / "public", self.root.parent / "data-out"
         command = [sys.executable, "backend/scripts/import_area_games.py", "--game", "buddyfight",
                    "--source-root", os.path.relpath(self.root), "--output-dir", str(output), "--data-dir", str(data)]
         run = subprocess.run(command, capture_output=True, text=True, check=False)

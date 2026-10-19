@@ -1,6 +1,6 @@
 # Area games: fidelity and contract packet v0.1
 
-**Status:** Cardfight profile and contracts accepted by owner during execution; implementation remains pending. Buddyfight material/source-dependent rows remain proposed and unapproved. Assisted-simulator scope is accepted. The exact profiles, priority policy and payloads below remain awaiting agreement under AGENTS rule 6. No playable format is presently implemented or verified. Task 2's offline data conversion can proceed independently; engine/transport work must use an accepted revision of this packet.
+**Status:** Cardfight profile and contracts accepted by owner during execution; implementation remains pending. Buddyfight material/source-dependent rows remain proposed and unapproved. Assisted-simulator scope is accepted. The exact Buddyfight profile, priority policy and payloads remain awaiting agreement under AGENTS rule 6; the documented Cardfight profile, priority and payload contracts are accepted. No playable format is presently implemented or verified. Task 2's offline data conversion can proceed independently; engine/transport work must use an accepted revision of this packet.
 
 Read with the [design](2026-10-19-area-games-design.md), [plan](../plans/2026-10-19-area-games.md) and [investigation](../../investigations/2026-10-19-area-games.md). Paths beginning `CF/` mean `Reverse Engineered/Cardfight Area 4.16/`; `BF/` means `Reverse Engineered/Buddyfight Area 1.38/`. Source lines refer to preserved GML or HTML, not tested native runtime behavior.
 

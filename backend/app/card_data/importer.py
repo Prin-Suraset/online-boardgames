@@ -144,11 +144,17 @@ def import_catalog(source_root: Path, game_id: AreaGameId) -> CatalogImportResul
             if record.source not in rank:
                 diagnostics.append(Diagnostic("UNKNOWN_LOAD_ORDER", record.source, "Retained source record; not merged into effective values", card_id))
                 continue
-            effective.update(record.fields)
-            for key in record.fields:
+            literal_fields = {key: value for key, value in record.fields.items()
+                              if not (isinstance(value, dict) and isinstance(value.get("expression"), str))}
+            effective.update(literal_fields)
+            for key in literal_fields:
                 unresolved.pop(key, None)
-            for key, expression in record.expressions.items():
-                if key not in record.fields:
+            expressions = dict(record.expressions)
+            for key, value in record.fields.items():
+                if isinstance(value, dict) and isinstance(value.get("expression"), str):
+                    expressions[key] = cast(str, value["expression"])
+            for key, expression in expressions.items():
+                if key not in literal_fields:
                     effective.pop(key, None)
                     unresolved[key] = expression
                     diagnostics.append(Diagnostic("UNRESOLVED_EXPRESSION", record.source, expression, card_id))

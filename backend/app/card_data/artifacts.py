@@ -29,10 +29,22 @@ def _content_type(raw: bytes, extension: str) -> str:
     raise ValueError("Indexed image content does not match supported format")
 
 
+def validate_output_roots(source_root: Path, *output_roots: Path) -> None:
+    """Validate all destinations before writing to any; resolve symlink aliases."""
+    source = source_root.resolve()
+    outputs = [root.resolve() for root in output_roots]
+    for output in outputs:
+        if output.is_relative_to(source) or source.is_relative_to(output):
+            raise ValueError("Input and output trees must not overlap")
+    for index, first in enumerate(outputs):
+        for second in outputs[index + 1:]:
+            if first.is_relative_to(second) or second.is_relative_to(first):
+                raise ValueError("Public and backend output trees must not overlap")
+
+
 def build_artifact(result: CatalogImportResult, source_root: Path, output_root: Path) -> dict[str, JsonValue]:
+    validate_output_roots(source_root, output_root)
     project = (source_root / "project").resolve()
-    if output_root.resolve().is_relative_to(project) or source_root.resolve().is_relative_to(output_root.resolve()):
-        raise ValueError("Output must not overwrite recovery inputs")
     game_dir = safe_path(output_root, result.game_id)
     fallback_path = safe_path(game_dir, "art/missing.svg")
     fallback_path.parent.mkdir(parents=True, exist_ok=True)
@@ -79,7 +91,8 @@ def build_artifact(result: CatalogImportResult, source_root: Path, output_root: 
             "diagnostics": len(result.diagnostics), "catalog_version": result.version}
 
 
-def write_data(result: CatalogImportResult, data_root: Path) -> None:
+def write_data(result: CatalogImportResult, data_root: Path, source_root: Path) -> None:
+    validate_output_roots(source_root, data_root)
     game_dir = safe_path(data_root, result.game_id)
     write_json(safe_path(game_dir, "catalog.json"), {"game_id": result.game_id, "catalog_version": result.version,
                "cards": [asdict(card) for card in result.cards]})

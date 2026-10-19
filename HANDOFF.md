@@ -1,10 +1,12 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Investigate Buddyfight Area 1.38 and Cardfight Area 4.16 in `Reverse Engineered/`, plan modern responsive web recreations, and hand the plan to an implementer.
-* **State**: In-Progress (investigation and planning complete; implementer received plan; product implementation pending scope/format/contract review)
+* **Active Task**: Execute responsive Cardfight/Buddyfight recreation plan; Task 1 fidelity/profile/contract draft prepared for independent review, then Task 2 offline data/import work.
+* **State**: In-Progress (execution active: Task 1 source-backed fidelity/format/contract packet; assisted simulator scope accepted; exact shared contracts remain pending review)
 
 ## 2. Completed in this Session
+* [x] Task 1 documentation increment: source ledger + per-game fidelity matrix, concrete manual-profile proposals, strict catalog/deck/setup/action/view contract packet, privacy/shuffle policy and approval gaps. Verification: whitespace, local links, JSON example and real 50-card fixture checks (recorded in task report); independent review pending. No schema/product edits.
+* [x] Execution resumed at Task 1 from base `499f2b6`. Existing checkout approved by investigator as owner delegate: the large untracked recovery inputs stay in place, with one tracked-file writer to avoid conflicting edits. Independent review follows each task. Affected engine/transport/schema edits await concrete contract agreement; independent offline data/import work may proceed after Task 1 review.
 * [x] Read project rules, existing handoff, and the local frontend-design skill. Investigator inspected both recoveries and mapped real integration points; report saved to `docs/investigations/2026-10-19-area-games.md`. Both clients are assisted/manual card simulators, not verified complete automatic rules engines.
 * [x] Wrote design `docs/superpowers/specs/2026-10-19-area-games-design.md` and staged execution plan `docs/superpowers/plans/2026-10-19-area-games.md`. Cardfight first due named source/manual, Buddyfight second. Plan includes catalogs/art/decks, pure engines, private views, room setup, responsive workshop/boards, parity matrix and regression/browser acceptance.
 * [x] Handed design and execution plan to implementer, who acknowledged intake and performed readiness review. Investigator also reviewed the completed planning work. Fixed ordering, test ownership and static-asset delivery gaps. No product code or shared contracts changed. Existing spectator validation and other pending work below remain pending.
@@ -132,8 +134,8 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
-* [ ] SilverHorn reviews proposed assisted-simulator scope in design. Full automatic card abilities would substantially change scope; user preference question is pending.
-* [ ] Execute plan Task 1: finish exact per-format setup/priority/end-condition/zone mappings, source parity checklist and concrete contract addendum; select initially supported formats from recovered evidence, bringing only unresolved material choices to the owner. Obtain Spark/SilverHorn agreement before shared schema/WebSocket/TypeScript edits (AGENTS rule 6).
+* [x] Owner accepted assisted-simulator scope and instructed plan execution. Implementer executes each work item; a separate reviewer checks spec compliance and quality against the same plan before the next task. Investigator independently checks source/noncritical decisions and exposed usage status after each task.
+* [ ] Task 1 draft packet prepared at `docs/superpowers/specs/2026-10-19-area-games-contracts.md`; independent reviewer must gate source/spec compliance and quality. Exact CF opening/mulligan/profile/priority/result policies and new shared DTOs require Spark/SilverHorn agreement. BF item/aux slots, normal flag/deck allowlist and special-buddy setup remain narrow source blockers; imports can proceed without them. Do not label proposed manual profiles source-complete or implemented.
 * [ ] Continue Tasks 2–8: import/catalog/art/deck codec; Cardfight engine+room+responsive UI; Buddyfight engine+room+responsive UI; parity and cross-device acceptance. Do not register game IDs before explicit dispatch/capacity/setup/guards exist.
 * [ ] After every task, request investigator verification and available context/usage status; fix findings, commit the functional increment, and save exact tests/commits/done/undone/next commands here. At the owner's quota threshold stop with a complete continuation checkpoint.
 * [ ] Browser-check spectator header wrapping and table clearance at mobile/tablet sizes once a local or deployed site can be reached; local Vite binding fails with `EPERM` even outside the sandbox.

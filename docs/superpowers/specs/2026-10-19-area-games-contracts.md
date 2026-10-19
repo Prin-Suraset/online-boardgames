@@ -1,0 +1,206 @@
+# Area games: fidelity and contract packet v0.1
+
+**Status:** concrete proposal for Spark/SilverHorn agreement; not an approved protocol or an implementation. Assisted-simulator scope is accepted. The exact profiles, priority policy and payloads below remain awaiting agreement under AGENTS rule 6. No playable format is presently implemented or verified. Task 2's offline data conversion can proceed independently; engine/transport work must use an accepted revision of this packet.
+
+Read with the [design](2026-10-19-area-games-design.md), [plan](../plans/2026-10-19-area-games.md) and [investigation](../../investigations/2026-10-19-area-games.md). Paths beginning `CF/` mean `Reverse Engineered/Cardfight Area 4.16/`; `BF/` means `Reverse Engineered/Buddyfight Area 1.38/`. Source lines refer to preserved GML or HTML, not tested native runtime behavior.
+
+## 1. Evidence and decision ledger
+
+`E` = directly evidenced static behavior; `P` = proposed web behavior requiring approval if material; `U` = unresolved; `V` = verified web implementation. There are **no V entries yet**. Evidence for a control does not establish complete rules legality or automatic ability resolution. Full format rules and every helper remain on the parity checklist; these profiles are initial milestones.
+
+| ID | Exact finding or proposal | Basis/status |
+|---|---|---|
+| E-CF-1 | Explicit phase values Ride=1, Main=2, Battle=3, End=4 | `CF/recovered-source/embedded/objects/0061_Ride_Phase/06_Mouse_7/action_003_code.gml:1`; `0062_Main_Phase/.../action_001_code.gml:1`; `0063_BattlePhase/.../action_000_code.gml:1`; `0064_EndPhase/.../action_003_code.gml:6` (same object-root). |
+| E-CF-2 | Ride control stands eligible local field cards, clears specified temporary power/critical, checks G-assist and has selective energy helpers | Ride object `action_000_code.gml:1–8`, `action_001_code.gml:1–9`, `action_003_code.gml:2–13`. Helpers are separate parity items; the entire block is not universal stand/draw rules. |
+| E-CF-3 | Deck-size predicate accepts 50 or `50 + extracted ride count` when count >=4 | `CF/recovered-source/embedded/scripts/0096_is_valid_deck_size.gml:1–2`, `0095_get_max_deck_size.gml:1–9`. Not a modern tournament legality specification. |
+| E-CF-4 | First four extracted ride entries are checked against grades 0,1,2,3; fifth-entry exceptions exist | `scripts/0094_deck_extract_ride_deck.gml:4–20`, `0063_CheckRideDeck.gml:4–18,26–57`. Extended exceptions are not silently treated as ordinary four-card ride decks. |
+| E-CF-5 | Starter visible to opponent unless ride deck used; drive check right-click; damage check in local End/opponent Battle; damage flip and soul operations explicit | `CF/project/Manual/index.html:52–64,79–82,106–118`. This describes a client interface, not a server permission specification. |
+| E-CF-6 | Top/bottom draw; drive card normally to hand, damage card normally to damage; trigger type 6 redirected to removed zone | `objects/0001_PlayerDeck/06_Mouse_7/action_000_code.gml:5–18`, `06_Mouse_8/action_002_code.gml:3–8`, `action_008_code.gml:3–8`. Trigger coverage incomplete because `Text/Triggers.txt` missing. |
+| E-CF-7 | Deck depletion loses only behind `PlayerROOM=9`; damage count >5 uses same room guard and a trigger exception | `objects/0150_ControlPanel/03_Step_0/action_002_code.gml:1196–1199`; `objects/0000_Card1/00_Create_0/action_000_code.gml:90–99`. `PlayerROOM=9` is not mapped here to all advertised formats. |
+| U-CF-1 | Automatic opening hand, mulligan, first-player draw exception, and complete victory rules for each format | Not established by inspected initialization, phase controls, deck click handlers and manual. Do not substitute recalled official rules. |
+| E-BF-1 | Main `.prfl` position zero is buddy; flag is a separate selection extracted by setup; `.prflEx` separate extra deck | `BF/REPORT.md:56–60`; setup source below. Card IDs and copies must remain separate. |
+| E-BF-2 | Initial life reset=10; flag-specific opening gauge/hand/life branches exist | `objects/0107_ev_slow/06_Mouse_4/action_005_code.gml:1`; `objects/0015_d__H_oNy_/03_Step_0/action_002_code.gml` (full prefix `BF/recovered-source/embedded/`). Detailed mapping in section 3 and investigation. |
+| P-1 | IDs `cardfight`, `buddyfight`; exactly two active seats, existing spectators, bots unavailable | Matches paired client structures and platform integration; no complete bot recovered. |
+| P-2 | Manual profiles with explicit response windows and ownership checks; no arbitrary state patches | Proposed server-authoritative resolution policy. Legacy clients are not evidence of secure server enforcement. |
+| P-3 | Concession or mutually confirmed result ends an initial-profile match; no guessed automatic damage/depletion victory | Deliberate manual-mode policy pending approval. It differs from specific evidenced legacy room branches. |
+| P-4 | Catalog versions immutable within a match; guests and accounts use versioned local saves initially | Architecture choice; durable account deck sync deferred, not delivered by existing account support. |
+
+## 2. Proposed first Cardfight profile
+
+**ID:** `cardfight-manual-v1`. A named assisted legacy-table profile, **not a claim of Standard, V-Premium or Premium tournament legality**. Approval must explicitly accept the proposed openings, size limits and manual result policy. Future format profiles get distinct IDs and tests. Crossover/extended ride exceptions stay unsupported initially.
+
+| Concern | Exact proposed value | Evidence/decision |
+|---|---|---|
+| Main | Exactly 50 card copies submitted; integral known CF catalog IDs. No guessed clan/trigger/copy-count restriction; diagnostics warn about unvalidated tournament legality. | E-CF-3 supports 50-count predicate, P defines section semantics and leaves legality manual. |
+| Starter without ride | `starter_index` required, 0..49 into submitted main order; grade 0 required; remove that physical copy into Vanguard, leaving 49 in draw pile before deal. | Starter selection exists; exact validation/placement P. |
+| Ride option | Either 0 or exactly 4 separate entries with resolved grades 0,1,2,3 in that order. When ride present, `starter_index=null`; move ride[0] to Vanguard, remaining 3 stay ride zone. Keep submitted main=50. | Four-grade extraction E-CF-4; explicit web section semantics/setup P. Missing grade metadata blocks ride validation, not all imports. |
+| G zone | 0..16 copies; section membership checked against resolved source metadata when available. Unknown classification yields unsupported-deck diagnostic, not guessed type. | G-zone workflow evidenced, capacity 16 P operational/initial-profile limit, not source/legal claim. |
+| Opening | Shuffle remaining main; deal 5 to private hand; damage/drop/soul/bind/removed/guardian empty; field stood; modifiers/counters zero. | Opening 5 P because U-CF-1. Starter visibility: non-ride starter public; ride starter concealed until both players `READY_TO_PLAY`, then reveal simultaneously (P timing, E-CF-5 distinction). |
+| Mulligan | One optional `CF_MULLIGAN` per player during `OPENING`: select 0..5 unique own hand refs, return them to main, shuffle entire main, draw same count. It can redraw returned cards. `CF_KEEP_HAND` closes that player's opening. | Explicit P algorithm; not asserted official or recovered mulligan behavior. |
+| First player | Host selects either occupied player ID before readiness. Public choice; no random draw/coin claim. | P; deterministic explicit input. |
+| Start/turn | After both keep and ready-to-play, first actor enters Ride. `CF_NEXT_PHASE` advances Ride→Main→Battle→End. `CF_END_TURN` only End hands over to opponent Ride, increments turn; no implicit draw or stand; explicit draw/stand operations remain available. | E-CF-1 labels; transition ordering and omission of automatic turn helpers P, intentionally visible as manual help. |
+| Core field capacity | One Vanguard; five named rear circles front-left/front-right/back-left/back-center/back-right, max one base card each; soul is stacked separately. Guardian is ordered list. Card count globally bounded by submitted copies plus separately supported token creation. | Basic geometry source objects; strict capacities P. Additional Accel circles, Legion/overdress/prison/token/gift mechanics unresolved in initial profile. |
+| Face state | Public face-up Vanguard/rears/guardian/damage/drop/soul; bind and G-zone may be face-down, with identities visible only to owner; deck concealed even from owner except explicit inspection. | P privacy policy; exact legacy visibility for every extended zone not established. |
+| Checks | `CF_DRIVE_CHECK` in own Battle with priority; `CF_DAMAGE_CHECK` while opponent Battle and responder owns priority. Reveal one top card then explicit `CF_RESOLVE_CHECK` moves it to hand/damage or removed for source-confirmed type6; no inferred trigger power or healing automation. Unknown trigger type stays manual with a diagnostic. | E-CF-5/6, P response model and explicit resolve. |
+| Completion | Concession immediately loses; agreed result completes; empty deck rejects draw with `INVALID_ACTION` and remains playable for manual resolution; damage six does not silently finish this profile. | P-3, differs from room-specific E-CF-7; must be owner-approved. |
+
+## 3. Proposed first Buddyfight profile
+
+**ID:** `buddyfight-manual-v1`. Normal-flag assisted profile only at first. It does not claim all recovered special flags, Lost/extra forms or card abilities are implemented. Main/buddy/flag boundaries must match imported records; importer never guesses them from display counts alone.
+
+| Concern | Exact proposed value | Evidence/decision |
+|---|---|---|
+| Deck | Submit separate `buddy_id`, `flag_id`, main=50 copies, extra=0 initially. Buddy represents the separate first serialized selection; it must not be double-counted as an ordinary main copy. All known IDs; resolved buddy/type/flag classification required. | Buddy-first codec E-BF-1; 50 and zero-extra are P initial-profile constraints, not universal recovered legality. Decode must preserve the original first buddy and extracted flag separately with provenance. |
+| Flag | Only normal setup flags after a reviewed classification allowlist. Explicitly exclude special-opening IDs 969,2327,2328,2370,3593,3337 and unresolved special flags, plus setup-excluded IDs2789/4569/5760. | Source setup branch evidence; cannot label every other card normal by absence from this short list. Unknown allowlist means this profile remains unavailable. |
+| Opening | Life10; remove flag into flag area; display buddy separately; shuffle main; top2 to gauge, next6 to hand. Other zones empty, counters/modifiers zero. | E-BF-2 normal branch; exact buddy-card handling must be checked against setup helper before approved server state is finalized. |
+| Other observed openings | Flag969:2 gauge/4 hand/+2life;2327:1/6/+2;2328:4/6/-2;2370:2/4/+10;3593:1/7/+1;3337:2/4/+0. These are evidence entries, **not initially supported profiles**. | `objects/0015_d__H_oNy_/03_Step_0/action_002_code.gml` counter40. Need source helper/life reset conjunction reviewed. |
+| First player/mulligan | Same explicit host first-player selection as CF; no automatic mulligan initially. | P, no verified mulligan specification. Manual opening modifications require a later named approved operation, not arbitrary deck edits. |
+| Phases | Preserve evidenced button initials as enum `S,D,M,A,E`; proposed strict order S→D→M→A→E, then opponent S. D maps legacy1, M2, A3, E4, S6. Legacy5 is internal opponent/reset state. Enter D stands source-supported field cards and draws one except first overall turn. S has no invented helper. | Initials and D side effects E; strict sequence P (legacy permits shortcuts). Full names of initials are not proven; UI explanations require owner agreement. |
+| Zones | Named candidate zones: deck, hand, gauge, drop, buddy, flag, monster-left/center/right, item, set-spell, per-card soul. Numeric legacy slot-to-name mapping and effective capacities require source trace. Proposed max one base monster per position, item1; set-spells/soul ordered and bounded by existing copies. | Names/workflows evidenced; exact mapping/capacities pending. No raw legacy numeric zones in public actions. |
+| Completion | Life<=0 does not automatically end until defeated-condition semantics approved; initial profile concession/agreed result only. | P-3; maintain life in explicit range -999..999 (P safety bound) without claiming card legality. |
+
+
+### Buddyfight follow-up source ledger
+
+All paths here have prefix `BF/recovered-source/embedded/`. Setup `objects/0015_d__H_oNy_/03_Step_0/action_002_code.gml:1` extracts first CardType5 flag except2789/4569/5760 and creates first remaining buddy at counter20; `:4–6` contains opening counts. Helpers `scripts/0078_Oh842.gml:1`, `0039_nF_G2.gml:1`, `0038_lIIo1OOi0O.gml:1`, `0061_ev_wait.gml:1` respectively create indexed deck copy, move it to gauge5, move to hand1, apply life delta. Setup also extracts card3941 and IDs5957..5964, and has special buddies5717/5749/6518 plus paired buddy helpers5418/5419/5511/5513/5517/5523/1911/1912. Exclude these from first-profile eligible deck/buddy allowlist until individually mapped; a generic “normal flag” check alone is insufficient.
+
+`scripts/0047_p_Q.gml:1` emits phase command7. Executor `objects/0150_liloi/03_Step_0/action_003_code.gml:7–8` shows phase1 increments turn, stands slots2/3/4/7, draws except turn1; `:23` opponent phase1 sets local internal5 for modifier cleanup. Phase button objects0061/0062/0063/0064/0247 and sprite-manifest entries117/118/119/120/356 establish D/M/A/E/S initials; full-name expansions remain proposals. Source buttons permit D from start/opponent E/self S; M from D/S; A from D/M/S; E from M/A/S; S from start/opponent E. The proposed sequential web controls intentionally narrow these shortcuts and must be reviewed as such.
+
+Same executor `:3–5,14–15` confirms hand1/gauge5/set9, and overlay pairs10→3,11→2,12→4,13→8. Monster slots2/3/4 are local x368/464/560 by room manifest; label left/center/right relative to local player's upright view (P UX convention). Buddy setup uses slot8 via `scripts/0070_IIlIliOo.gml:1`; slot7 renders flag when unoccupied but also holds field cards, so it is not safely modeled as a flag-only slot. Slot6 and item semantics require additional trace. This is a narrow BF implementation blocker, not a data-import blocker.
+
+## 4. Shared data contract (pure inputs, not protocol implementation)
+
+All models reject extra fields and coercion. Integer means strict integer, never bool or float. Nullable fields are explicitly required unless a default is stated. Text fields are escaped plain text. No HTML rendering, GML evaluation, native execution or card-text parsing into rules. Bounds here are proposed operational limits, not tournament legality.
+
+| Type | Required fields / exact bounds |
+|---|---|
+| `AreaGameId` | Literal `cardfight` or `buddyfight`. |
+| `CatalogKey` | `{game_id: AreaGameId, card_id: int[1,2147483647]}`; IDs overlap across games, key is composite. |
+| `SourceLocation` | `{path: str[1,512], line: int[1,2147483647]}` relative recovery path, never an absolute machine path. |
+| `CatalogDiagnostic` | `{code: str[1,64], severity: warning|error, key: CatalogKey|null, source: SourceLocation|null, message: str[1,1000]}`. Preserve missing trigger, duplicate definitions, unresolved expressions, unknown art. |
+| `CardDefinition` | `{key: CatalogKey, catalog_version: str[1,64], name: str[1,512], text: str[0,32768], grade: int[0,99]|null, power: int[-999999,999999]|null, shield: int[-999999,999999]|null, defense: int[-999999,999999]|null, critical: int[0,999]|null, source_type: str[0,128]|null, attributes: tuple[str[1,128],...](0..128), image_key: str[1,256]|null, thumbnail_key: str[1,256]|null, sources: tuple[SourceLocation,...](1..256), raw_fields: dict[str,JsonValue], unresolved_fields: dict[str,str]}`. `raw_fields` and unresolved values are import/provenance data, not executable engine instructions. Null mechanical fields remain unknown. Duplicate resolution records all definitions and effective loader order. |
+| `DeckEntry` | `{card_id: int[1,2147483647], count: int[1,256]}`. For exact order/import, deck snapshots use ordered ID tuples; UI may aggregate to this display shape only. |
+| `CardfightDeckDefinition` | `{game_id: cardfight, catalog_version: str[1,64], name: str[1,80], main: tuple[int,...](1..256), ride: tuple[int,...](0..16), extra: tuple[int,...](0..64), starter_index: int[0,255]|null}`; selected profile narrows counts. Expanded total <=336, serialized setup <=64KiB. |
+| `BuddyfightDeckDefinition` | `{game_id: buddyfight, catalog_version: str[1,64], name: str[1,80], main: tuple[int,...](1..256), buddy_id: int[1,2147483647], flag_id: int[1,2147483647], extra: tuple[int,...](0..64)}`; profile narrows counts; total <=322. |
+| `LegacyDeck` | `{game_id, version:301, entries: tuple[LegacyNumericEntry,...](0..4096), original_ascii: bytes, source_path: str|null, diagnostics: tuple[CatalogDiagnostic,...]}`; `LegacyNumericEntry={tag:uint32,value:finite float64 integral ID,reserved:uint32}`. Only proven tags/reserved accepted for normalized playable import. Original bytes retained for unchanged roundtrip; unknown variants diagnosed/rejected rather than executed. File<=256KiB; decoded byte length must equal header count layout exactly. |
+
+Generated data root: `backend/app/card_data/generated/{game_id}/{catalog_version}/`; catalog JSON, diagnostics, provenance and image manifest are reproducible text artifacts. Image source files remain in the recovery tree. Task 2 should generate deployable lazy assets under `frontend/public/area-assets/{game_id}/{catalog_version}/` from an explicit manifest (only resolved images, no binaries/settings); document inclusion/caching/build size. Public asset paths are catalog IDs; the existence of public art is not secret, but **a hidden match view must never reveal which asset belongs to a hidden card**. Never put source paths into card payloads.
+
+## 5. Setup transport and lifecycle proposal
+
+Keep existing `GAME_ACTION` envelope. Extend its typed action parsing for these games **in LOBBY only**. Existing `START_GAME` stays `{}`. No old-game action meanings change. New game IDs and view union members still require agreement. No new generic untyped mutation API.
+
+| `action_type` | Strict payload | Authority/effect |
+|---|---|---|
+| `AREA_SELECT_PROFILE` | `{profile_id: supported literal for room game, first_player_id: occupied player ID}` | Host only, lobby; atomically invalidates both ready flags and both prior submitted snapshots if profile/first player changes. |
+| `CF_SUBMIT_DECK` | `{deck: CardfightDeckDefinition}` | Active local seat only, CF lobby, matching selected profile/catalog. Validate then replace own snapshot; clear own ready even if byte-identical. Invalid submission leaves previous snapshot/readiness unchanged. |
+| `BF_SUBMIT_DECK` | `{deck: BuddyfightDeckDefinition}` | Same for BF. |
+| `AREA_CLEAR_DECK` | `{}` | Active seat, lobby; clear own snapshot and ready. |
+
+`TOGGLE_READY {ready:true}` requires valid current deck, selected supported profile and occupied first player. `ready:false` remains allowed. `START_GAME` host-only, exactly two valid ready seats, matching catalog version and profile. Adapter creates secret seed, validates/finalizes immutable deck snapshots, calls game-specific pure setup factory; start fails atomically if any prerequisite missing. No seed from client. START_GAME remains rejected for spectators. Changing seats invalidates the departed player's snapshot; deck setup never follows a spectator into another seat. Disconnect retains active-seat setup for same authenticated identity; spectator reconnect gets public setup only. Clear all snapshots/ready/profile selection on rematch; clients may offer an explicit fresh resubmit of local saves, never auto-ready stale secrets. A disconnected player is not automatically defeated; current room departure/forfeit rules apply through explicit adapter integration.
+
+**Proposed lobby view union members:** `CardfightSetupView` / `BuddyfightSetupView`, both `{stage:LOBBY, game_type:<literal>, profile_id:str|null, first_player_id:str|null, catalog_version:str, seats:tuple[SetupSeatView,...](0..2), self_setup:PrivateSetupView|null}`. `SetupSeatView={player_id:str, deck_valid:bool}` only; no names, contents, hashes, buddy, starter or flag before deliberate reveal. `PrivateSetupView={deck:<matching DeckDefinition>|null, diagnostics:tuple[CatalogDiagnostic,...]}` only for current active seat, never spectators. Existing `RoomStateView.game` accepts matching lobby/match view members; it remains null for old-game lobbies. No root room key or existing payload is repurposed. Frontend guards must branch on room game + stage, not infer from arbitrary optional properties.
+
+Accepted shape example (after approval, catalog ID/profile existence still validated):
+
+```json
+{"type":"GAME_ACTION","player_id":"p1","payload":{"action_type":"AREA_SELECT_PROFILE","payload":{"profile_id":"cardfight-manual-v1","first_player_id":"p1"}}}
+```
+
+A complete proposed deck submission uses a real recovered 50-entry fixture, `CF/data/decks/[V] VTD01 - Royal Paladin (Blaster Blade).json`; starter5681 has explicit grade0 in `CF/project/Text/Royal Paladin.txt:4691`. Catalog version is illustrative until Task2 pins the generated digest; acceptance requires the server's actual current version. This example demonstrates structural validity, not tournament legality or implemented support.
+
+```json
+{"type":"GAME_ACTION","player_id":"p1","payload":{"action_type":"CF_SUBMIT_DECK","payload":{"deck":{"game_id":"cardfight","catalog_version":"cf-v1","name":"Recovered Blaster Blade","main":[5681,5729,5729,5729,5729,5679,5679,5679,5679,5680,5680,5680,5680,5730,5730,5730,5730,5712,5712,5712,5678,5678,5678,5678,5674,5674,5674,5675,5675,5675,5675,5700,5700,5700,5700,5677,5677,5677,5677,5711,5711,5711,5683,5683,5683,5683,5728,5728,5728,5728],"ride":[],"extra":[],"starter_index":0}}}}
+```
+
+Reject `main:[1.5]`, unknown IDs, extra `seed`, wrong `game_id`, stale catalog version, three-card ride, spectator submit, lobby move and playing deck replacement. Missing fields are not silently filled. Existing TicTacToe `START_GAME {}` and old-game action payloads keep their behavior; adding union variants does not authorize unrelated payload changes.
+
+
+## 6. Canonical match state, views and privacy
+
+Canonical state is server-only. Separate `CardfightState` and `BuddyfightState` models, each with explicit `game_type`, `profile_id`, `catalog_version`, `revision:int>=0`, `players:tuple[str,str]`, `stage:OPENING|PLAYING|FINISHED`, `turn:int>=1`, `active_player_id`, `priority:PriorityState`, ordered card-instance storage/zones, `result:ResultProposal|null`, public history and private opening/search state. BF phase enum=S|D|M|A|E with proposed sequence in section 3; CF phase=RIDE|MAIN|BATTLE|END. Pure `create_state(player_ids, decks, profile, first_player_id, seed:bytes)` consumes validated definitions, no filesystem calls. Existing `initial_state(player_ids)` remains the abstract method: it returns an inert game-local unconfigured state; adapters **must** call configured factory, never fallback into a playable default deck. No `BaseGame` signature change proposed.
+
+`CardInstance={instance_id:str[1,64], card_id:int, owner_id:str, controller_id:str, zone:<game enum>, slot:str|null, position:int>=0, orientation:STAND|REST, face:UP|DOWN, visibility_epoch:int>=0, modifiers:Modifiers, counters:int[0,999]}`. Controller initially owner; no control-transfer action in first profiles. `Modifiers={power:int[-999999,999999], shield:int[-999999,999999], defense:int[-999999,999999], critical:int[-999,999]}` with unsupported game-specific fields forbidden in actions. Every card belongs to exactly one zone; per-card soul parent relation is explicit, never duplicates the same instance in two zone lists. Tokens require separate provenance and tested creation/removal before supported.
+
+`PriorityState={holder_id:str, window:NONE|RESPONSE|CHECK, return_to_id:str|null, pending_attack:AttackDeclaration|null, pending_check:CheckState|null}`; `CheckState={checker_id:str,kind:DRIVE|DAMAGE,instance_id:str,previous_holder_id:str,previous_window:NONE|RESPONSE}`. `AttackDeclaration={attacker_ref:str, target_ref:str|null, target_player_id:str|null}` validates a visible attack target; it does not compute combat automatically.
+
+**Match view required fields:** `{stage:OPENING|PLAYING|FINISHED, game_type:<literal>, profile_id, revision, turn, phase:<game literal>, active_player_id, priority_holder_id, response_window, players:tuple[PublicPlayerTable,...](2), self:PrivatePlayerTable|null, pending_result:PublicResultProposal|null, result:GameOverResult|null, history:tuple[PublicHistoryEntry,...](0..200), legal_actions:tuple[ActionDescriptor,...]}`. Definitions/titles/art come only from visible cards. `PublicResultProposal={proposer_id:str,proposal_revision:int>=0,outcome:WIN|DRAW,winner_id:str|null}`. `ActionDescriptor={action_type:<game action literal>}`; target choices come only from existing viewer-visible refs, never hidden IDs. `opening_status=PENDING|KEPT|READY`; `PublicPlayerTable.resources` is `{}` for CF first profile and `{life:int[-999,999]}` for BF. Initial automatic temporary-modifier expiry is disabled in CF manual profile; changes are explicit SET_MODIFIER operations until a named duration helper is accepted. History truncation affects display, not deterministic rules. `legal_actions` contains currently authorized action types and viewer-visible target refs only; it never computes descriptions from a hidden catalog ID. It is a UI aid, not authorization.
+
+| View field | Contents | Owner / other player / spectator |
+|---|---|---|
+| `PublicPlayerTable` | `{player_id, hand_count, deck_count, zones:tuple[ZoneView,...], resources:game-specific public counters}` | Same public-only representation for all. Main draw pile has count only and no reference/order. |
+| `ZoneView` | `{zone, count, cards:tuple[VisibleCard|ConcealedCard,...]}` | `VisibleCard={ref,card_id,orientation,face,slot,position,modifiers,counters}` only for publicly visible cards. `ConcealedCard={ref,orientation,face:DOWN,slot,position}` has no ID/name/art/text. Private hand excluded entirely. |
+| `PrivatePlayerTable` | `{hand:tuple[VisibleCard,...], opening_status, inspection:InspectionView|null, concealed_zone_cards:tuple[VisibleCard,...]}` | Current participant only; null for others/spectators/surrendered nonparticipants. Deck inspection only through explicit inspection session. |
+| `InspectionView` | `{inspection_id,zone,cards:tuple[VisibleCard,...], reorder_allowed:bool}` | Requester only; omitted after shuffle/close/revision invalidation. No private inspection contents in public events/history. |
+| `PublicHistoryEntry` | `{sequence:int>=1,actor_id,action_type,public_refs:tuple[str,...],count:int|null}` | Only explicitly public references/quantities. No free-text hidden titles/IDs/errors. Actor cannot inject arbitrary log strings. |
+| Seed, generator state, internal IDs, submitted snapshots, raw actions, source metadata | Not serialized in match view | Server only. Own hand gets viewer refs, never canonical IDs or shuffled deck associations. |
+
+Per-view public table must not change shape based on whether caller is owner; owner extras belong only under `self`. At FINISHED, **retain all concealment** unless an approved explicit reveal action already revealed a card; no automatic full-deck results. Room events are broadcast identically, so use no new event carrying private content. Public match history persistence stores only public summaries; raw actions containing private refs/card IDs and deck submissions are excluded from public/history endpoints and analytics payloads. Private snapshots stay in memory initially, with no replay export of secrets by default.
+
+### Deterministic secure shuffling and references (proposal)
+
+Adapter supplies 32 cryptographically random bytes at match start. Pure engine uses a pinned HMAC-SHA256 counter stream with separate domains `shuffle`, `instance`, `viewer-ref`; Fisher–Yates uses rejection sampling to avoid modulo bias. Stream input includes game/match-local generation, player, zone and shuffle ordinal, serialized with length prefixes. Exact byte encoding and test vectors must be fixed before engine implementation, independently reviewed; no ambient RNG/time. Setup seed is never returned. Fixed seed + validated snapshot + action sequence gives identical state.
+
+Internal instance IDs derive from initial physical-copy ordinal, not card ID alone. Viewer refs derive from viewer, instance and visibility epoch. Every entry into a concealed deck and every shuffle rotates the epoch for **all** cards in that shuffled zone; purge all inspection selections and ref caches. A publicly revealed card returned to hand receives a new private ref before further actions; opponents see only hand count. Face-down table slots can retain location refs until concealed mixing; a mix rotates every affected ref. Mutation requests resolve only refs issued to the actor for currently inspectable/visible cards; guessable canonical IDs are not action identifiers. Never send a hash over ordered hidden IDs as a public revision/checksum.
+
+## 7. Action contract and authorization proposal
+
+Outer `GAME_ACTION.payload.action_type` is the discriminator; each listed payload rejects unknown fields. All **match** payloads require `expected_revision:int>=0`; accepted transition increments exactly once; rejected action leaves all state/PRNG/references unchanged. Revision mismatch uses room error `STALE_ACTION` with generic retry text, without disclosing private current state. Adapter catches validation/rule errors and keeps socket usable. Existing engine `MoveErrorCode` remains unchanged: invalid actor→INVALID_PLAYER, wrong turn/priority→NOT_YOUR_TURN, finished→GAME_OVER, all other legality→INVALID_ACTION. New setup room error codes proposed: `SETUP_REQUIRED`, `UNSUPPORTED_FORMAT`, `DECK_INVALID`, `CATALOG_MISMATCH`.
+
+In table below, `R` means required `expected_revision`; `ref` is a string1..64 issued to this viewer, `count` strict1..256. CF/BF prefixes select separate discriminated model unions. `zone` uses only that game's accepted enum; `position` strict0..335, list insertion <=current length. Never arbitrary JSON patches.
+
+| Action discriminator | Payload in addition to R | Preconditions/effect |
+|---|---|---|
+| `CF_DRAW`, `BF_DRAW` | `{count, edge:TOP|BOTTOM}` | Own main pile, holder priority; enough cards. Move ordered copies to own hand, no IDs in public log. |
+| `CF_SHUFFLE`, `BF_SHUFFLE` | `{zone:DECK}` | Own deck, holder; deterministic rekey/shuffle; no foreign deck or hand shuffle. |
+| `CF_INSPECT`, `BF_INSPECT` | `{zone, count:int[1,256]|null}` | Own allowed zone; null means full zone, count means top N. Owner-private result; no permission to see another player's private cards. Inspection is a state transition and closes old inspection. |
+| `CF_CLOSE_INSPECTION`, `BF_CLOSE_INSPECTION` | `{inspection_id:ref}` | Requester; clears private inspection. Allowed even without priority, no other state mutation. |
+| `CF_MOVE`, `BF_MOVE` | `{card_ref:ref,to_zone,slot:str[1,32]|null,position:int[0,335]|null,parent_ref:ref|null}` | Own controller only, priority; source card visible/inspected, destination permitted by game/phase matrix, capacity valid. Soul parent owned/in play; no cross-player destination. Deck insertion requires position; slot only for field. No implicit replacement/drop of another card. |
+| `CF_REORDER`, `BF_REORDER` | `{inspection_id:ref,ordered_refs:tuple[ref,...](1..256)}` | Exactly inspected permitted set, no duplicates/omissions; priority. Only own explicit inspection zone; shuffled hidden deck refs invalidated on close/reorder. |
+| `CF_ORIENT`, `BF_ORIENT` | `{card_ref,orientation:STAND|REST}` | Own field, priority; visibility unchanged. CF LOCK/UNLOCK is a later named helper, not disguised orientation. |
+| `CF_SET_FACE`, `BF_SET_FACE` | `{card_ref,face:UP|DOWN}` | Own permitted face-switch zone, priority; never turn an opponent card or conceal mandatory public zones. CF damage flip allowed; BF gauge not generically publicized by this action. |
+| `CF_SET_MODIFIER`, `BF_SET_MODIFIER` | `{card_ref,stat:POWER|SHIELD|DEFENSE|CRITICAL,value:int[-999999,999999]}` | Own public field card and applicable stat, priority; tighter critical limit ±999. Absolute manual value, no card-text automation. |
+| `CF_SET_COUNTER` | `{card_ref,value:int[0,999]}` | Own public field card, priority. |
+| `BF_SET_LIFE` | `{value:int[-999,999]}` | Own life, priority; does not itself adjudicate result. |
+| `CF_MULLIGAN` | `{card_refs:tuple[ref,...](0..5)}` | OPENING, once per own seat, unique own hand refs; algorithm section2. |
+| `CF_KEEP_HAND`, `CF_READY_TO_PLAY`, `BF_READY_TO_PLAY` | `{}` | OPENING own seat; CF ready requires keep/mulligan settled; both ready starts turn1. BF no mulligan in first profile. |
+| `CF_NEXT_PHASE` | `{}` | Active player, priority, no pending check/response/result; next fixed phase only. End requires END_TURN. |
+| `CF_END_TURN` | `{}` | Active player End, no unresolved window/check; passes turn, resets agreed temporary modifiers only as separately specified. No silent helper automation. |
+| `BF_NEXT_PHASE`, `BF_END_TURN` | `{}` | Active holder, no pending window/result; NEXT S→D→M→A→E; END_TURN only E, opponent S. This strict web sequence requires approval. D automatic stand/draw exactly section3; no phase6 helper invented. |
+| `CF_DECLARE_ATTACK`, `BF_DECLARE_ATTACK` | `{attacker_ref,target_ref:ref|null,target_player_id:str|null}` | Own active Battle/verified BF attack phase; public own stood attacker; exactly one target; public legal opponent target or opponent player. Rest attacker and open defender RESPONSE. Does not move/damage target automatically. BF link attack needs separate extension. |
+| `CF_OPEN_RESPONSE`, `BF_OPEN_RESPONSE` | `{}` | Active player with priority and no nested response/check; passes to opponent for manual counter/defense. |
+| `CF_PASS_RESPONSE`, `BF_PASS_RESPONSE` | `{}` | Opponent holder inside RESPONSE, no pending check; closes window, returns priority active player. |
+| `CF_DRIVE_CHECK`, `CF_DAMAGE_CHECK` | `{}` | Section2 timing; one check at a time; top card publicly revealed in CHECK zone, remembers return priority. |
+| `CF_RESOLVE_CHECK` | `{}` | Checker owns priority; move pending card per explicit resolved trigger metadata/manual policy, restore previous window/priority; never invent automatic power/heal. |
+| `CF_CONCEDE`, `BF_CONCEDE` | `{}` | Either current participant anytime OPENING/PLAYING, immediate other winner. No priority required. |
+| `CF_PROPOSE_RESULT`, `BF_PROPOSE_RESULT` | `{outcome:WIN|DRAW,winner_id:str|null}` | Participant, no existing proposal; WIN winner occupied participant, DRAW null. Freeze moves except reject/confirm/concede. |
+| `CF_CONFIRM_RESULT`, `BF_CONFIRM_RESULT` | `{proposal_revision:int>=0}` | Other participant only; exact proposal revision, completes agreed result. |
+| `CF_REJECT_RESULT`, `BF_REJECT_RESULT` | `{proposal_revision:int>=0}` | Other participant only; clears proposal; original turn/priority restored. No unilateral result injection. |
+
+### Phase/priority permission matrix
+
+This is a **proposed security policy**, not recovered server behavior. It intentionally permits manual responses through explicit priority; owner approval must accept its flow. Default holder=active player. No spectator/surrendered/nonparticipant action permitted. All OPENING actions are own-seat-only and limited to keep/mulligan/ready/concede/result; no normal table mutation until PLAYING.
+
+| Operation | Active holder | Opponent while RESPONSE holder | No priority |
+|---|---|---|---|
+| Inspect/close | Own zones permitted; deck inspection allowed | Own hand/soul/drop/bind/removed/G zone; deck inspection allowed for manual abilities | Close own inspection only |
+| Draw/shuffle/reorder/owned non-field movement | Allowed in any playable phase for manual abilities | Allowed for own zones to resolve manual defense; no opponent mutation | Rejected |
+| CF ride | MOVE to Vanguard from own hand/ride only in Ride; previous Vanguard must explicitly move to soul first | Rejected | Rejected |
+| CF call/guard | MOVE to rear in Main; to guardian in own Battle only if explicit manual need | MOVE own hand to guardian in opponent Battle; retire guardian to drop allowed | Rejected |
+| Rest/stand, face flip, modifiers/counters | Own applicable public zones | Own applicable public zones; damage flips/defensive modifiers allowed | Rejected |
+| Damage/drive | Drive own Battle; damage rejected | Damage opponent Battle; drive rejected | Rejected |
+| Phase/turn/attack | Active phase/turn only; no pending window | Rejected | Rejected |
+| BF call/equip/cast/charge/link/counter | Exact phase/zone helper matrix unresolved; cannot approve a generic MOVE escape hatch | Counter window intended, exact legal targets pending source mapping | Rejected |
+| Concede/result | Participant, regardless of holder | Participant | Participant |
+
+Core explicit CF zone enum: `DECK,HAND,VANGUARD,REAR,GUARDIAN,DAMAGE,DROP,SOUL,BIND,REMOVED,G_ZONE,RIDE,CHECK`; REAR slot uses five names in section2, other lists no slot. Allowed non-field movement graph proposed: own HAND/DECK/DROP/SOUL/BIND/REMOVED/G_ZONE/RIDE may move into own HAND/DECK/DROP/SOUL/BIND/REMOVED; soul needs owned Vanguard parent; G_ZONE/RIDE destinations only return eligible source-defined card types. DAMAGE moves to DROP or SOUL for manual abilities; entry into DAMAGE only resolved damage check or explicit future approved helper. Field cards to DROP/SOUL/BIND/REMOVED; Vanguard destination only ride; rear/guardian per table. Arbitrary damage-zone injection, nonexistent source cards and unsupported extended zones rejected. These constraints may omit source conveniences; keep parity gaps visible rather than relaxing to arbitrary patches.
+
+## 8. Fidelity matrix and acceptance gates
+
+Detailed per-game feature matrix lives in investigation section “Task 1 fidelity checklist”. Every row needs a later test/browser evidence and status upgrade to V. Unresolved/deferred entries stay on HANDOFF. Account deck sync, replay compatibility, extended formats and card-specific helpers are not silently complete when first duel works.
+
+Before Task3/4/5/6 product edits, record approval of this revision (or a corrected successor) for: profile counts/setup; manual phase/priority/opening/end policy; data/type fields; setup envelopes/view union; action payloads/errors; seed/reference policy. BF phase-sequence approval/normal-flag allowlist/buddy placement/zone mapping must be resolved separately before BF implementation. A conditional CF approval cannot implicitly approve BF unknowns.
+
+Required contract fixtures after acceptance: two valid decks per profile, old-game unchanged messages; each action accepted/illegal/out-of-turn/after-finish; rejection preserves state and RNG; both player/spectator views; inspection/shuffle/ref-guessing; lobby/playing reconnect; malformed-then-valid same socket; concession/agreed result/seat-switch/rematch; immutable catalog version; no hidden IDs in event/result/persistent history. All selected target sizes and keyboard/touch checks remain design acceptance gates, not replaced by schema validation.
+
+**Current approval record:** assisted simulator scope accepted by owner through execution instruction; noncritical internal decisions may be approved by investigator. Exact shared contracts and proposed gameplay/profile decisions above are **not yet accepted**. No product interfaces have changed.

@@ -61,6 +61,7 @@ def import_deck_fixtures(root: Path, game_id: AreaGameId, known_ids: frozenset[i
     """Preserve loose and already-extracted archived decks; never execute/unzip files."""
     from app.card_data.importer import safe_path
 
+    root = root.resolve()
     outputs: list[dict[str, JsonValue]] = []
     for directory in ("project/Decks", "data/decks/archived-originals"):
         folder = safe_path(root, directory)

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import json
+import os
 import struct
 import subprocess
 import sys
@@ -158,7 +159,7 @@ class CatalogImportTests(unittest.TestCase):
         deck_path.write_bytes(raw)
         output, data = self.root / "public", self.root / "data-out"
         command = [sys.executable, "backend/scripts/import_area_games.py", "--game", "buddyfight",
-                   "--source-root", str(self.root), "--output-dir", str(output), "--data-dir", str(data)]
+                   "--source-root", os.path.relpath(self.root), "--output-dir", str(output), "--data-dir", str(data)]
         run = subprocess.run(command, capture_output=True, text=True, check=False)
         self.assertEqual(run.returncode, 0, run.stderr)
         self.assertTrue((data / "buddyfight/provenance.json").is_file())

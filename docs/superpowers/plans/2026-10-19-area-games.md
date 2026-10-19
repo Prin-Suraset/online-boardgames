@@ -25,6 +25,7 @@ Investigation/design/plan and implementer readiness review are the current hando
 * Each verified functional increment gets a Conventional Commit immediately. Diagnose failures rather than blindly rolling back code.
 * PC, tablet/iPad and smartphone are acceptance requirements, including portrait and landscape tablet use.
 * After each completed task, the investigator reviews the result and available task/context/usage status. Fix relevant findings before the next task; update HANDOFF with evidence and remaining work.
+* Owner delegates noncritical approval to the investigator: approve routine reversible choices within scope, record rationale/evidence and let the implementer proceed. Escalate material scope/gameplay/format decisions and core contract changes under AGENTS rule 6; sandbox permission requirements still apply.
 * At **30% context remaining**, compact if the runtime exposes that control; otherwise write a concise continuation checkpoint before relying on automatic compaction. At **20% of the five-hour allowance remaining**, save all completed and incomplete work, commits, results, blockers and next commands to HANDOFF for later continuation. Percentages require a real gauge; wall-clock elapsed time is not proof of account quota remaining. If no gauge exists, say so and keep task checkpoints current.
 
 ## Review focus

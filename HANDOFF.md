@@ -1,10 +1,14 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Spectator seats and player/spectator role switching.
-* **State**: Ready for Test (implementation committed; live viewport check pending)
+* **Active Task**: Investigate Buddyfight Area 1.38 and Cardfight Area 4.16 in `Reverse Engineered/`, plan modern responsive web recreations, and hand the plan to an implementer.
+* **State**: In-Progress (investigation and planning complete; implementer received plan; product implementation pending scope/format/contract review)
 
 ## 2. Completed in this Session
+* [x] Read project rules, existing handoff, and the local frontend-design skill. Investigator inspected both recoveries and mapped real integration points; report saved to `docs/investigations/2026-10-19-area-games.md`. Both clients are assisted/manual card simulators, not verified complete automatic rules engines.
+* [x] Wrote design `docs/superpowers/specs/2026-10-19-area-games-design.md` and staged execution plan `docs/superpowers/plans/2026-10-19-area-games.md`. Cardfight first due named source/manual, Buddyfight second. Plan includes catalogs/art/decks, pure engines, private views, room setup, responsive workshop/boards, parity matrix and regression/browser acceptance.
+* [x] Handed design and execution plan to implementer, who acknowledged intake and performed readiness review. Investigator also reviewed the completed planning work. Fixed ordering, test ownership and static-asset delivery gaps. No product code or shared contracts changed. Existing spectator validation and other pending work below remain pending.
+* [x] Recorded owner's checkpoint rule: investigator reviews every finished task and available usage status; compact at 30% context remaining when supported; at 20% of five-hour allowance remaining save all done/undone work here for later continuation. No actual remaining-context/quota gauge or force-compaction tool is exposed; do not invent percentages or equate elapsed time with quota remaining.
 * [x] Downloaded REA 6.7.0 and verified stdio MCP initialization plus discovery of 207 tools. Corrected project launch argument to `--mcp` (the bare `mcp` command manages integrations) and added `--prefer-offline` to avoid registry delays when the package is cached. Restart Codex to load the server in this project.
 * [x] Registered REA 6.7.0 in project-scoped `.codex/config.toml` using `npx -y rea-agents@6.7.0 mcp`. Validated TOML and confirmed `codex mcp get rea` loads the enabled stdio server. Global configuration was not modified.
 * [x] Added spectator roster, join-role selection, seat switching, forfeits, safe spectator game views, and room broadcasts. Added hub spectator entry and compact room controls. Commit `5eae9a3` is in `/tmp/TheBoardGame-spectator-git/.git` because the workspace `.git` index is read-only.
@@ -126,6 +130,10 @@
 * [x] Verified `cd frontend && npm run build`, `npm run lint` (0 errors; one existing Fast Refresh warning), `git diff --check`, and a live card-placement smoke test showing the placed card-back remains bright without a dim mask.
 
 ## 3. Pending & Next Steps
+* [ ] SilverHorn reviews proposed assisted-simulator scope in design. Full automatic card abilities would substantially change scope; user preference question is pending.
+* [ ] Execute plan Task 1: finish exact per-format setup/priority/end-condition/zone mappings, source parity checklist and concrete contract addendum; select initially supported formats from recovered evidence, bringing only unresolved material choices to the owner. Obtain Spark/SilverHorn agreement before shared schema/WebSocket/TypeScript edits (AGENTS rule 6).
+* [ ] Continue Tasks 2–8: import/catalog/art/deck codec; Cardfight engine+room+responsive UI; Buddyfight engine+room+responsive UI; parity and cross-device acceptance. Do not register game IDs before explicit dispatch/capacity/setup/guards exist.
+* [ ] After every task, request investigator verification and available context/usage status; fix findings, commit the functional increment, and save exact tests/commits/done/undone/next commands here. At the owner's quota threshold stop with a complete continuation checkpoint.
 * [ ] Browser-check spectator header wrapping and table clearance at mobile/tablet sizes once a local or deployed site can be reached; local Vite binding fails with `EPERM` even outside the sandbox.
 * [ ] Sync or push spectator commit `5eae9a3` from temporary Git metadata when repository Git metadata/network access is available.
 * [ ] If a global install is needed, copy `skills/frontend-design/` to `/home/prin/.codex/skills/frontend-design/` when that directory is writable; the command-line installer also could not resolve GitHub from this environment.
@@ -156,6 +164,10 @@
 * [ ] Perform the live showdown browser smoke test: confirm the banner/cards at 0s, winner popup at 3s, 4-second popup hold, and clean next-round/game-over transition.
 
 ## 4. Known Issues & Notes
+* Planning continuation: read the three area-game documents above first. Active agents are `/root/investigator` and `/root/implementer`; both completed read-only reviews and can receive follow-up tasks. Product implementation has not started.
+* Area-game evidence gaps: Cardfight lacks `Text/Triggers.txt`; Buddyfight has duplicate IDs 3251/5450, obfuscated zone/action mappings and missing legacy JPG branches. No original server source or runtime equivalence is established. Do not execute recovered GML/DLLs or fabricate rule values.
+* `Reverse Engineered/` remains user-supplied/untracked. Do not stage it wholesale. Planned static art is generated explicitly from indexed sources as a build artifact; deployment must include the artifact, not rely on ignored files existing in Git.
+* Planning validation is documentation review and whitespace/path checks, not a backend test/build claim. `python` is unavailable; use `python3` and inspect the current environment before selecting a pytest virtualenv.
 * The room WebSocket contract now includes `spectators`, `capacity`, and `is_active_player`; `JOIN_ROOM` accepts optional `role`, and `SWITCH_TO_SPECTATOR` / `SWITCH_TO_PLAYER` use empty payloads. A seat taken during an active match becomes playable next match.
 * Tests mutate `data/boardgame.db` locally; it was restored to `HEAD` after the final run and is not part of the spectator commit.
 * `TURN_PASSED` adds optional `player_id` and `player_name` fields to the shared event contract; existing `actor_id` and `actor_name` remain populated for compatibility. Turn history remains server-side and is not added to the player view.

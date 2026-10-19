@@ -33,7 +33,7 @@ Investigation/design/plan and implementer readiness review are the current hando
 2. New game IDs falling into existing Top100/default branches, four-seat defaults or unsupported bots: Tasks 4 and 6 must use explicit dispatch/capacity and regression tests.
 3. Defensive/out-of-turn interactions rejected by an over-simple turn check, or unauthorized foreign-card mutation: Task 1 defines permissions; Tasks 3 and 5 test both permitted and rejected cases.
 4. Corrupt/oversized legacy files, repeated card copies and buddy/extra/ride boundary errors: Task 2 must preserve observed structure and reject unsupported input.
-5. A full hand, long names, soft keyboard or inspector covers actions on phones/iPads: Tasks 7 and 8 require real viewport checks, not just a build.
+5. A full hand, long names, soft keyboard or inspector covers actions on phones/iPads: Tasks 4, 7 and 8 require real viewport checks, not just a build.
 
 ## File responsibilities
 

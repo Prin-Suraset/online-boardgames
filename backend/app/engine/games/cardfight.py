@@ -471,6 +471,8 @@ class CardfightEngine(BaseGame[CardfightState, CardfightAction, CardfightView]):
 
     @classmethod
     def _resolve(cls, state: CardfightState, actor: str, ref: str, *, foreign: bool = False) -> CardInstance:
+        if not ref.isascii():
+            _invalid()
         inspection_ids = {i for item in state.inspections if item.player_id == actor for i in item.instance_ids}
         for card in state.cards:
             owned = card.owner_id == actor and card.controller_id == actor

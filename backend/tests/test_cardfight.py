@@ -434,3 +434,28 @@ def test_legal_actions_omit_expired_empty_or_unauthorized_operations() -> None:
     state = act(state, "alice", "CF_OPEN_RESPONSE")
     assert "CF_PASS_RESPONSE" in {a.action_type for a in Engine.get_player_view(state, "bob").legal_actions}
     assert "CF_DRIVE_CHECK" not in {a.action_type for a in Engine.get_player_view(state, "bob").legal_actions}
+
+
+@pytest.mark.parametrize("kind", ["CF_MOVE", "CF_MULLIGAN", "CF_REORDER"])
+def test_unicode_references_reject_without_mutation_and_allow_next_valid_action(kind: str) -> None:
+    state = setup() if kind == "CF_MULLIGAN" else playable()
+    if kind == "CF_REORDER":
+        state = inspect(state, "alice", "DECK", 1)
+        private = Engine.get_player_view(state, "alice").self
+        assert private is not None and private.inspection is not None
+        payload: dict[str, object] = {"inspection_id": private.inspection.inspection_id,
+                                      "ordered_refs": ("ทดสอบ",)}
+    elif kind == "CF_MULLIGAN":
+        payload = {"card_refs": ("ทดสอบ",)}
+    else:
+        payload = {"card_ref": "ทดสอบ", "to_zone": "DROP", "slot": None,
+                   "position": None, "parent_ref": None}
+    # Serialization includes revision, all epochs, shuffle ordinals and seed.
+    reject(state, "alice", kind, **payload)
+    if kind == "CF_MULLIGAN":
+        accepted = act(state, "alice", "CF_KEEP_HAND")
+        assert Engine.get_player_view(accepted, "alice").self.opening_status == "KEPT"
+    else:
+        accepted = act(state, "alice", "CF_DRAW", count=1, edge="TOP")
+        assert len(visible(accepted, "alice", "HAND")) == 6
+    assert accepted.revision == state.revision + 1

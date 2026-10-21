@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import secrets
 import time
 from dataclasses import dataclass, field
@@ -10,8 +11,10 @@ from math import ceil
 from typing import Literal
 from uuid import uuid4
 
-from pydantic import JsonValue
+from pydantic import JsonValue, ValidationError
 
+from app.card_data.cardfight_catalog import load_cardfight_catalog
+from app.engine.games.cardfight import CardfightAction, CardfightDeckSnapshot, CardfightEngine, CardfightState, CardfightView
 from app.engine.games.tictactoe import TicTacToeGame, TicTacToeMove, TicTacToeState, TicTacToeView
 from app.engine.games.top100 import Top100Action, Top100Engine, Top100State, Top100View, find_matching_item
 from app.engine.games.what_number import (
@@ -27,6 +30,8 @@ from app.engine.games.you_or_me import (
     YouOrMeView,
 )
 from app.schemas import (
+    AreaSelectProfilePayload, CardfightSubmitDeckPayload, CardfightSetupView,
+    SetupSeatView, PrivateSetupView, CatalogDiagnostic,
     GameEventData,
     GameOverResult,
     GameType,
@@ -37,7 +42,7 @@ from app.schemas import (
 )
 
 RoomStatus = Literal["LOBBY", "PLAYING", "FINISHED"]
-GameState = TicTacToeState | WhatNumberState | YouOrMeState | Top100State
+GameState = TicTacToeState | WhatNumberState | YouOrMeState | Top100State | CardfightState
 _ROOM_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 _BOT_NAMES = ("Bot_Alpha", "Bot_Beta", "Bot_Gamma", "Bot_Delta", "Bot_Echo", "Bot_Foxtrot", "Bot_Golf")
 
@@ -87,6 +92,10 @@ class Room:
     history_saved: bool = False
     turn_deadline: float | None = None
 
+    area_profile: str | None = None
+    area_first_player: str | None = None
+    area_decks: dict[str, CardfightDeckSnapshot] = field(default_factory=dict)
+
     def force_end_game(self, requested_by_player_id: str) -> bool:
         """Immediately finish an active game when requested by an admin."""
         player = self.players.get(requested_by_player_id)
@@ -134,6 +143,9 @@ class Room:
         self.history_saved = False
         self.turn_deadline = None
         self.surrendered_ids.clear()
+        self.area_profile = None
+        self.area_first_player = None
+        self.area_decks.clear()
         for room_player in self.players.values():
             room_player.is_ready = room_player.is_bot
         return True
@@ -152,7 +164,7 @@ class Room:
 
     @property
     def max_players(self) -> int:
-        if self.game_type == "tictactoe":
+        if self.game_type in {"tictactoe", "cardfight"}:
             return 2
         if self.game_type == "what_number":
             return 8
@@ -263,10 +275,17 @@ class RoomManager:
                 if isinstance(room.game_state, YouOrMeState) and room.game_state.phase == "FINISHED":
                     room.status = "FINISHED"
                     room.finished_at = _utc_now()
+            elif isinstance(state, CardfightState) and player_id in state.players:
+                room.game_state = CardfightEngine.apply_action(state, player_id, CardfightAction(
+                    action_type="CF_CONCEDE", expected_revision=state.revision,
+                ))
+                room.status = "FINISHED"
+                room.finished_at = _utc_now()
             elif isinstance(state, Top100State) and player_id in state.player_ids:
                 self._skip_surrendered_top100_turns(room)
                 self._reset_top100_deadline(room)
             self._log_action(room, "SURRENDER", actor_id=player_id)
+        room.area_decks.pop(player_id, None)
         del room.players[player_id]
         player.is_ready = False
         player.is_host = False
@@ -315,7 +334,13 @@ class RoomManager:
     def toggle_ready(self, room_code: str, player_id: str, ready: bool) -> Room:
         room = self.get_room(room_code)
         self._require_lobby(room)
-        self._require_player(room, player_id).is_ready = ready
+        player = self._require_player(room, player_id)
+        if ready and room.game_type == "cardfight" and (
+            room.area_profile is None or room.area_first_player not in room.players
+            or player_id not in room.area_decks
+        ):
+            raise RoomError("SETUP_REQUIRED", "Choose the profile and submit a valid deck before readying.")
+        player.is_ready = ready
         return room
 
     def add_test_bots(self, room_code: str, player_id: str, count: int) -> Room:
@@ -341,12 +366,22 @@ class RoomManager:
             room.game_state = WhatNumberEngine.create_state(player_ids, seed=secrets.randbits(64))
         elif room.game_type == "you_or_me":
             room.game_state = YouOrMeEngine.init_game(player_ids, seed=secrets.randbits(64))
-        else:
+        elif room.game_type == "top100":
             room.game_state = Top100Engine.init_game(
                 player_ids,
                 {player.id: player.name for player in room.players.values()},
                 seed=secrets.randbits(64),
             )
+        elif room.game_type == "cardfight":
+            if (room.area_profile is None or room.area_first_player not in room.players
+                    or set(room.area_decks) != set(room.players)):
+                raise RoomError("SETUP_REQUIRED", "Both seats need valid current setup.")
+            room.game_state = CardfightEngine.create_state(
+                player_ids, (room.area_decks[player_ids[0]], room.area_decks[player_ids[1]]),
+                room.area_profile, room.area_first_player, secrets.token_bytes(32),
+            )
+        else:
+            raise RoomError("INVALID_ACTION", "Unsupported game.")
         room.status = "PLAYING"
         room.surrendered_ids.clear()
         room.game_over_result = None
@@ -391,6 +426,8 @@ class RoomManager:
         payload: dict[str, JsonValue],
     ) -> Room:
         room = self.get_room(room_code)
+        if room.game_type == "cardfight" and action_type in {"AREA_SELECT_PROFILE", "CF_SUBMIT_DECK"}:
+            return self._cardfight_setup(room, player_id, action_type, payload)
         if room.status != "PLAYING" or room.game_state is None:
             raise RoomError("GAME_NOT_ACTIVE", "The game is not currently active.")
         if player_id not in room.players or player_id in room.surrendered_ids:
@@ -401,7 +438,20 @@ class RoomManager:
             if action_type != "MAKE_MOVE":
                 raise RoomError("INVALID_ACTION", "This game does not support that action.")
             return self.make_move(room_code, player_id, TicTacToeMove.model_validate(payload))
-        if isinstance(room.game_state, WhatNumberState):
+        if isinstance(room.game_state, CardfightState):
+            action_data: dict[str, object] = {**payload, "action_type": action_type}
+            # JSON arrays represent the approved ordered tuples. Keep scalar validation strict.
+            for key in ("card_refs", "ordered_refs"):
+                if isinstance(action_data.get(key), list):
+                    action_data[key] = tuple(action_data[key])
+            action = CardfightAction.model_validate(action_data)
+            if "action_type" in payload:
+                raise RoomError("INVALID_ACTION", "Unexpected action payload field.")
+            if action.expected_revision != room.game_state.revision:
+                raise RoomError("STALE_ACTION", "The table changed. Retry using the current view.")
+            room.game_state = CardfightEngine.apply_action(room.game_state, player_id, action)
+            self._log_action(room, action_type, actor_id=player_id)
+        elif isinstance(room.game_state, WhatNumberState):
             action = WhatNumberAction.model_validate({"action_type": action_type, **payload})
             previous_state = room.game_state
             room.game_state = WhatNumberEngine.apply_action(previous_state, player_id, action)
@@ -434,9 +484,49 @@ class RoomManager:
         if (
             isinstance(room.game_state, (WhatNumberState, YouOrMeState))
             and room.game_state.phase == "FINISHED"
-        ) or (isinstance(room.game_state, Top100State) and room.game_state.status == "FINISHED"):
+        ) or (isinstance(room.game_state, Top100State) and room.game_state.status == "FINISHED") or (
+            isinstance(room.game_state, CardfightState) and room.game_state.stage == "FINISHED"
+        ):
             room.status = "FINISHED"
             room.finished_at = room.finished_at or _utc_now()
+        return room
+
+    def _cardfight_setup(self, room: Room, player_id: str, action_type: str, payload: dict[str, JsonValue]) -> Room:
+        self._require_lobby(room)
+        player = self._require_player(room, player_id)
+        if action_type == "AREA_SELECT_PROFILE":
+            if player_id != room.host_id:
+                raise RoomError("HOST_ONLY", "Only the host can select the profile and first player.")
+            selection = AreaSelectProfilePayload.model_validate(payload)
+            if selection.profile_id != "cardfight-manual-v1":
+                raise RoomError("UNSUPPORTED_FORMAT", "Choose the assisted legacy table profile.")
+            if selection.first_player_id not in room.players:
+                raise RoomError("INVALID_PLAYER", "The first player must occupy a seat.")
+            if (room.area_profile, room.area_first_player) != (selection.profile_id, selection.first_player_id):
+                room.area_profile, room.area_first_player = selection.profile_id, selection.first_player_id
+                room.area_decks.clear()
+                for seat in room.players.values():
+                    seat.is_ready = False
+        else:
+            if room.area_profile is None or room.area_first_player not in room.players:
+                raise RoomError("SETUP_REQUIRED", "The host must select a profile and first player.")
+            try:
+                submission = CardfightSubmitDeckPayload.model_validate_json(json.dumps(payload))
+                # The engine model has a default for internal construction; the transport requires all fields.
+                if "game_id" not in submission.deck.model_fields_set:
+                    raise ValueError("Missing game ID")
+                catalog = load_cardfight_catalog()
+                if submission.deck.catalog_version != catalog.catalog_version:
+                    raise RoomError("CATALOG_MISMATCH", "Reload the current card catalog before submitting.")
+                snapshot = catalog.snapshot(submission.deck)
+                CardfightEngine.create_state(("validation-a", "validation-b"), (snapshot, snapshot),
+                                             room.area_profile, "validation-a", bytes(32))
+            except (ValidationError, ValueError) as error:
+                if isinstance(error, RoomError):
+                    raise
+                raise RoomError("DECK_INVALID", "Unsupported deck: check counts, known IDs, starter, ride grades and G-zone classification.") from error
+            room.area_decks[player_id] = snapshot
+            player.is_ready = False
         return room
 
     def expire_top100_turn(self, room_code: str) -> bool:
@@ -506,6 +596,7 @@ class RoomManager:
         else:
             self._require_player(room, player_id)
             del room.players[player_id]
+            room.area_decks.pop(player_id, None)
         if not room.players and not room.spectators:
             del self._rooms[room.code]
             return None
@@ -529,7 +620,7 @@ class RoomManager:
             and self._is_match_participant(room.game_state, player_id)
             else None
         )
-        game_view: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | None = None
+        game_view: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | CardfightSetupView | CardfightView | None = None
         result = room.game_over_result
         if isinstance(room.game_state, TicTacToeState):
             game_view = TicTacToeGame.get_player_view(room.game_state, viewer_id)
@@ -568,6 +659,24 @@ class RoomManager:
                     outcome="DRAW" if len(winners) > 1 else "WIN",
                     winner_id=winners[0] if len(winners) == 1 else None,
                 )
+        elif isinstance(room.game_state, CardfightState):
+            game_view = CardfightEngine.get_player_view(room.game_state, viewer_id)
+            if room.status == "FINISHED" and result is None and room.game_state.game_over is not None:
+                result = GameOverResult(outcome=room.game_state.game_over.outcome,
+                                        winner_id=room.game_state.game_over.winner_id,
+                                        details={"reason": room.game_state.game_over.reason})
+        elif room.game_type == "cardfight" and room.status == "LOBBY":
+            own = room.area_decks.get(player_id)
+            game_view = CardfightSetupView(
+                profile_id=room.area_profile, first_player_id=room.area_first_player,
+                catalog_version=load_cardfight_catalog().catalog_version,
+                seats=tuple(SetupSeatView(player_id=pid, deck_valid=pid in room.area_decks) for pid in room.players),
+                self_setup=PrivateSetupView(
+                    deck=own.deck if own else None,
+                    diagnostics=(CatalogDiagnostic(code="MANUAL_PROFILE", severity="warning", key=None, source=None,
+                        message="Assisted legacy table: abilities, tournament legality and results are manual."),),
+                ) if player_id in room.players else None,
+            )
         return RoomStateView(
             room_code=room.code, game_type=room.game_type, status=room.status,
             host_id=room.host_id,
@@ -580,7 +689,7 @@ class RoomManager:
 
     @staticmethod
     def _is_match_participant(state: GameState, player_id: str) -> bool:
-        if isinstance(state, TicTacToeState):
+        if isinstance(state, (TicTacToeState, CardfightState)):
             return player_id in state.players
         if isinstance(state, Top100State):
             return player_id in state.player_ids

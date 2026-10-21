@@ -6,12 +6,13 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
+from app.engine.games.cardfight import CardfightDeckDefinition, CardfightView
 from app.engine.games.tictactoe import TicTacToeView
 from app.engine.games.top100 import Top100View
 from app.engine.games.you_or_me import YouOrMeView
 from app.engine.games.what_number import WhatNumberView
 
-GameType = Literal["tictactoe", "what_number", "you_or_me", "top100"]
+GameType = Literal["tictactoe", "what_number", "you_or_me", "top100", "cardfight"]
 GameEventType = Literal[
     "VOLUNTEER",
     "TIMEOUT_PICK",
@@ -75,6 +76,53 @@ class GameOverResult(StrictModel):
     details: dict[str, JsonValue] = Field(default_factory=dict)
 
 
+class CatalogKey(StrictModel):
+    game_id: Literal["cardfight"]
+    card_id: int
+
+
+class SourceLocation(StrictModel):
+    path: str
+    line: int
+
+
+class CatalogDiagnostic(StrictModel):
+    code: str
+    severity: Literal["warning", "error"]
+    key: CatalogKey | None
+    source: SourceLocation | None
+    message: str
+
+
+class SetupSeatView(StrictModel):
+    player_id: str
+    deck_valid: bool
+
+
+class PrivateSetupView(StrictModel):
+    deck: CardfightDeckDefinition | None
+    diagnostics: tuple[CatalogDiagnostic, ...]
+
+
+class CardfightSetupView(StrictModel):
+    stage: Literal["LOBBY"] = "LOBBY"
+    game_type: Literal["cardfight"] = "cardfight"
+    profile_id: str | None
+    first_player_id: str | None
+    catalog_version: str
+    seats: tuple[SetupSeatView, ...]
+    self_setup: PrivateSetupView | None
+
+
+class AreaSelectProfilePayload(StrictModel):
+    profile_id: str = Field(min_length=1, max_length=64)
+    first_player_id: str = Field(min_length=1, max_length=128)
+
+
+class CardfightSubmitDeckPayload(StrictModel):
+    deck: CardfightDeckDefinition
+
+
 class RoomStateView(StrictModel):
     room_code: str
     game_type: GameType
@@ -84,7 +132,7 @@ class RoomStateView(StrictModel):
     spectators: tuple[PlayerView, ...]
     capacity: int
     is_active_player: bool
-    game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | None
+    game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | CardfightSetupView | CardfightView | None
     result: GameOverResult | None
 
 

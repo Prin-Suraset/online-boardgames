@@ -1,3 +1,4 @@
+import { isCardfightSetupView, isCardfightView } from "../lib/cardfightGuards";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type {
@@ -291,7 +292,7 @@ function isRoomState(value: unknown): value is RoomState {
   return (
     isRecord(value) &&
     typeof value.room_code === "string" &&
-    (value.game_type === "tictactoe" || value.game_type === "what_number" || value.game_type === "you_or_me" || value.game_type === "top100") &&
+    (value.game_type === "tictactoe" || value.game_type === "what_number" || value.game_type === "you_or_me" || value.game_type === "top100" || value.game_type === "cardfight") &&
     (value.status === "LOBBY" || value.status === "PLAYING" || value.status === "FINISHED") &&
     typeof value.host_id === "string" &&
     Array.isArray(value.players) &&
@@ -300,14 +301,16 @@ function isRoomState(value: unknown): value is RoomState {
     value.spectators.every(isPlayer) &&
     typeof value.capacity === "number" &&
     typeof value.is_active_player === "boolean" &&
-    (value.game === null ||
+    (value.game_type === "cardfight"
+      ? (value.status === "LOBBY" ? isCardfightSetupView(value.game) : isCardfightView(value.game))
+      : (value.game === null ||
       (value.game_type === "tictactoe"
         ? isTicTacToeView(value.game)
         : value.game_type === "what_number"
           ? isWhatNumberView(value.game)
           : value.game_type === "you_or_me"
             ? isYouOrMeView(value.game)
-            : isTop100View(value.game))) &&
+            : value.game_type === "top100" && isTop100View(value.game)))) &&
     (value.result === null || isGameOverResult(value.result))
   );
 }

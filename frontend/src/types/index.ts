@@ -1,6 +1,8 @@
+import type { CardfightSetupView, CardfightView } from "./cardfight";
+export type * from "./cardfight";
 export type PlayerMark = "X" | "O";
 export type RoomStatus = "LOBBY" | "PLAYING" | "FINISHED";
-export type GameType = "tictactoe" | "what_number" | "you_or_me" | "top100";
+export type GameType = "tictactoe" | "what_number" | "you_or_me" | "top100" | "cardfight";
 export type ConnectionStatus = "CONNECTING" | "CONNECTED" | "DISCONNECTED" | "ERROR";
 
 export interface Player {
@@ -154,7 +156,7 @@ export interface RoomState {
   spectators: readonly Player[];
   capacity: number;
   is_active_player: boolean;
-  game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | null;
+  game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View | CardfightSetupView | CardfightView | null;
   result: GameOverResult | null;
 }
 

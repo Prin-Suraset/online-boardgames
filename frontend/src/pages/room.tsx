@@ -28,17 +28,17 @@ import { useRoomSocket } from "../hooks/useRoomSocket";
 import { navigate } from "../lib/navigation";
 import { catalogGames } from "../lib/gameCatalog";
 import { cn } from "../lib/styles";
-import type { AuthUser, Player, TicTacToeView, Top100View, WhatNumberView, YouOrMeView } from "../types";
+import type { AuthUser, RoomState, Player, TicTacToeView, Top100View, YouOrMeView } from "../types";
 
-function isTicTacToeView(game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View): game is TicTacToeView {
+function isTicTacToeView(game: NonNullable<RoomState["game"]>): game is TicTacToeView {
   return "board" in game;
 }
 
-function isYouOrMeView(game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View): game is YouOrMeView {
+function isYouOrMeView(game: NonNullable<RoomState["game"]>): game is YouOrMeView {
   return "pot" in game;
 }
 
-function isTop100View(game: TicTacToeView | WhatNumberView | YouOrMeView | Top100View): game is Top100View {
+function isTop100View(game: NonNullable<RoomState["game"]>): game is Top100View {
   return "topic_title" in game;
 }
 
@@ -179,7 +179,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
       ? room.game.winner === profile.playerId
       : isTop100View(room.game)
         ? room.game.winner_ids?.includes(profile.playerId) === true
-        : room.game.winner_id === profile.playerId
+        : "winner_id" in room.game ? room.game.winner_id === profile.playerId : room.result?.winner_id === profile.playerId
   );
 
   const forceEndGame = (): void => {
@@ -378,7 +378,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               />
             )}
 
-            {room.game !== null && !isTicTacToeView(room.game) && (
+            {room.game_type !== "cardfight" && room.game !== null && !isTicTacToeView(room.game) && (
               isTop100View(room.game) ? (
                 <Top100Board
                   roomCode={room.room_code}
@@ -404,7 +404,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   chatMessages={chatMessages}
                   sendChat={sendChat}
                 />
-              ) : (
+              ) : "thinking_time_seconds" in room.game ? (
                 <WhatNumberGame
                   game={room.game}
                   players={gamePlayers}
@@ -415,7 +415,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
                   chatMessages={chatMessages}
                   sendChat={sendChat}
                 />
-              )
+              ) : null
             )}
 
             {currentPlayer !== undefined && !room.is_active_player && room.status === "PLAYING" && (

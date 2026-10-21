@@ -13,6 +13,15 @@ export interface GameRulebook {
 }
 
 export const GAME_RULES: Record<string, GameRulebook> = {
+  cardfight: {
+    id: "cardfight", title: "Cardfight Area", subtitle: "Assisted legacy table · cardfight-manual-v1", players: "2 players + spectators", duration: "~30–60 minutes", icon: "⚔️",
+    sections: [
+      { title: "Prepare a private deck", icon: "📚", content: ["The host chooses the assisted profile and first player. Each player submits exactly 50 main cards, either a grade-0 starter from main or four separate ride cards in grade order 0, 1, 2, 3, and up to 16 confirmed G-zone cards. Submit your deck, ready up, then the host starts.", "The workshop supports named local saves, JSON deck export/import and bounded legacy section files. Saves stay on this device. This profile does not certify Standard, V-Premium or Premium tournament legality."] },
+      { title: "Opening and turns", icon: "🖐", content: ["Each player draws five cards. Keep the hand or select up to five cards for one reshuffle mulligan; returned cards can be redrawn. Then press Ready to play. Ride starters reveal when both players are ready.", "Phases run Ride → Main → Battle → End. Advance phases and end the turn explicitly. Draw and stand manually; there is no automatic first-turn draw or ability resolution."] },
+      { title: "Use the field", icon: "🛡", content: ["Tap or keyboard-select a visible card to inspect it and choose a destination, orientation, face state, modifier or markers. Move your current Vanguard to soul before riding in Ride phase; call rear-guards in Main. Soul operations use your Vanguard as the parent.", "Table actions provide top/bottom draw, shuffle, private inspection and ordering. Attack or Offer response hands priority to the opponent for guards and damage checks. Pass response returns priority. Drive checks occur in your Battle; damage checks occur as the responder in the opponent’s Battle. Resolve each check explicitly; source-confirmed trigger type 6 moves to removed. Other trigger effects are manual."] },
+      { title: "Results and privacy", icon: "🔒", content: ["Concede to award the opponent a win, or offer a win/draw for the other player to accept. Six damage and empty decks do not automatically end this manual profile. Card-specific abilities, extended ride exceptions, tokens, gifts, lock and other extended helpers are not implemented.", "Hands, deck order and private inspections stay private, including to spectators and after the result. Switching to spectator concedes an active duel. A rematch clears all setup; submit fresh decks and ready again. Disconnecting alone does not concede."] },
+    ],
+  },
   tictactoe: {
     id: "tictactoe",
     title: "Tic-Tac-Toe",

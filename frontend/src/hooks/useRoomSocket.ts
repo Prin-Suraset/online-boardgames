@@ -310,7 +310,7 @@ function isRoomState(value: unknown): value is RoomState {
           ? isWhatNumberView(value.game)
           : value.game_type === "you_or_me"
             ? isYouOrMeView(value.game)
-            : value.game_type === "top100" && isTop100View(value.game)))) &&
+            : isTop100View(value.game)))) &&
     (value.result === null || isGameOverResult(value.result))
   );
 }

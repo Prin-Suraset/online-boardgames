@@ -13,6 +13,11 @@ export interface CatalogGame {
 
 export const catalogGames: readonly CatalogGame[] = [
   {
+    id: "cardfight", title: "Cardfight Area", icon: "⚔️", players: "2 Players", duration: "~30–60m", genre: "Assisted card duel",
+    description: "Build a private deck, take the Vanguard field, and resolve abilities together.",
+    selectionDetails: "Assisted legacy table · 2 players · Manual abilities and results",
+  },
+  {
     id: "tictactoe",
     title: "Tic-Tac-Toe",
     icon: "🔲",

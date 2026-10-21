@@ -1,3 +1,6 @@
+import { CardfightSetup } from "../components/cards/CardfightSetup";
+import { CardfightBoard } from "../components/game/CardfightBoard";
+import { isCardfightSetupView, isCardfightView } from "../lib/cardfightGuards";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowLeft,
@@ -172,6 +175,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
   const wasForceEnded = room?.result?.details.forced === true;
   const isWhatNumberSession = room?.game_type === "what_number" && room.status !== "LOBBY";
   const isYouOrMeSession = room?.game_type === "you_or_me" && room.status !== "LOBBY";
+  const isCardfightSession = room?.game_type === "cardfight";
   const isTop100Session = room?.game_type === "top100" && room.status !== "LOBBY";
   const catalogTitle = catalogGames.find((game) => game.id === room?.game_type)?.title ?? "เกมกระดาน";
   const didWin = room?.game !== null && room?.game !== undefined && (
@@ -212,12 +216,12 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
   return (
     <main className={cn(
       "min-h-screen",
-        isWhatNumberSession || isYouOrMeSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
+        isWhatNumberSession || isYouOrMeSession || isCardfightSession ? "px-2 py-2 sm:px-3 sm:py-3" : "px-4 py-5 sm:px-7 sm:py-7",
     )}>
       <div className="ambient ambient-one" />
       <div className={cn(
         "mx-auto w-full",
-        isWhatNumberSession || isYouOrMeSession ? "max-w-[120rem]" : "max-w-5xl",
+        isWhatNumberSession || isYouOrMeSession || isCardfightSession ? "max-w-[120rem]" : "max-w-5xl",
       )}>
         <header className="relative z-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-700/60 bg-[#161B26]/90 px-4 py-3 shadow-2xl backdrop-blur-md sm:px-5">
           <div className="flex flex-wrap items-center gap-2">
@@ -296,6 +300,8 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               <p className="mt-2 text-sm text-slate-500">รอสักครู่ กำลังเข้าห้อง {code.toUpperCase()}</p>
             </div>
           </section>
+        ) : room.game_type === "cardfight" && isCardfightSetupView(room.game) ? (
+          <CardfightSetup setup={room.game} players={room.players} playerId={profile.playerId} isHost={currentPlayer?.is_host===true} onAction={action=>{sendAction(action.action_type,action.payload);}} onReady={toggleReady} onStart={startGame} connected={isConnected}/>
         ) : room.status === "LOBBY" ? (
           <section className="relative z-10 mx-auto max-w-3xl pt-16 pb-14 sm:pt-24">
             <div className="text-center">
@@ -360,15 +366,18 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
         ) : (
           <section className={cn(
             "relative z-10",
-            isWhatNumberSession || isYouOrMeSession || isTop100Session ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
+            isWhatNumberSession || isYouOrMeSession || isTop100Session || isCardfightSession ? "pt-3 pb-3" : "pt-10 pb-20 sm:pt-14",
           )}>
-            {!isWhatNumberSession && !isYouOrMeSession && !isTop100Session && <div className="mb-8 text-center">
+            {!isWhatNumberSession && !isYouOrMeSession && !isTop100Session && !isCardfightSession && <div className="mb-8 text-center">
               <p className="eyebrow">ห้อง {room.room_code}</p>
               <h1 className="mt-3 font-display text-3xl font-black text-white sm:text-5xl">
                 เรียงให้ครบ 3 ก่อน ชนะเลย!
               </h1>
             </div>}
 
+            {room.game_type === "cardfight" && isCardfightView(room.game) && (
+              <CardfightBoard game={room.game} players={gamePlayers} playerId={profile.playerId} onAction={action=>{sendAction(action.action_type,action.payload);}} chatMessages={chatMessages} sendChat={sendChat} connected={isConnected} canRematch={currentPlayer?.is_host===true||user.is_admin} onRematch={()=>{sendAction("REMATCH",{});}} finished={room.status==="FINISHED"}/>
+            )}
             {room.game !== null && isTicTacToeView(room.game) && (
               <TicTacToeBoard
                 game={room.game}
@@ -422,7 +431,7 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
               <p className="mt-2 text-center text-sm text-sky-100/75">ที่นั่งนี้เริ่มเล่นได้ในเกมถัดไป</p>
             )}
 
-            {room.status === "FINISHED" && room.game !== null && !(isTop100View(room.game) && room.game.status === "FINISHED") && (
+            {room.game_type !== "cardfight" && room.status === "FINISHED" && room.game !== null && !(isTop100View(room.game) && room.game.status === "FINISHED") && (
               <div className="fixed inset-0 z-40 grid place-items-center bg-slate-950/75 p-5 backdrop-blur-sm">
                 <div className="panel w-full max-w-md p-7 text-center sm:p-9">
                   <div className="mx-auto grid size-14 place-items-center rounded-2xl bg-coral/15 text-2xl text-coral">{isTicTacToeView(room.game) && room.game.status === "draw" ? "=" : "★"}</div>

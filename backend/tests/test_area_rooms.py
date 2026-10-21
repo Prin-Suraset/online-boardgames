@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 import pytest
-from pydantic import ValidationError
+from pydantic import JsonValue, ValidationError
 
 from app.rooms import RoomError, RoomManager
 from app.schemas import CreateRoomRequest, GameType, PlayerInput
@@ -18,7 +18,7 @@ def person(index: int) -> PlayerInput:
     return PlayerInput(id=f"p{index}", name=f"Player {index}", avatar="A")
 
 
-def deck() -> dict:
+def deck() -> dict[str, JsonValue]:
     return {"game_id":"cardfight", "catalog_version":VERSION, "name":"Private choice", "main":MAIN.copy(), "ride":[], "extra":[], "starter_index":0}
 
 
@@ -190,7 +190,7 @@ async def test_socket_malformed_then_valid_private_reconnect_and_agreed_result(t
             for connected in peers:
                 await connected.receive_json()
 
-        async def action(index: int, kind: str, payload: object) -> list[dict]:
+        async def action(index: int, kind: str, payload: object) -> list[dict[str, JsonValue]]:
             await peers[index-1].send_json({"type":"GAME_ACTION","player_id":f"p{index}","payload":{"action_type":kind,"payload":payload}})
             return [await peer.receive_json() for peer in peers]
 
@@ -240,3 +240,27 @@ async def test_socket_malformed_then_valid_private_reconnect_and_agreed_result(t
     assert row is not None
     logs = str(row[0])
     assert "card_refs" not in logs and "Private choice" not in logs and hand[0]["ref"] not in logs
+
+
+@pytest.mark.parametrize("departure", ["switch", "leave"])
+def test_departed_first_seat_invalidates_lobby_setup_before_reseating(departure: str) -> None:
+    rooms, code = lobby()
+    setup(rooms, code)
+    if departure == "switch":
+        rooms.switch_to_spectator(code, "p1")
+    else:
+        rooms.leave_lobby(code, "p1")
+    room = rooms.get_room(code)
+    assert room.area_first_player is None
+    assert not room.area_decks
+    assert not room.players["p2"].is_ready
+    rooms.switch_to_player(code, "p3")
+    with pytest.raises(RoomError) as error:
+        rooms.toggle_ready(code, "p2", True)
+    assert error.value.code == "SETUP_REQUIRED"
+    rooms.apply_game_action(code, "p2", "AREA_SELECT_PROFILE", {"profile_id":"cardfight-manual-v1", "first_player_id":"p3"})
+    for pid in ("p2", "p3"):
+        rooms.apply_game_action(code, pid, "CF_SUBMIT_DECK", {"deck":deck()})
+        rooms.toggle_ready(code, pid, True)
+    rooms.start_game(code, "p2")
+    assert rooms.player_view(code, "p3").model_dump(mode="json")["game"]["active_player_id"] == "p3"

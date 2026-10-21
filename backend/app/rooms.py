@@ -285,6 +285,11 @@ class RoomManager:
                 self._skip_surrendered_top100_turns(room)
                 self._reset_top100_deadline(room)
             self._log_action(room, "SURRENDER", actor_id=player_id)
+        if room.status == "LOBBY" and room.area_first_player == player_id:
+            room.area_first_player = None
+            room.area_decks.clear()
+            for seat in room.players.values():
+                seat.is_ready = False
         room.area_decks.pop(player_id, None)
         del room.players[player_id]
         player.is_ready = False
@@ -442,8 +447,9 @@ class RoomManager:
             action_data: dict[str, object] = {**payload, "action_type": action_type}
             # JSON arrays represent the approved ordered tuples. Keep scalar validation strict.
             for key in ("card_refs", "ordered_refs"):
-                if isinstance(action_data.get(key), list):
-                    action_data[key] = tuple(action_data[key])
+                references = action_data.get(key)
+                if isinstance(references, list):
+                    action_data[key] = tuple(references)
             action = CardfightAction.model_validate(action_data)
             if "action_type" in payload:
                 raise RoomError("INVALID_ACTION", "Unexpected action payload field.")
@@ -596,6 +602,11 @@ class RoomManager:
         else:
             self._require_player(room, player_id)
             del room.players[player_id]
+            if room.area_first_player == player_id:
+                room.area_first_player = None
+                room.area_decks.clear()
+                for seat in room.players.values():
+                    seat.is_ready = False
             room.area_decks.pop(player_id, None)
         if not room.players and not room.spectators:
             del self._rooms[room.code]

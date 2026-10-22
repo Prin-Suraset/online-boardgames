@@ -294,3 +294,5 @@
 * Independent reviewer found spectator fallback falsely appended `You` to Bob. Narrow fix `780680d` now requires an actual private self view and matching player ID for `You`. Parent opened a third guest (`CF Watcher`, port5174), verified actual spectator DOM headings `CF Alice` and `CF Bob` without `You`, plus private-hand notice and no hand region. Reviewer recheck pending. No push; earlier remote check failed DNS resolution for github.com.
 
 * Reviewer spectator correction: bottom-seat placement no longer implies the viewer owns that seat. `You` now requires matching player ID and non-null private self view. No shared contracts or view data changed. Focused component-render regression infrastructure is absent; parent should verify spectator DOM in the existing browser flow. Build/diff check run for this narrow fix.
+
+* Runtime warning correction: parent saw React list-key warning during spectator render. Added stable owner IDs to returned table and tray sections used by spectator fallback maps. Build and whitespace verification run; parent re-review pending.

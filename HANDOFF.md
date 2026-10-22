@@ -284,3 +284,7 @@
 * Fresh frontend build passed (1604 modules), focused `node --test frontend/tests/cardfight.test.mjs` passed; lint remains the same unrelated 4 errors + 1 warning (Top100Board, room, YouOrMeCard). `git diff --check` passed. Parent handles actual runtime/viewport checks next; no visual acceptance claimed by implementer. Task4 overall remains incomplete and pending review; no push.
 
 * Reference UI follow-up: parent browser identified that stacked mat/hand extended below a 1905×900 viewport. Desktop ≥1280 now uses a proportional viewport-bounded mat (height `min(720px,100dvh - 340px)`) and a neighboring 200px hand column with independent scrolling, retaining 44px card targets. Mobile 607px field scroll is unchanged. Fresh build1604 and diff check pass; parent visual recheck pending.
+
+* Desktop visual follow-up: parent confirmed the full mat fits at1366×768 but compact art/labels were too small. Added desktop minimum500×593 mat and56px cards; empty labels hidden on desktop. Short windows intentionally scroll vertically; hand remains beside the field. Parent will recheck actual targets/readability. Previous fit correction commit `93f9503`.
+
+* Desktop grouping follow-up: field column bounded607px next to240–300px hand; hand cards alone scroll, so opening Keep/Ready controls stay outside the card scroller. Rail horizontal overflow clipped with constrained inputs/selects. Parent viewport verification remains required.

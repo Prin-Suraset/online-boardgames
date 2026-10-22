@@ -133,3 +133,46 @@
  .cf-phase-strip>p { font-size:.8rem; }
  .cf-chat { height:55dvh; }
 }
+
+/* The source field contains both seats; each table shows its matching half. */
+.cf-player-table { background:#0b0f19;padding:12px; }
+.cf-mat-scroll { overflow-x:auto;overscroll-behavior-x:contain; }
+.cf-mat { position:relative;min-width:420px;width:100%;aspect-ratio:607 / 360;background:#161b26 url('/area-games/cardfight/field.png') center bottom / 100% 200% no-repeat;border-radius:8px; }
+.cf-opponent-table .cf-mat { background-position:center top; }
+.cf-circles { position:absolute;inset:0;display:block;max-width:none;margin:0; }
+.cf-circle { position:absolute;width:18%;height:37%;min-height:0;padding:0;border:0;border-radius:0;background:none;transform:translate(-50%,-50%);gap:2px; }
+.cf-circle>span:first-child,.cf-empty-circle { padding:1px 5px;border-radius:4px;background:#0b0f19e8;color:#f1f5f9;font-size:.7rem;white-space:nowrap; }
+.cf-slot-front-left,.cf-slot-back-left { left:27%; }
+.cf-slot-vanguard,.cf-slot-back-center { left:50%; }
+.cf-slot-front-right,.cf-slot-back-right { left:72%; }
+.cf-slot-front-left,.cf-slot-vanguard,.cf-slot-front-right { top:39%; }
+.cf-slot-back-left,.cf-slot-back-center,.cf-slot-back-right { top:81%; }
+.cf-opponent-table .cf-slot-front-left,.cf-opponent-table .cf-slot-vanguard,.cf-opponent-table .cf-slot-front-right { top:61%; }
+.cf-opponent-table .cf-slot-back-left,.cf-opponent-table .cf-slot-back-center,.cf-opponent-table .cf-slot-back-right { top:22%; }
+.cf-mat .cf-field-card { width:clamp(44px,7vw,74px);padding:2px;max-height:100%; }
+.cf-mat .cf-field-card .cf-art { max-height:90px; }
+.cf-mat-zone,.cf-deck-position { position:absolute;min-width:0;width:18%;background:#0b0f19e8;border:1px solid #475569;border-radius:6px;z-index:2; }
+.cf-mat-zone summary { padding:6px;font-size:.75rem;min-height:44px; }
+.cf-mat-zone[open] { z-index:3;width:30%; }
+.cf-mat-zone .cf-zone-cards { max-height:140px; }
+.cf-mat-damage { left:0;top:65%; }
+.cf-mat-drop { right:3%;top:78%; }
+.cf-deck-position { right:3%;top:36%;padding:10px 6px;font-size:.75rem; }
+.cf-opponent-table .cf-mat-damage { left:auto;right:0;top:32%; }
+.cf-opponent-table .cf-mat-drop { right:auto;left:3%;top:52%; }
+.cf-opponent-table .cf-deck-position { right:auto;left:3%;top:16%; }
+@media(max-width:767px) {
+ .cf-opponent-table:not(.cf-opponent-expanded) .cf-mat-scroll { display:none; }
+ .cf-opponent-table.cf-opponent-expanded .cf-circles { display:block; }
+ .cf-player-table { padding:8px; }
+ .cf-mat .cf-field-card { width:48px; }
+ .cf-mat .cf-field-card .cf-art { max-height:62px; }
+ .cf-mat-scroll { scrollbar-width:thin;scrollbar-color:#e5a93c #161b26; }
+}
+
+.cf-mat { max-width:607px;margin-inline:auto; }
+.cf-mat-hint { display:none;font-size:.75rem;color:#cbd5e1;margin-bottom:6px; }
+@media(max-width:479px) {
+ .cf-mat-hint { display:block; }
+ .cf-opponent-table:not(.cf-opponent-expanded) .cf-mat-hint { display:none; }
+}

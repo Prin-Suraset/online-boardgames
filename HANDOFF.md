@@ -270,3 +270,15 @@
 * The placed-card visual smoke test used the existing live room and confirmed the bright card-back presentation, but that deployment still exposes the previous native disabled-card accessibility state; verify the new `pointer-events-none` behavior after deployment.
 
 *2026-10-22 usage note: owner asked to pause near allowance exhaustion. No agent-accessible /status or quota percentage gauge is available; do not invent readings.
+
+### 2026-10-22 external Vanguard reference inspection
+* Owner authorized playing https://arenavanguard.online/vanguard/play?training=1. Task4 implementation remains paused.
+* Desktop V1 uses a continuous two-player mat, opposing orientation, cards over printed circles, corner HUDs, top phases, bottom collapsible hand, right-side context actions, power/critical badges and Soul counters.
+* Verified coin toss, five-card opening/keep, deck-click draw, drag Allen onto VC to ride, Battle phase, attacker then opposing VC selection. Attack resolved: bot damage1, own hand8/deck41. Left Turn2 BATTLE before End Turn, history panel open. Local training/no rewards; no ranked match or account/deck edits.
+* Effects and drive/damage/trigger resolution are automated in this reference; this does not change our agreed assisted-play contracts. Drag ride verified; tap-target attack verified.
+* Remaining reference coverage: mobile/tablet, calling/guarding, inspector, V2 and zoom. Browser left open. Live spectating unavailable due to server load. No product changes.
+
+### 2026-10-22 reference-led Cardfight UI increment
+* Owner resumed a UI-only pass after the freely playable Vanguard reference. Continuous unchanged 607×720 source mat now holds both seats, corner player summaries, precisely retained circle/deck/damage/drop coordinates; auxiliary zone trays sit outside the mat. Both fields stay visible on phones with local horizontal scroll and a focusable scroll region.
+* Hand is collapsible without hiding opening controls. Authorized existing phase/check/response actions are available in the bottom dock; full manual action sheet, card inspector, history/chat, private views and all contracts remain unchanged. Actions button stays first in the scrolling dock. No auto-effects, bots or new rules.
+* Fresh frontend build passed (1604 modules), focused `node --test frontend/tests/cardfight.test.mjs` passed; lint remains the same unrelated 4 errors + 1 warning (Top100Board, room, YouOrMeCard). `git diff --check` passed. Parent handles actual runtime/viewport checks next; no visual acceptance claimed by implementer. Task4 overall remains incomplete and pending review; no push.

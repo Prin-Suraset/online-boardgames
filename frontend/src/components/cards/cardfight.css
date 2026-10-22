@@ -134,12 +134,17 @@
  .cf-chat { height:55dvh; }
 }
 
-/* The source field contains both seats; each table shows its matching half. */
-.cf-player-table { background:#0b0f19;padding:12px; }
-.cf-mat-scroll { overflow-x:auto;overscroll-behavior-x:contain; }
-.cf-mat { position:relative;min-width:420px;width:100%;aspect-ratio:607 / 360;background:#161b26 url('/area-games/cardfight/field.png') center bottom / 100% 200% no-repeat;border-radius:8px; }
-.cf-opponent-table .cf-mat { background-position:center top; }
-.cf-circles { position:absolute;inset:0;display:block;max-width:none;margin:0; }
+/* One unbroken 607 × 720 source mat, with one coordinate space per seat. */
+.cf-mat-scroll { overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#e5a93c #161b26; }
+.cf-mat { position:relative;width:607px;min-width:607px;height:720px;margin-inline:auto;background:#161b26 url('/area-games/cardfight/field.png') center / 100% 100% no-repeat;isolation:isolate; }
+.cf-player-table { position:absolute;left:0;width:100%;height:50%;margin:0;padding:0;background:none;border:0;border-radius:0; }
+.cf-opponent-table { top:0; }
+.cf-own-table { top:50%; }
+.cf-table-heading { position:absolute;left:2%;top:3%;z-index:4;display:block;max-width:32%;margin:0;padding:5px 9px;border-left:3px solid #e5a93c;background:#101827ed;border-radius:4px;pointer-events:none; }
+.cf-table-heading h2 { font-size:.85rem;line-height:1.3; }
+.cf-table-heading p { font-size:.72rem;line-height:1.5; }
+.cf-opponent-table .cf-table-heading { left:auto;right:2%;top:3%;border-left:0;border-right:3px solid #e5a93c;text-align:right; }
+.cf-seat-mat,.cf-circles { position:absolute;inset:0;display:block;max-width:none;margin:0; }
 .cf-circle { position:absolute;width:18%;height:37%;min-height:0;padding:0;border:0;border-radius:0;background:none;transform:translate(-50%,-50%);gap:2px; }
 .cf-circle>span:first-child,.cf-empty-circle { padding:1px 5px;border-radius:4px;background:#0b0f19e8;color:#f1f5f9;font-size:.7rem;white-space:nowrap; }
 .cf-slot-front-left,.cf-slot-back-left { left:27%; }
@@ -149,11 +154,11 @@
 .cf-slot-back-left,.cf-slot-back-center,.cf-slot-back-right { top:81%; }
 .cf-opponent-table .cf-slot-front-left,.cf-opponent-table .cf-slot-vanguard,.cf-opponent-table .cf-slot-front-right { top:61%; }
 .cf-opponent-table .cf-slot-back-left,.cf-opponent-table .cf-slot-back-center,.cf-opponent-table .cf-slot-back-right { top:22%; }
-.cf-mat .cf-field-card { width:clamp(44px,7vw,74px);padding:2px;max-height:100%; }
-.cf-mat .cf-field-card .cf-art { max-height:90px; }
+.cf-mat .cf-field-card { width:64px;min-width:44px;padding:2px;max-height:100%; }
+.cf-mat .cf-field-card .cf-art { max-height:82px; }
 .cf-mat-zone,.cf-deck-position { position:absolute;min-width:0;width:18%;background:#0b0f19e8;border:1px solid #475569;border-radius:6px;z-index:2; }
 .cf-mat-zone summary { padding:6px;font-size:.75rem;min-height:44px; }
-.cf-mat-zone[open] { z-index:3;width:30%; }
+.cf-mat-zone[open] { z-index:5;width:30%; }
 .cf-mat-zone .cf-zone-cards { max-height:140px; }
 .cf-mat-damage { left:0;top:65%; }
 .cf-mat-drop { right:3%;top:78%; }
@@ -161,18 +166,23 @@
 .cf-opponent-table .cf-mat-damage { left:auto;right:0;top:32%; }
 .cf-opponent-table .cf-mat-drop { right:auto;left:3%;top:52%; }
 .cf-opponent-table .cf-deck-position { right:auto;left:3%;top:16%; }
+.cf-extra-zones { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px; }
+.cf-zone-tray-group { min-width:0; }
+.cf-zone-tray-group h2 { font-size:.85rem; }
+.cf-zone-trays { margin-top:6px; }
+.cf-zone-trays .cf-zone { min-width:90px; }
+.cf-mat-hint { display:none;font-size:.75rem;color:#cbd5e1;padding:6px 0; }
+.cf-hand header { display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap; }
+.cf-hand header p { flex-basis:100%; }
+.cf-hand-cards[hidden] { display:none; }
+.cf-action-dock { overflow-x:auto;flex-wrap:nowrap; }
+.cf-action-dock button { flex-shrink:0;white-space:nowrap; }
+.cf-hand { position:relative;bottom:auto;z-index:auto; }
 @media(max-width:767px) {
- .cf-opponent-table:not(.cf-opponent-expanded) .cf-mat-scroll { display:none; }
- .cf-opponent-table.cf-opponent-expanded .cf-circles { display:block; }
- .cf-player-table { padding:8px; }
- .cf-mat .cf-field-card { width:48px; }
- .cf-mat .cf-field-card .cf-art { max-height:62px; }
- .cf-mat-scroll { scrollbar-width:thin;scrollbar-color:#e5a93c #161b26; }
-}
-
-.cf-mat { max-width:607px;margin-inline:auto; }
-.cf-mat-hint { display:none;font-size:.75rem;color:#cbd5e1;margin-bottom:6px; }
-@media(max-width:479px) {
  .cf-mat-hint { display:block; }
- .cf-opponent-table:not(.cf-opponent-expanded) .cf-mat-hint { display:none; }
+ .cf-opponent-table:not(.cf-opponent-expanded) .cf-circles { display:block; }
+ .cf-extra-zones { grid-template-columns:1fr; }
+ .cf-phase-strip { gap:8px; }
+ .cf-phase-strip h1 { font-size:1.05rem; }
+ .cf-hand { bottom:auto; }
 }

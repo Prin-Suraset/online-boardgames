@@ -1,8 +1,8 @@
 # Session Handoff
 
 ## 1. Current Status
-* **Active Task**: Task4 Cardfight room/workshop/responsive board integration; backend setup and client guards committed, workshop/board and room wiring saved as unfinished work. Task3 independent gate PASSED through `b39bf10`.
-* **State**: PAUSED2026-10-22 at explicit owner request. Remaining Task4 acceptance stopped immediately. No further browser/tests/features/review/push until owner resumes. Next implementer LOW; full Task4 incomplete/unreviewed.
+* **Active Task**: Task4 Cardfight room/workshop/responsive board integration. Owner resumed UI-only work using the opened Vanguard browser game as a visual reference; backend/contracts/gameplay remain under the prior approved assisted profile. Task3 independent gate PASSED through `b39bf10`.
+* **State**: UI-only increment implemented in `9ccc754`, `93f9503`, and `fecc31a`; parent browser verification completed, independent UI review in progress. Full Task4 remains incomplete and unreviewed. Next implementer LOW.
 * **Sequencing**: Approved4a backend/setup/typed transport, then4b workshop/table/browser; final Task4 review covers BOTH. One tracked-file writer. A Cardfight catalog entry is present in the saved unfinished wiring; verify the full game is playable before publication. No actual quota gauge is exposed.
 * **Implementer setting**: Owner lowered MEDIUM→LOW on2026-10-22; the already running medium turn could not be retuned. Next implementation turn must use LOW. Reviewer setting unchanged.
 
@@ -288,3 +288,5 @@
 * Desktop visual follow-up: parent confirmed the full mat fits at1366×768 but compact art/labels were too small. Added desktop minimum500×593 mat and56px cards; empty labels hidden on desktop. Short windows intentionally scroll vertically; hand remains beside the field. Parent will recheck actual targets/readability. Previous fit correction commit `93f9503`.
 
 * Desktop grouping follow-up: field column bounded607px next to240–300px hand; hand cards alone scroll, so opening Keep/Ready controls stay outside the card scroller. Rail horizontal overflow clipped with constrained inputs/selects. Parent viewport verification remains required.
+
+* Parent live UI verification: local two-player room `K649XJ` with Alice (`127.0.0.1`) and Bob (`localhost`) reached PLAYING after both validated decks, keep hand and ready. At1920×1080 the full continuous mat and adjacent two-column hand/opening controls were visible; at1366×768 the mat kept readable 500px minimum width and required vertical page scroll. Tablet820×1180 showed the full mat and horizontal hand above auxiliary zones. Phone390×844 reached right-side zones by internal mat scroll; at320×800 document width remained320, mat client304/scroll607, and bottom Actions/Chat targets measured63/45px. Direct authorized Next phase and Offer response appeared for Alice in RIDE; Bob’s hidden Alice opening card had only a concealed back. Browser viewport override reset. This is UI smoke evidence, not full Task4 acceptance. Local servers were started for this check and should be stopped at session end.

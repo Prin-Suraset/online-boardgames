@@ -2,7 +2,7 @@
 
 ## 1. Current Status
 * **Active Task**: Task4 Cardfight room/workshop/responsive board integration. Owner resumed UI-only work using the opened Vanguard browser game as a visual reference; backend/contracts/gameplay remain under the prior approved assisted profile. Task3 independent gate PASSED through `b39bf10`.
-* **State**: UI-only increment implemented in `9ccc754`, `93f9503`, and `fecc31a`; parent browser verification completed, independent UI review in progress. Full Task4 remains incomplete and unreviewed. Next implementer LOW.
+* **State**: UI-only increment through `958b61e` implemented, browser-smoked and independently reviewed PASS. Full Task4 remains incomplete and unreviewed. Next implementer LOW. Local UI test servers stopped; no push because github.com did not resolve.
 * **Sequencing**: Approved4a backend/setup/typed transport, then4b workshop/table/browser; final Task4 review covers BOTH. One tracked-file writer. A Cardfight catalog entry is present in the saved unfinished wiring; verify the full game is playable before publication. No actual quota gauge is exposed.
 * **Implementer setting**: Owner lowered MEDIUM→LOW on2026-10-22; the already running medium turn could not be retuned. Next implementation turn must use LOW. Reviewer setting unchanged.
 
@@ -292,6 +292,8 @@
 * Parent live UI verification: local two-player room `K649XJ` with Alice (`127.0.0.1`) and Bob (`localhost`) reached PLAYING after both validated decks, keep hand and ready. At1920×1080 the full continuous mat and adjacent two-column hand/opening controls were visible; at1366×768 the mat kept readable 500px minimum width and required vertical page scroll. Tablet820×1180 showed the full mat and horizontal hand above auxiliary zones. Phone390×844 reached right-side zones by internal mat scroll; at320×800 document width remained320, mat client304/scroll607, and bottom Actions/Chat targets measured63/45px. Direct authorized Next phase and Offer response appeared for Alice in RIDE; Bob’s hidden Alice opening card had only a concealed back. Browser viewport override reset. This is UI smoke evidence, not full Task4 acceptance. Local servers were started for this check and should be stopped at session end.
 
 * Independent reviewer found spectator fallback falsely appended `You` to Bob. Narrow fix `780680d` now requires an actual private self view and matching player ID for `You`. Parent opened a third guest (`CF Watcher`, port5174), verified actual spectator DOM headings `CF Alice` and `CF Bob` without `You`, plus private-hand notice and no hand region. Reviewer recheck pending. No push; earlier remote check failed DNS resolution for github.com.
+
+* Vite logged a React missing-key warning from spectator fallback sections at shutdown. Fix `958b61e` adds stable owner keys to the returned table/zone sections; frontend build1604 and whitespace check pass. Reviewer inspected the exact map returns and gave PASS through `958b61e`; no post-fix runtime recheck was run. Backend and both Vite test servers stopped; test room `K649XJ` is gone. Existing `browser.db` retained. Remote push was not attempted again after the earlier github.com DNS failure.
 
 * Reviewer spectator correction: bottom-seat placement no longer implies the viewer owns that seat. `You` now requires matching player ID and non-null private self view. No shared contracts or view data changed. Focused component-render regression infrastructure is absent; parent should verify spectator DOM in the existing browser flow. Build/diff check run for this narrow fix.
 

@@ -45,7 +45,10 @@ interface ClientEnvelope {
 
 function getWsBaseUrl(): string {
   let url =
-    import.meta.env.VITE_WS_URL || "wss://boardgames-backend-pzln.onrender.com";
+    import.meta.env.VITE_WS_URL ||
+    (import.meta.env.DEV
+      ? window.location.origin
+      : "https://boardgames-backend-pzln.onrender.com");
 
   if (url.startsWith("https://")) {
     url = url.replace("https://", "wss://");

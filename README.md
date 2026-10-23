@@ -48,10 +48,10 @@ The API runs at `http://localhost:8000`. By default, it creates a SQLite databas
 ```bash
 cd frontend
 npm ci
-VITE_WS_URL=ws://localhost:8000 npm run dev
+npm run dev
 ```
 
-Open `http://localhost:5173`. Vite proxies `/api` requests to the local backend. Setting `VITE_WS_URL` connects room WebSockets to the same backend; otherwise, the client uses its configured hosted server.
+Open `http://localhost:5173`. Vite proxies `/api` requests and room WebSockets to the local backend by default. Set `VITE_WS_URL` only when the WebSocket server uses a different origin; production uses the configured hosted backend unless overridden.
 
 ## Tests and build
 

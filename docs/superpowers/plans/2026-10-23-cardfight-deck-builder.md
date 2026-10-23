@@ -156,6 +156,20 @@
 - [ ] Walk through member cloud saves, guest local saves, device migration conflicts, stale cross-device revisions, room selection/submission, file export, and share-code import.
 - [ ] Review PC, tablet, and phone layouts, update HANDOFF with any incomplete acceptance or blocker, and commit final UI integration.
 
+### Owner follow-up: Card format categories
+
+**Files:**
+- Create `frontend/src/lib/cardFormats.ts` and `frontend/tests/cardFormats.test.mjs`.
+- Modify `frontend/src/pages/CardfightDeckPreview.tsx` and `frontend/src/pages/cardfight-decks.css`.
+- Update `HANDOFF.md`.
+
+**Format mapping:** Premium includes the complete catalog. D Standard uses the recovered Cardfight `DCards` marker (`DCards != 0`). V Standard follows the recovered `NewCardStat` initialization: card IDs from 5671 onward, excluding `OldCardStat == 1`, the explicit `NewCardStat = 0` exceptions, and D Standard cards. The format selector combines with existing grade/search filters and pagination.
+
+- [x] Add unit coverage for Premium inclusion, D marker inclusion, V inclusion/exclusions, and cross-format separation.
+- [x] Add an accessible format selector; reset pagination when it changes.
+- [x] Browser verified Premium (17,146 cards), V Standard (3,049), and D Standard (7,921), with page one restored on each format change. Frontend production build and all 4 Node test files pass; focused independent reviewer PASS.
+- [x] Commit the format filter and updated HANDOFF (`feat(cardfight-decks): filter cards by format`).
+
 ## Execution Notes
 
 - The owner approved the design document before this plan was written. Implement tasks sequentially because each establishes interfaces consumed by later work.

@@ -1,6 +1,6 @@
 # Cardfight Token Deck
 
-**Status:** Owner approved full deck/room scope and the separate Token Deck editor section on 2026-10-23. Implementation and independent plan-based review are complete. Publication is recorded in the session handoff.
+**Status:** Owner approved full deck/room scope and the separate Token Deck editor section on 2026-10-23. Implementation and independent plan-based review are complete. Published to `origin/main`; see `HANDOFF.md` for commits and verification.
 
 ## Intent
 

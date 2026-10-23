@@ -2,11 +2,12 @@
 
 ## 2026-10-23 Cardfight token deck contract
 * **Active Task**: Add a distinct Cardfight token deck with 30-card capacity, separate from the 50-card main deck, and carry it through saved deck data and room setup.
-* **State**: Owner-approved full deck/room token support is implemented in both editors and the Cardfight room. Feature commit `474323b` plus reviewer follow-up `70dbc4c` are saved. Independent review passed; authorized publication is pending.
+* **State**: Owner-approved full deck/room token support is implemented in both editors and the Cardfight room. Feature commit `474323b` plus reviewer follow-up `70dbc4c` passed independent review and were pushed to `origin/main` with checkpoint `3f74862`.
 * **Completed**: Token classification uses exact `TokenInHand` flags and IDs referenced by `TokenSummoner*` / ride-upon token reference fields, without parsing card prose. Decks carry ordered `tokens` up to 30, separate from the main 50; old local/JSON shapes migrate only when `tokens` is the sole missing field. Tokens are excluded from draw/shuffle/opening and concealed from opponents; owner may inspect and move them to hand or Rear during Main. `CF_SUBMIT_DECK` envelope stays the same while its nested deck includes `tokens`.
 * **Checks**: Frontend `areaDecks`, `cardfight`, and `cardfightTokens` tests pass (3 files); backend `test_cardfight.py`, `test_area_rooms.py`, and `test_cardfight_catalog_tokens.py` pass (50 tests); frontend build passes (1609 modules); `git diff --check` passes. The first backend attempt omitted the repository root from `PYTHONPATH` and failed a test-helper import; rerun with the correct path passed.
 * **Review follow-up**: Reviewer requested explicit engine tests for wrong-section classification, 30/31 capacity and duplicate/order preservation, plus consistent `Token Deck` inspector wording. Follow-up fixed these and passed focused verification. Reviewer recheck confirmed all findings resolved and marked the feature ready to merge.
-* **Next**: Push the reviewed commits to `origin/main` as owner-authorized. Keep `Reverse Engineered/` untracked and unstaged.
+* **Responsive check**: Existing browser preview checked at desktop, 820×1180 tablet, and 390×844 phone. The Token Deck tab/count was visible at all three sizes; token-only cards were confirmed on desktop and phone. On phone, all four section labels remained reachable in the horizontally scrollable strip. Tablet section switching itself was not verified. Added one Plant token during preview, removed it, restored Main, and reset the viewport. This preview is not persistent.
+* **Next**: No pending work for this token-deck task. `Reverse Engineered/` remains untracked and unstaged.
 
 ## 2026-10-23 battlefield zone styling
 * **Active Task**: Remove the persistent UI boxes drawn over Cardfight battlefield zones to match the inspected Vanguard reference.

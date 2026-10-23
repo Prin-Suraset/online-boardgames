@@ -4,7 +4,7 @@ import { useCardfightCatalog } from "../components/cards/useCardfightCatalog";
 import { CardArtwork } from "../components/cards/CardArtwork";
 import { useAuth } from "../context/AuthContext";
 import { navigate } from "../lib/navigation";
-import { cardName, cardText, emptyDeck, grade, sampleDeck, type AreaCard } from "../lib/areaDecks";
+import { cardName, cardText, emptyDeck, grade, sampleDeck, validateDeck, type AreaCard } from "../lib/areaDecks";
 import type { CardfightDeck } from "../types/cardfight";
 import "../components/cards/cardfight.css";
 import "./cardfight-decks.css";
@@ -72,7 +72,7 @@ export function CardfightDeckPreview() {
   }, [catalog, filter, query]);
 
   const lookup = useMemo(() => new Map((catalog?.cards ?? []).map((card) => [card.card_id, card])), [catalog]);
-  const isDeckReady = catalog !== null && deck.catalog_version === catalog.catalog_version && deck.name.trim().length > 0 && deck.main.length === 50 && (deck.ride.length === 0 || deck.ride.length === 4) && deck.extra.length <= 16;
+  const isDeckReady = catalog !== null && validateDeck(deck, catalog).length === 0;
   const isRoomDeckReady = roomDeck !== demoDecks[2];
   const namedCounts = useMemo(() => {
     const counts = new Map<number, number>();
@@ -139,7 +139,7 @@ export function CardfightDeckPreview() {
                   <span className="cf-decks-shelf-mark">RP</span><span><strong>Blaster Blade</strong><small>Royal Paladin · 50 cards</small></span><span className="cf-decks-shelf-dot" />
                 </button>
                 <button type="button" className={`cf-decks-shelf-item${deck.name === "Dragonic Overlord" ? " is-current" : ""}`} onClick={() => { startEmptyDraft("Dragonic Overlord"); setNotice("Dragonic Overlord is a visual sample only; its card list is not included in this preview."); }}>
-                  <span className="cf-decks-shelf-mark orange">K</span><span><strong>Dragonic Overlord</strong><small>Kagero · 50 cards</small></span>
+                  <span className="cf-decks-shelf-mark orange">K</span><span><strong>Dragonic Overlord</strong><small>Kagero · list not loaded</small></span>
                 </button>
                 <button type="button" className={`cf-decks-shelf-item${deck.name === "New deck" ? " is-current" : ""}`} onClick={() => { startEmptyDraft(); }}>
                   <span className="cf-decks-shelf-mark empty"><Plus size={16} /></span><span><strong>New deck</strong><small>Start from an empty list</small></span>
@@ -179,8 +179,8 @@ export function CardfightDeckPreview() {
               <div className="cf-decks-listed-cards">
                 {namedCounts.map(({ id, count, card }) => <button type="button" key={id} className="cf-decks-listed-card" onClick={(event) => { if (card !== undefined) openInspector(event.currentTarget, card); }}><CardArtwork card={card} /><span>{cardName(card)}<small>Grade {grade(card) ?? "?"}</small></span><b>{count}</b><span className="cf-decks-card-chevron">›</span></button>)}
               </div>
-              <div className={`cf-decks-legality${isDeckReady ? "" : " is-incomplete"}`}><span className="cf-decks-legality-icon">{isDeckReady ? <Check size={15} /> : <CircleHelp size={15} />}</span><span><strong>{isDeckReady ? "Ready for assisted play" : "Draft in progress"}</strong><small>{isDeckReady ? "Card count and setup checks passed" : `${deck.main.length}/50 main deck cards · Complete the list to continue`}</small></span><CircleHelp size={15} /></div>
-              <button type="button" className="cf-decks-room-cta" onClick={() => { switchMode("room"); }}>Choose for a room <span>›</span></button>
+              <div className={`cf-decks-legality${isDeckReady ? "" : " is-incomplete"}`}><span className="cf-decks-legality-icon">{isDeckReady ? <Check size={15} /> : <CircleHelp size={15} />}</span><span><strong>{isDeckReady ? "Ready for assisted play" : "Draft in progress"}</strong><small>{isDeckReady ? "Deck validation checks passed" : `${deck.main.length}/50 main deck cards · Complete the list to continue`}</small></span><CircleHelp size={15} /></div>
+              <button type="button" className="cf-decks-room-cta" disabled={!isDeckReady} onClick={() => { switchMode("room"); }}>{isDeckReady ? "Choose for a room" : "Complete deck to choose for room"} <span>›</span></button>
               <p className="cf-decks-editor-note">Ability resolution is handled by players.</p>
             </aside>
           </div>

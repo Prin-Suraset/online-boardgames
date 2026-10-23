@@ -8,10 +8,11 @@ import { Navbar } from "./components/Navbar";
 export function App() {
   const pathname = usePathname();
   const roomMatch = /^\/room\/([A-Za-z0-9]{6})\/?$/.exec(pathname);
+  const deckPreviewMatch = /^\/decks\/cardfight\/?$/.test(pathname);
 
   const page = roomMatch?.[1] !== undefined
     ? <RoomPage code={roomMatch[1]} />
-    : pathname.startsWith("/decks/cardfight")
+    : deckPreviewMatch
       ? <CardfightDeckPreview />
     : <HubPage />;
 

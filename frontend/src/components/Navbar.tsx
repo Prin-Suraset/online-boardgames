@@ -22,7 +22,7 @@ export function Navbar() {
           <span className="font-display text-sm font-extrabold tracking-wider text-white uppercase sm:text-base">Online Board Games</span>
         </a>
         <div className="flex items-center gap-3 sm:gap-6">
-        <button type="button" onClick={() => { navigate("/decks/cardfight"); }} className="inline-flex min-h-10 items-center gap-2 rounded-lg px-3 text-sm font-bold text-slate-300 transition hover:bg-slate-800/70 hover:text-amber-300" aria-label="Open Cardfight decks"><Layers3 className="size-4" /> <span className="hidden sm:inline">Decks</span></button>
+        <button type="button" onClick={() => { navigate("/decks/cardfight"); }} className="inline-flex min-h-11 items-center gap-2 rounded-lg px-3 text-sm font-bold text-slate-300 transition hover:bg-slate-800/70 hover:text-amber-300" aria-label="Open Cardfight decks"><Layers3 className="size-4" /> <span className="hidden sm:inline">Decks</span></button>
         <span className="hidden text-xs tracking-wider text-slate-400 md:block">SYSTEM • <span className="text-sky-400">ONLINE</span></span>
 
         {isLoading ? (

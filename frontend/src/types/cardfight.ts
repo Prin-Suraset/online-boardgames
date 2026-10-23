@@ -1,8 +1,8 @@
-export const CF_ZONES = ['DECK','HAND','VANGUARD','REAR','GUARDIAN','DAMAGE','DROP','SOUL','BIND','REMOVED','G_ZONE','RIDE','CHECK'] as const;
+export const CF_ZONES = ['DECK','HAND','VANGUARD','REAR','GUARDIAN','DAMAGE','DROP','SOUL','BIND','REMOVED','G_ZONE','RIDE','CHECK','TOKEN'] as const;
 export type CFZone = typeof CF_ZONES[number];
 export interface CardfightDeck {
   game_id: 'cardfight'; catalog_version: string; name: string;
-  main: readonly number[]; ride: readonly number[]; extra: readonly number[]; starter_index: number | null;
+  main: readonly number[]; ride: readonly number[]; extra: readonly number[]; tokens: readonly number[]; starter_index: number | null;
 }
 export interface CatalogDiagnostic {
   code: string; severity: 'warning' | 'error';

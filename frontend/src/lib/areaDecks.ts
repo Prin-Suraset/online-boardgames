@@ -1,5 +1,6 @@
 import type { CardfightDeck } from '../types/cardfight';
 import { isCardfightDeck } from './cardfightGuards.ts';
+import { getCardfightTokenIds } from './cardfightTokens.ts';
 export { getCardfightTokenIds } from './cardfightTokens.ts';
 export interface AreaCard { card_id: number; game_id: 'cardfight'; fields: Readonly<Record<string, unknown>>; full_art: string; thumbnail_art: string; unresolved_fields: readonly string[] }
 export interface AreaCatalog { game_id: 'cardfight'; catalog_version: string; cards: readonly AreaCard[] }
@@ -18,12 +19,15 @@ export function parseCatalog(value: unknown): AreaCatalog {
   return {game_id:'cardfight',catalog_version:value.catalog_version,cards};
 }
 export function validateDeck(deck: CardfightDeck, catalog: AreaCatalog): string[] {
-  const issues: string[] = []; const lookup = new Map(catalog.cards.map(c => [c.card_id,c]));
+  const issues: string[] = []; const lookup = new Map(catalog.cards.map(c => [c.card_id,c])); const tokenIds = getCardfightTokenIds(catalog.cards);
   if (deck.catalog_version !== catalog.catalog_version) issues.push('Catalog changed. Revalidate this deck with the current catalog.');
   if (deck.main.length !== 50) issues.push('Main deck needs exactly 50 cards.');
   if (deck.ride.length !== 0 && deck.ride.length !== 4) issues.push('Ride deck must be empty or contain four cards in grade order 0, 1, 2, 3.');
   if (deck.extra.length > 16) issues.push('G zone supports at most 16 cards.');
-  if ([...deck.main,...deck.ride,...deck.extra].some(id => !lookup.has(id))) issues.push('Deck contains unknown card IDs.');
+  if (deck.tokens.length > 30) issues.push('Token deck supports at most 30 cards.');
+  if ([...deck.main,...deck.ride,...deck.extra,...deck.tokens].some(id => !lookup.has(id))) issues.push('Deck contains unknown card IDs.');
+  if ([...deck.main,...deck.ride,...deck.extra].some(id => tokenIds.has(id))) issues.push('Token cards must be kept in the Token Deck section.');
+  if (deck.tokens.some(id => !tokenIds.has(id))) issues.push('Token Deck can contain only confirmed token cards.');
   if (deck.ride.length) {
     if (deck.starter_index !== null || deck.ride.some((id,i) => grade(lookup.get(id)) !== i)) issues.push('Choose ride grades 0, 1, 2, 3 in that order and no main starter.');
   } else if (deck.starter_index === null || deck.main[deck.starter_index] === undefined || grade(lookup.get(deck.main[deck.starter_index] ?? -1)) !== 0) issues.push('Select a main-deck starter with a known grade of 0.');
@@ -34,8 +38,15 @@ export function validateDeck(deck: CardfightDeck, catalog: AreaCatalog): string[
 export function parseDeckFile(raw: string): CardfightDeck {
   if (new TextEncoder().encode(raw).length > 65536) throw new Error('Deck JSON exceeds 64 KiB.');
   const value: unknown = JSON.parse(raw);
-  if (!isCardfightDeck(value)) throw new Error('Invalid deck JSON. Import a Cardfight deck export with all sections.');
-  return value;
+  const migrated = migrateDeckShape(value);
+  if (!migrated) throw new Error('Invalid deck JSON. Import a Cardfight deck export with all sections.');
+  return migrated;
+}
+function migrateDeckShape(value: unknown): CardfightDeck | null {
+  if (isCardfightDeck(value)) return value;
+  if (!record(value) || Object.hasOwn(value, 'tokens')) return null;
+  const migrated: unknown = {...value, tokens: []};
+  return isCardfightDeck(migrated) ? migrated : null;
 }
 export function decodeLegacyDeck(raw: string): number[] {
   if (raw.length > 262144) throw new Error('Legacy file exceeds 256 KiB.');
@@ -62,12 +73,12 @@ export function encodeLegacyDeck(ids: readonly number[]): string {
 const STORAGE_KEY = 'area-games.cardfight.decks.v1';
 type StoragePort = Pick<Storage,'getItem' | 'setItem'>;
 export function readSavedDecks(storage: StoragePort): CardfightDeck[] {
-  try { const data: unknown=JSON.parse(storage.getItem(STORAGE_KEY) ?? '[]'); return Array.isArray(data) ? data.filter(isCardfightDeck) : []; } catch { return []; }
+  try { const data: unknown=JSON.parse(storage.getItem(STORAGE_KEY) ?? '[]'); return Array.isArray(data) ? data.map(migrateDeckShape).filter((deck): deck is CardfightDeck => deck !== null) : []; } catch { return []; }
 }
 export function saveDeck(storage: StoragePort, deck: CardfightDeck): void {
   const existing=readSavedDecks(storage), index=existing.findIndex(d=>d.name===deck.name);
   if(index<0) existing.push(deck); else existing[index]=deck;
   storage.setItem(STORAGE_KEY,JSON.stringify(existing));
 }
-export function emptyDeck(version: string): CardfightDeck { return {game_id:'cardfight',catalog_version:version,name:'My deck',main:[],ride:[],extra:[],starter_index:null}; }
+export function emptyDeck(version: string): CardfightDeck { return {game_id:'cardfight',catalog_version:version,name:'My deck',main:[],ride:[],extra:[],tokens:[],starter_index:null}; }
 export function sampleDeck(version: string): CardfightDeck { return {...emptyDeck(version),name:'Recovered Blaster Blade',starter_index:0,main:[5681,5729,5729,5729,5729,5679,5679,5679,5679,5680,5680,5680,5680,5730,5730,5730,5730,5712,5712,5712,5678,5678,5678,5678,5674,5674,5674,5675,5675,5675,5675,5700,5700,5700,5700,5677,5677,5677,5677,5711,5711,5711,5683,5683,5683,5683,5728,5728,5728,5728]}; }

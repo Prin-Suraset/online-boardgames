@@ -36,8 +36,9 @@ class CardfightCatalog(BaseModel):
 
     def snapshot(self, deck: CardfightDeckDefinition) -> CardfightDeckSnapshot:
         lookup = {card.card_id: card for card in self.cards}
+        token_ids = self.token_ids()
         definitions: list[CardfightCardDefinition] = []
-        for card_id in sorted(set(deck.main + deck.ride + deck.extra)):
+        for card_id in sorted(set(deck.main + deck.ride + deck.extra + deck.tokens)):
             card = lookup.get(card_id)
             if card is None:
                 raise ValueError("Unknown card")
@@ -47,7 +48,7 @@ class CardfightCatalog(BaseModel):
             definitions.append(CardfightCardDefinition(
                 card_id=card_id, catalog_version=self.catalog_version,
                 grade=resolved("UnitGrade", 99), extra_deck=resolved("ExtraDeck", 1),
-                trigger_type=resolved("TriggerUnit", 99),
+                trigger_type=resolved("TriggerUnit", 99), is_token=card_id in token_ids,
             ))
         return CardfightDeckSnapshot(deck=deck, definitions=tuple(definitions))
 

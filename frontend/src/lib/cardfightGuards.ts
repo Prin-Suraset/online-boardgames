@@ -1,6 +1,6 @@
 import type { CardfightSetupView, CardfightView, CardfightDeck, CFVisibleCard, CFActionType } from '../types/cardfight';
 
-const zones = ['DECK','HAND','VANGUARD','REAR','GUARDIAN','DAMAGE','DROP','SOUL','BIND','REMOVED','G_ZONE','RIDE','CHECK'];
+const zones = ['DECK','HAND','VANGUARD','REAR','GUARDIAN','DAMAGE','DROP','SOUL','BIND','REMOVED','G_ZONE','RIDE','CHECK','TOKEN'];
 const actions: readonly CFActionType[] = ['CF_DRAW','CF_SHUFFLE','CF_INSPECT','CF_CLOSE_INSPECTION','CF_MOVE','CF_REORDER','CF_ORIENT','CF_SET_FACE','CF_SET_MODIFIER','CF_SET_COUNTER','CF_MULLIGAN','CF_KEEP_HAND','CF_READY_TO_PLAY','CF_NEXT_PHASE','CF_END_TURN','CF_DECLARE_ATTACK','CF_OPEN_RESPONSE','CF_PASS_RESPONSE','CF_DRIVE_CHECK','CF_DAMAGE_CHECK','CF_RESOLVE_CHECK','CF_CONCEDE','CF_PROPOSE_RESULT','CF_CONFIRM_RESULT','CF_REJECT_RESULT'];
 const record = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const text = (v: unknown): v is string => typeof v === 'string';
@@ -14,12 +14,12 @@ export function isCardfightDeck(v: unknown): v is CardfightDeck {
   if (!record(v)) return false;
   return v.game_id === 'cardfight' && text(v.catalog_version) && v.catalog_version.length > 0 && v.catalog_version.length <= 64 &&
     text(v.name) && v.name.length > 0 && v.name.length <= 80 &&
-    ['main','ride','extra'].every(key => array(v[key], id => integer(id) && id > 0 && id <= 2147483647)) &&
+    ['main','ride','extra','tokens'].every(key => array(v[key], id => integer(id) && id > 0 && id <= 2147483647)) &&
     Array.isArray(v.main) && v.main.length >= 1 && v.main.length <= 256 &&
-    Array.isArray(v.ride) && v.ride.length <= 16 && Array.isArray(v.extra) && v.extra.length <= 64 &&
-    v.main.length + v.ride.length + v.extra.length <= 336 &&
+    Array.isArray(v.ride) && v.ride.length <= 16 && Array.isArray(v.extra) && v.extra.length <= 64 && Array.isArray(v.tokens) && v.tokens.length <= 30 &&
+    v.main.length + v.ride.length + v.extra.length + v.tokens.length <= 366 &&
     (v.starter_index === null || (natural(v.starter_index) && v.starter_index <= 255)) &&
-    Object.keys(v).every(key => ['game_id','catalog_version','name','main','ride','extra','starter_index'].includes(key));
+    Object.keys(v).every(key => ['game_id','catalog_version','name','main','ride','extra','tokens','starter_index'].includes(key));
 }
 function diagnostic(v: unknown): boolean {
   return record(v) && text(v.code) && member(v.severity,['warning','error']) && text(v.message) &&

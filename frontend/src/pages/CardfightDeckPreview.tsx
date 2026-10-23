@@ -5,19 +5,21 @@ import { CardArtwork } from "../components/cards/CardArtwork";
 import { useAuth } from "../context/AuthContext";
 import { navigate } from "../lib/navigation";
 import { cardName, cardText, emptyDeck, grade, sampleDeck, validateDeck, type AreaCard } from "../lib/areaDecks";
+import { getCardfightTokenIds } from "../lib/cardfightTokens";
 import { cardfightCategoryLabel, cardfightCategoryOptions, isInCardfightCategory, isInCardfightFormat, type CardfightCategory, type CardfightFormat } from "../lib/cardFormats";
 import { paginateItems } from "../lib/cardPagination";
 import type { CardfightDeck } from "../types/cardfight";
 import "../components/cards/cardfight.css";
 import "./cardfight-decks.css";
 
-type Section = "main" | "ride" | "extra";
+type Section = "main" | "ride" | "extra" | "tokens";
 const CARD_PAGE_SIZE = 120;
 const demoDecks = ["Blaster Blade · Royal Paladin", "Dragonic Overlord · Kagero", "New deck · Not saved"] as const;
 
 export function CardfightDeckPreview() {
   const { user, isGuest } = useAuth();
   const { catalog, error } = useCardfightCatalog();
+  const tokenIds = useMemo(() => getCardfightTokenIds(catalog?.cards ?? []), [catalog]);
   const [mode, setMode] = useState<"builder" | "room">("builder");
   const [deck, setDeck] = useState<CardfightDeck>(() => ({ ...sampleDeck("preview"), name: "Blaster Blade" }));
   const [section, setSection] = useState<Section>("main");
@@ -80,9 +82,9 @@ export function CardfightDeckPreview() {
       const search = `${cardName(card)} ${cardText(card)} ${card.card_id}`.toLocaleLowerCase();
       const cardGrade = grade(card);
       const gradeMatch = filter === "all" || (filter === "g" ? card.fields.ExtraDeck === 1 : filter === "6plus" ? cardGrade !== null && cardGrade >= 6 : String(cardGrade) === filter);
-      return search.includes(query.toLocaleLowerCase()) && gradeMatch && isInCardfightFormat(card, format) && isInCardfightCategory(card, format, category);
+      return (section === "tokens" ? tokenIds.has(card.card_id) : !tokenIds.has(card.card_id)) && search.includes(query.toLocaleLowerCase()) && gradeMatch && isInCardfightFormat(card, format) && isInCardfightCategory(card, format, category);
     });
-  }, [catalog, category, filter, format, query]);
+  }, [catalog, category, filter, format, query, section, tokenIds]);
   const categoryOptions = useMemo(() => catalog === null ? [] : cardfightCategoryOptions(catalog.cards, format, category), [catalog, category, format]);
   const pageCount = Math.max(1, Math.ceil(filteredCards.length / CARD_PAGE_SIZE));
   const cards = useMemo(() => paginateItems(filteredCards, cardPage, CARD_PAGE_SIZE), [filteredCards, cardPage]);
@@ -92,41 +94,42 @@ export function CardfightDeckPreview() {
   const isRoomDeckReady = roomDeck !== demoDecks[2];
   const namedCounts = useMemo(() => {
     const counts = new Map<number, number>();
-    for (const id of deck.main) counts.set(id, (counts.get(id) ?? 0) + 1);
+    for (const id of deck[section]) counts.set(id, (counts.get(id) ?? 0) + 1);
     return [...counts.entries()].map(([id, count]) => ({ id, count, card: lookup.get(id) }));
-  }, [deck.main, lookup]);
+  }, [deck, lookup, section]);
 
   const addCard = (card: AreaCard, amount: number): void => {
     const key = section;
-    const current = key === "main" ? deck.main : key === "ride" ? deck.ride : deck.extra;
-    const capacity = key === "main" ? 50 : key === "ride" ? 4 : 16;
+    const current = deck[key];
+    const capacity = key === "main" ? 50 : key === "ride" ? 4 : key === "extra" ? 16 : 30;
     if (!Number.isInteger(amount) || amount < 1 || amount > capacity - current.length) {
       setNotice(`Choose 1–${Math.max(0, capacity - current.length)} copies for this section.`);
       return;
     }
-    setDeck((previous) => ({ ...previous, [key]: [...(key === "main" ? previous.main : key === "ride" ? previous.ride : previous.extra), ...Array.from({ length: amount }, () => card.card_id)] }));
-    setNotice(`${amount} ${amount === 1 ? "copy" : "copies"} of ${cardName(card)} added to ${key === "extra" ? "G zone" : key}.`);
+    setDeck((previous) => ({ ...previous, [key]: [...previous[key], ...Array.from({ length: amount }, () => card.card_id)] }));
+    setNotice(`${amount} ${amount === 1 ? "copy" : "copies"} of ${cardName(card)} added to ${key === "extra" ? "G zone" : key === "tokens" ? "Token Deck" : key}.`);
     setSelected(null);
   };
 
   const removeCard = (cardId: number): void => {
     setDeck((previous) => {
-      const main = [...previous.main];
-      const removedIndex = main.lastIndexOf(cardId);
+      const cards = [...previous[section]];
+      const removedIndex = cards.lastIndexOf(cardId);
       if (removedIndex < 0) return previous;
-      main.splice(removedIndex, 1);
+      cards.splice(removedIndex, 1);
+      if (section !== "main") return { ...previous, [section]: cards };
       let starterIndex = previous.starter_index;
       if (starterIndex !== null) {
         if (removedIndex === starterIndex) {
-          const replacementStarter = main.findIndex((id) => grade(lookup.get(id)) === 0);
+          const replacementStarter = cards.findIndex((id) => grade(lookup.get(id)) === 0);
           starterIndex = replacementStarter < 0 ? null : replacementStarter;
         } else if (removedIndex < starterIndex) {
           starterIndex -= 1;
         }
       }
-      return { ...previous, main, starter_index: starterIndex };
+      return { ...previous, main: cards, starter_index: starterIndex };
     });
-    setNotice("One copy removed from the main deck.");
+    setNotice(`One copy removed from ${section === "extra" ? "the G zone" : section === "tokens" ? "the Token Deck" : `the ${section} deck`}.`);
   };
 
   const switchMode = (next: "builder" | "room"): void => {
@@ -207,7 +210,7 @@ export function CardfightDeckPreview() {
               </div>
 
               <div className="cf-decks-section-tabs" role="tablist" aria-label="Deck section">
-                {(["main", "ride", "extra"] as const).map((part) => <button type="button" key={part} role="tab" aria-selected={section === part} onClick={() => { setSection(part); }}>{part === "main" ? "Main deck" : part === "ride" ? "Ride deck" : "G zone"}<span>{part === "main" ? deck.main.length : part === "ride" ? deck.ride.length : deck.extra.length}</span></button>)}
+                {(["main", "ride", "extra", "tokens"] as const).map((part) => <button type="button" key={part} role="tab" aria-selected={section === part} onClick={() => { setSection(part); }}>{part === "main" ? "Main deck" : part === "ride" ? "Ride deck" : part === "extra" ? "G zone" : "Token Deck"}<span>{deck[part].length}{part === "tokens" ? "/30" : ""}</span></button>)}
               </div>
 
               <div id="cf-decks-card-grid" ref={cardGridRef} className="cf-decks-card-grid">
@@ -219,13 +222,13 @@ export function CardfightDeckPreview() {
                 <span aria-live="polite">Page {cardPage} of {pageCount}</span>
                 <button type="button" aria-label="Next card page" aria-controls="cf-decks-card-grid" disabled={cardPage === pageCount} onClick={() => { setCardPage((page) => Math.min(pageCount, page + 1)); }}>Next <ChevronRight size={16} /></button>
               </nav>}
-              <div className="cf-decks-resultline">{catalog === null ? "Loading card collection…" : filteredCards.length === 0 ? "0 cards found" : `${(cardPage - 1) * CARD_PAGE_SIZE + 1}–${Math.min(cardPage * CARD_PAGE_SIZE, filteredCards.length)} of ${filteredCards.length} cards`} <span>Choose a card to inspect and add it to your {section === "extra" ? "G zone" : section}.</span></div>
+              <div className="cf-decks-resultline">{catalog === null ? "Loading card collection…" : filteredCards.length === 0 ? "0 cards found" : `${(cardPage - 1) * CARD_PAGE_SIZE + 1}–${Math.min(cardPage * CARD_PAGE_SIZE, filteredCards.length)} of ${filteredCards.length} cards`} <span>Choose a card to inspect and add it to your {section === "extra" ? "G zone" : section === "tokens" ? "Token Deck" : section}.</span></div>
             </section>
 
             <aside className="cf-decks-list" aria-label="Current deck list">
-              <div className="cf-decks-list-title"><div><span className="cf-decks-eyebrow">Current list</span><h2>{deck.name}</h2></div><button aria-label="Deck options" type="button" onClick={() => { setNotice("Deck options are part of the finished builder."); }}>•••</button></div>
+              <div className="cf-decks-list-title"><div><span className="cf-decks-eyebrow">{section === "tokens" ? `Token Deck · ${deck.tokens.length}/30` : "Current list"}</span><h2>{deck.name}</h2></div><button aria-label="Deck options" type="button" onClick={() => { setNotice("Deck options are part of the finished builder."); }}>•••</button></div>
               <div className="cf-decks-progress"><div><strong>{deck.main.length}<small> / 50</small></strong><span>Main deck</span></div><div className="cf-decks-progress-bar"><span style={{ width: `${Math.min(deck.main.length / 50 * 100, 100)}%` }} /></div></div>
-              <div className="cf-decks-counts"><span><i className="blue" />Ride <b>{deck.ride.length}/4</b></span><span><i className="gold" />G zone <b>{deck.extra.length}/16</b></span></div>
+              <div className="cf-decks-counts"><span><i className="blue" />Ride <b>{deck.ride.length}/4</b></span><span><i className="gold" />G zone <b>{deck.extra.length}/16</b></span><span><i className="gold" />Tokens <b>{deck.tokens.length}/30</b></span></div>
               <div className="cf-decks-list-tabs"><span>Card</span><span>Qty</span></div>
               <div className="cf-decks-listed-cards">
                 {namedCounts.map(({ id, count, card }) => <div key={id} className="cf-decks-listed-card"><button type="button" className="cf-decks-listed-open" onClick={(event) => { if (card !== undefined) openInspector(event.currentTarget, card); }} aria-label={`Inspect ${cardName(card)}`}><CardArtwork card={card} /><span>{cardName(card)}</span></button><b aria-label={`${count} copies`}>{count}</b><button type="button" className="cf-decks-listed-remove" aria-label={`Remove one copy of ${cardName(card)}`} title="Remove one copy" onClick={() => { removeCard(id); }}><Trash2 size={15} /></button></div>)}
@@ -248,7 +251,7 @@ export function CardfightDeckPreview() {
         <footer className="cf-decks-footer"><span>Common Ground <i /> Cardfight</span><button type="button" onClick={() => { setNotice("Rule help will be linked here in the finished builder."); }}>Deck rules <CircleHelp size={14} /></button><button type="button" onClick={() => { setNotice("Import is planned for the finished builder."); }}><Upload size={14} /> Import</button></footer>
       </div>
 
-      {selected !== null && <div className="cf-decks-modal-backdrop" role="presentation" onClick={() => { setSelected(null); }}><section ref={dialogRef} className="cf-decks-inspector" role="dialog" aria-modal="true" aria-labelledby="cf-decks-inspector-title" onClick={(event) => { event.stopPropagation(); }}><button ref={closeButtonRef} className="cf-decks-inspector-close" type="button" aria-label="Close card details" onClick={() => { setSelected(null); }}><X size={17} /></button><CardArtwork card={selected} full /><div><span className="cf-decks-eyebrow">Grade {grade(selected) ?? "unknown"} · #{selected.card_id}</span><h2 id="cf-decks-inspector-title">{cardName(selected)}</h2><p>{cardText(selected)}</p><label className="cf-decks-quantity">Copies to add<input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2} value={quantity} onChange={(event) => { setQuantity(event.target.value); }} aria-label="Number of copies to add" /></label><button type="button" className="cf-decks-save" disabled={!/^\d+$/.test(quantity) || !Number.isInteger(Number(quantity)) || Number(quantity) < 1 || Number(quantity) > (section === "main" ? 50 - deck.main.length : section === "ride" ? 4 - deck.ride.length : 16 - deck.extra.length)} onClick={() => { addCard(selected, Number(quantity)); }}>Add {quantity || "0"} {Number(quantity) === 1 ? "copy" : "copies"} to {section === "extra" ? "G zone" : section}<Plus size={16} /></button></div></section></div>}
+      {selected !== null && <div className="cf-decks-modal-backdrop" role="presentation" onClick={() => { setSelected(null); }}><section ref={dialogRef} className="cf-decks-inspector" role="dialog" aria-modal="true" aria-labelledby="cf-decks-inspector-title" onClick={(event) => { event.stopPropagation(); }}><button ref={closeButtonRef} className="cf-decks-inspector-close" type="button" aria-label="Close card details" onClick={() => { setSelected(null); }}><X size={17} /></button><CardArtwork card={selected} full /><div><span className="cf-decks-eyebrow">Grade {grade(selected) ?? "unknown"} · #{selected.card_id}</span><h2 id="cf-decks-inspector-title">{cardName(selected)}</h2><p>{cardText(selected)}</p><label className="cf-decks-quantity">Copies to add<input type="text" inputMode="numeric" pattern="[0-9]*" maxLength={2} value={quantity} onChange={(event) => { setQuantity(event.target.value); }} aria-label="Number of copies to add" /></label><button type="button" className="cf-decks-save" disabled={!/^\d+$/.test(quantity) || !Number.isInteger(Number(quantity)) || Number(quantity) < 1 || Number(quantity) > (section === "main" ? 50 - deck.main.length : section === "ride" ? 4 - deck.ride.length : section === "extra" ? 16 - deck.extra.length : 30 - deck.tokens.length)} onClick={() => { addCard(selected, Number(quantity)); }}>Add {quantity || "0"} {Number(quantity) === 1 ? "copy" : "copies"} to {section === "extra" ? "G zone" : section === "tokens" ? "Token Deck" : section}<Plus size={16} /></button></div></section></div>}
     </main>
   );
 }

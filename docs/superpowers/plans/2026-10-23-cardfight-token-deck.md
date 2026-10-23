@@ -33,6 +33,7 @@ Add a separate Token Deck section with a 30-copy capacity through deck editing, 
 - Add explicit previous-shape migration for local saves and JSON files lacking only the `tokens` key; every newly written/sent deck includes the new array. Reject other missing, malformed, or extra data as before.
 - Reject token-classified IDs in main/ride/G zone and non-token IDs in the token section, using trusted catalog metadata on server validation.
 - Add tests for 30/31 bounds, wrong section classification, old-shape migration, and order/duplicate preservation.
+- [x] Deck schema, legacy migration, section classification/bounds, and empty-deck shape implemented; focused tests pass.
 
 ## Task 3: Add Token Deck section to both editors
 
@@ -46,6 +47,7 @@ Add a separate Token Deck section with a 30-copy capacity through deck editing, 
 - Add/remove token copies independently; block additions above 30. The 50-card main count remains independent.
 - Allow JSON and device-save migration; selected-section legacy `.prfl` import/export operates on `tokens` when Token Deck is selected.
 - Keep visible keyboard focus and tablet/phone filter/tab wrapping.
+- [x] Both editors expose the Token Deck section, filter by trusted derived IDs, count separately to 30, and support adding/removing tokens; narrow-width tab strip scrolls without compressing labels.
 
 ## Task 4: Carry tokens through trusted setup and engine state
 
@@ -61,6 +63,7 @@ Add a separate Token Deck section with a 30-copy capacity through deck editing, 
 - Allow owner token supply entries to move to hand or to Rear during Main; reject moving directly from TOKEN to DECK, RIDE, or G_ZONE. Other phase/turn checks remain in force.
 - Board zone selectors and labels include Token Deck; only the owner gets an inspect control for their own supply.
 - Tests cover privacy from both viewers, deterministic token instances, token movement/rejection, and unchanged main deck/shuffle/opening counts.
+- [x] Trusted snapshots, private TOKEN zone, owner inspection, Main-only hand/Rear movement, and board labels are implemented; focused engine/catalog/room tests pass.
 
 ## Task 5: Review, handoff, and commits
 
@@ -68,6 +71,7 @@ Add a separate Token Deck section with a 30-copy capacity through deck editing, 
 - Run focused frontend Node tests and backend Cardfight pytest tests plus the frontend production build after the cross-stack implementation. Do not mutate unrelated test data; inspect repository guidance before backend suite runs.
 - Review changes against this plan, especially schema compatibility, identity privacy, token/main separation, and responsive Token Deck tab layout.
 - Commit each finished functional task with a conventional commit. Never stage the user-supplied untracked `Reverse Engineered/` directory.
+- [ ] Independent reviewer assessment, final feature commit, and owner-authorized publication after PASS.
 
 ## Acceptance
 

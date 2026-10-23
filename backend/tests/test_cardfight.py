@@ -15,17 +15,18 @@ from app.engine.games.cardfight import (
 )
 
 
-def snapshot(*, ride: bool = False, extra: bool = False) -> CardfightDeckSnapshot:
+def snapshot(*, ride: bool = False, extra: bool = False, tokens: bool = False) -> CardfightDeckSnapshot:
     definitions = tuple(
         CardfightCardDefinition(card_id=i, catalog_version="fixture-v1", grade=(i - 1) % 4,
-                               extra_deck=1 if i == 60 else 0, trigger_type=6 if i == 50 else None)
-        for i in (*range(1, 51), 60)
+                               extra_deck=1 if i == 60 else 0, trigger_type=6 if i == 50 else None,
+                               is_token=i == 61)
+        for i in (*range(1, 51), 60, 61)
     )
     return CardfightDeckSnapshot(
         deck=CardfightDeckDefinition(catalog_version="fixture-v1", name="Fixture",
                                     main=tuple(range(1, 51)),
                                     ride=(1, 2, 3, 4) if ride else (),
-                                    extra=(60,) if extra else (), starter_index=None if ride else 0),
+                                    extra=(60,) if extra else (), tokens=(61,) if tokens else (), starter_index=None if ride else 0),
         definitions=definitions,
     )
 
@@ -33,6 +34,54 @@ def snapshot(*, ride: bool = False, extra: bool = False) -> CardfightDeckSnapsho
 def setup(*, ride: bool = False, extra: bool = False) -> CardfightState:
     return Engine.create_state(("alice", "bob"), (snapshot(ride=ride, extra=extra), snapshot()),
                                "cardfight-manual-v1", "alice", bytes(range(32)))
+
+
+def test_token_section_is_a_private_supply_not_a_draw_or_g_zone() -> None:
+    state = Engine.create_state(("alice", "bob"), (snapshot(tokens=True), snapshot()),
+                                "cardfight-manual-v1", "alice", bytes(range(32)))
+    owned_tokens = [card for card in state.cards if card.owner_id == "alice" and card.card_id == 61]
+    assert len(owned_tokens) == 1 and owned_tokens[0].zone == "TOKEN"
+    assert len([card for card in state.cards if card.owner_id == "alice" and card.zone == "DECK"]) == 44
+    bob_view = Engine.get_player_view(state, "bob")
+    bob_supply = next(zone for player in bob_view.players if player.player_id == "alice" for zone in player.zones if zone.zone == "TOKEN")
+    assert bob_supply.count == 1 and bob_supply.cards[0].face == "DOWN"
+    assert not hasattr(bob_supply.cards[0], "card_id")
+    alice_view = Engine.get_player_view(state, "alice")
+    alice_supply = next(zone for player in alice_view.players if player.player_id == "alice" for zone in player.zones if zone.zone == "TOKEN")
+    assert not hasattr(alice_supply.cards[0], "card_id")
+    assert alice_supply.cards[0].ref != bob_supply.cards[0].ref
+    assert alice_view.self is not None
+    private_token = next(card for card in alice_view.self.concealed_zone_cards if card.card_id == 61)
+    assert private_token.ref == alice_supply.cards[0].ref
+    assert not any(card.owner_id == "alice" and card.card_id == 61 and card.zone in ("DECK", "HAND") for card in state.cards)
+    for who in ("alice", "bob"):
+        state = act(state, who, "CF_KEEP_HAND")
+        state = act(state, who, "CF_READY_TO_PLAY")
+    state = act(state, "alice", "CF_NEXT_PHASE")
+    state = inspect(state, "alice", "TOKEN")
+    token_ref = inspection_refs(state, "alice")[0]
+    state = move(state, "alice", token_ref, "HAND")
+    assert sum(card.zone == "HAND" and card.card_id == 61 for card in state.cards) == 1
+    reject(state, "alice", "CF_MOVE", card_ref=visible(state, "alice", "HAND")[-1], to_zone="DECK", slot=None, position=0, parent_ref=None)
+
+
+def test_token_supply_can_call_to_rear_only_during_main_phase() -> None:
+    state = Engine.create_state(("alice", "bob"), (snapshot(tokens=True), snapshot()),
+                                "cardfight-manual-v1", "alice", bytes(range(32)))
+    token_id = next(card.instance_id for card in state.cards if card.owner_id == "alice" and card.zone == "TOKEN")
+    private_ref = next(card.ref for card in Engine.get_player_view(state, "alice").self.concealed_zone_cards if card.card_id == 61)
+    reject(state, "alice", "CF_MOVE", card_ref=private_ref, to_zone="REAR", slot="front-left", position=None, parent_ref=None)
+    for who in ("alice", "bob"):
+        state = act(state, who, "CF_KEEP_HAND")
+        state = act(state, who, "CF_READY_TO_PLAY")
+    state = act(state, "alice", "CF_NEXT_PHASE")
+    state = move(state, "alice", private_ref, "REAR", slot="front-left")
+    token = next(card for card in state.cards if card.instance_id == token_id)
+    assert token.zone == "REAR" and token.slot == "front-left"
+    bob_view = Engine.get_player_view(state, "bob")
+    public_call = next(card for player in bob_view.players if player.player_id == "alice" for zone in player.zones
+                       if zone.zone == "REAR" for card in zone.cards)
+    assert public_call.card_id == 61
 
 
 def act(state: CardfightState, who: str, kind: str, **payload: object) -> CardfightState:

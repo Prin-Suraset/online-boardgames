@@ -15,7 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from app.engine.base import BaseGame, GameRuleError, MoveErrorCode
 
-Zone: TypeAlias = Literal["DECK", "HAND", "VANGUARD", "REAR", "GUARDIAN", "DAMAGE", "DROP", "SOUL", "BIND", "REMOVED", "G_ZONE", "RIDE", "CHECK"]
+Zone: TypeAlias = Literal["DECK", "HAND", "VANGUARD", "REAR", "GUARDIAN", "DAMAGE", "DROP", "SOUL", "BIND", "REMOVED", "G_ZONE", "RIDE", "CHECK", "TOKEN"]
 Phase: TypeAlias = Literal["RIDE", "MAIN", "BATTLE", "END"]
 Opening: TypeAlias = Literal["PENDING", "KEPT", "READY"]
 Window: TypeAlias = Literal["NONE", "RESPONSE", "CHECK"]
@@ -26,11 +26,11 @@ ActionType: TypeAlias = Literal[
     "CF_PASS_RESPONSE", "CF_DRIVE_CHECK", "CF_DAMAGE_CHECK", "CF_RESOLVE_CHECK", "CF_CONCEDE",
     "CF_PROPOSE_RESULT", "CF_CONFIRM_RESULT", "CF_REJECT_RESULT",
 ]
-ZONES: tuple[Zone, ...] = ("DECK", "HAND", "VANGUARD", "REAR", "GUARDIAN", "DAMAGE", "DROP", "SOUL", "BIND", "REMOVED", "G_ZONE", "RIDE", "CHECK")
+ZONES: tuple[Zone, ...] = ("DECK", "HAND", "VANGUARD", "REAR", "GUARDIAN", "DAMAGE", "DROP", "SOUL", "BIND", "REMOVED", "G_ZONE", "RIDE", "CHECK", "TOKEN")
 SLOTS = ("front-left", "front-right", "back-left", "back-center", "back-right")
 FIELD = frozenset(("VANGUARD", "REAR", "GUARDIAN"))
-INSPECTABLE = frozenset(("DECK", "HAND", "SOUL", "DROP", "BIND", "REMOVED", "G_ZONE", "RIDE"))
-NONFIELD = frozenset(("HAND", "DECK", "DROP", "SOUL", "BIND", "REMOVED", "G_ZONE", "RIDE"))
+INSPECTABLE = frozenset(("DECK", "HAND", "SOUL", "DROP", "BIND", "REMOVED", "G_ZONE", "RIDE", "TOKEN"))
+NONFIELD = frozenset(("HAND", "DECK", "DROP", "SOUL", "BIND", "REMOVED", "G_ZONE", "RIDE", "TOKEN"))
 T = TypeVar("T")
 
 
@@ -46,6 +46,7 @@ class CardfightCardDefinition(Record):
     grade: int | None = Field(default=None, ge=0, le=99)
     extra_deck: int | None = Field(default=None, ge=0, le=1)
     trigger_type: int | None = Field(default=None, ge=0, le=99)
+    is_token: bool = False
 
 
 class CardfightDeckDefinition(Record):
@@ -55,13 +56,14 @@ class CardfightDeckDefinition(Record):
     main: tuple[int, ...] = Field(min_length=1, max_length=256)
     ride: tuple[int, ...] = Field(max_length=16)
     extra: tuple[int, ...] = Field(max_length=64)
+    tokens: tuple[int, ...] = Field(max_length=30)
     starter_index: int | None = Field(ge=0, le=255)
 
     @model_validator(mode="after")
     def validate_ids(self) -> CardfightDeckDefinition:
-        if any(type(i) is not int or not 1 <= i <= 2147483647 for i in self.main + self.ride + self.extra):
+        if any(type(i) is not int or not 1 <= i <= 2147483647 for i in self.main + self.ride + self.extra + self.tokens):
             raise ValueError("deck IDs must be positive strict integers")
-        if len(self.main + self.ride + self.extra) > 336 or len(self.model_dump_json().encode()) > 65536:
+        if len(self.main + self.ride + self.extra + self.tokens) > 366 or len(self.model_dump_json().encode()) > 65536:
             raise ValueError("deck exceeds supported bounds")
         return self
 
@@ -398,10 +400,10 @@ class CardfightEngine(BaseGame[CardfightState, CardfightAction, CardfightView]):
             lookup = {d.card_id: d for d in snapshot.definitions}
             if len(lookup) != len(snapshot.definitions) or any(d.catalog_version != deck.catalog_version for d in snapshot.definitions):
                 raise ValueError("invalid mechanical catalog snapshot")
-            submitted = deck.main + deck.ride + deck.extra
+            submitted = deck.main + deck.ride + deck.extra + deck.tokens
             if any(card_id not in lookup for card_id in submitted):
                 raise ValueError("missing card definition")
-            if len(deck.main) != 50 or len(deck.ride) not in (0, 4) or len(deck.extra) > 16:
+            if len(deck.main) != 50 or len(deck.ride) not in (0, 4) or len(deck.extra) > 16 or len(deck.tokens) > 30:
                 raise ValueError("unsupported section counts")
             if deck.ride:
                 if deck.starter_index is not None or tuple(lookup[i].grade for i in deck.ride) != (0, 1, 2, 3):
@@ -410,6 +412,10 @@ class CardfightEngine(BaseGame[CardfightState, CardfightAction, CardfightView]):
                 raise ValueError("starter requires a known grade-zero main copy")
             if any(lookup[i].extra_deck != 1 for i in deck.extra):
                 raise ValueError("unsupported extra-deck classification")
+            if any(lookup[i].is_token for i in deck.main + deck.ride + deck.extra):
+                raise ValueError("token cards must be submitted in the token section")
+            if any(not lookup[i].is_token for i in deck.tokens):
+                raise ValueError("unsupported token classification")
             for definition in snapshot.definitions:
                 if definition.card_id in definitions and definitions[definition.card_id] != definition:
                     raise ValueError("conflicting mechanical definitions")
@@ -422,12 +428,14 @@ class CardfightEngine(BaseGame[CardfightState, CardfightAction, CardfightView]):
                 elif ordinal < 50 + len(deck.ride):
                     zone = "VANGUARD" if ordinal == 50 else "RIDE"
                     face = "DOWN"
-                else:
+                elif ordinal < 50 + len(deck.ride) + len(deck.extra):
                     zone, face = "G_ZONE", "DOWN"
+                else:
+                    zone, face = "TOKEN", "DOWN"
                 instance_id = _digest(seed, "instance", "cardfight", "0", player_id, _decimal(ordinal)).hex()[:48]
                 if 50 <= ordinal < 50 + len(deck.ride):
                     ride_instances.append(instance_id)
-                elif ordinal >= 50 + len(deck.ride):
+                elif 50 + len(deck.ride) <= ordinal < 50 + len(deck.ride) + len(deck.extra):
                     extra_instances.append(instance_id)
                 cards.append(CardInstance(instance_id=instance_id, card_id=card_id, owner_id=player_id,
                                           controller_id=player_id, zone=zone, position=ordinal, face=face))
@@ -459,13 +467,13 @@ class CardfightEngine(BaseGame[CardfightState, CardfightAction, CardfightView]):
 
     @staticmethod
     def _public(card: CardInstance) -> bool:
-        return card.zone not in ("DECK", "HAND") and not (
+        return card.zone not in ("DECK", "HAND", "TOKEN") and not (
             card.face == "DOWN" and card.zone in ("BIND", "G_ZONE", "RIDE", "VANGUARD"))
 
     @classmethod
     def _ref(cls, state: CardfightState, card: CardInstance, viewer: str) -> str:
-        # Table slots share public refs; hands and inspected decks are viewer-private.
-        audience = "public" if card.zone not in ("DECK", "HAND") else viewer
+        # Table slots share public refs; hands, token supplies and inspected decks are viewer-private.
+        audience = "public" if card.zone not in ("DECK", "HAND", "TOKEN") else viewer
         return _digest(state.seed, "viewer-ref", "cardfight", _decimal(state.generation), audience,
                        card.instance_id, _decimal(card.visibility_epoch)).hex()[:48]
 
@@ -692,6 +700,11 @@ class CardfightEngine(BaseGame[CardfightState, CardfightAction, CardfightView]):
     def _move_action(cls, state: CardfightState, actor: str, card: CardInstance, action: CardfightAction) -> CardfightState:
         destination = _required(action.to_zone)
         own_turn = actor == state.active_player_id and state.priority.window == "NONE"
+        definition = next(d for d in state.definitions if d.card_id == card.card_id)
+        if definition.is_token and destination in ("DECK", "RIDE", "G_ZONE"):
+            _invalid()
+        if card.zone == "TOKEN" and (not own_turn or state.phase != "MAIN" or destination not in ("HAND", "REAR")):
+            _invalid()
         if destination == "DECK":
             if action.position is None:
                 _invalid()
@@ -836,6 +849,9 @@ class CardfightEngine(BaseGame[CardfightState, CardfightAction, CardfightView]):
                         else:
                             visible.append(ConcealedCard(ref=cls._ref(state, card, "public"),
                                 orientation=card.orientation, slot=card.slot, position=card.position))
+                            if zone == "TOKEN" and owner == player_id:
+                                visible[-1] = ConcealedCard(ref=cls._ref(state, card, player_id),
+                                    orientation=card.orientation, slot=card.slot, position=card.position)
                 zones.append(ZoneView(zone=zone, count=len(cards), cards=tuple(visible)))
             tables.append(PublicPlayerTable(player_id=owner, hand_count=len(cls._zone(state, owner, "HAND")),
                 deck_count=len(cls._zone(state, owner, "DECK")), zones=tuple(zones)))

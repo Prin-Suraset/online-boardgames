@@ -49,7 +49,7 @@
 - `PUT /api/cardfight/decks/{deck_id}` body `{ "deck": CardfightDeckDefinition, "expected_revision": int }` -> `SavedCardfightDeck`; stale revision -> 409 `{ "detail": { "code": "DECK_REVISION_CONFLICT", "message": string } }`.
 - `DELETE /api/cardfight/decks/{deck_id}` -> 204; missing and other-owner IDs both return structured 404.
 - `SavedCardfightDeck` is `{id: string, revision: int, deck: CardfightDeckDefinition, created_at: string, updated_at: string}`.
-- `CardfightDeckDefinition` is strict `{game_id: "cardfight", catalog_version: str[1,64], name: str[1,80], main: int[1..2147483647][], ride: int[1..2147483647][], extra: int[1..2147483647][], starter_index: int[0..255] | null}`. Array limits are main256, ride16, extra64. Saving permits incomplete decks; existing room submission is authoritative for playable validation.
+- `CardfightDeckDefinition` is strict `{game_id: "cardfight", catalog_version: str[1,64], name: str[1,80], main: int[1..2147483647][], ride: int[1..2147483647][], extra: int[1..2147483647][], tokens: int[1..2147483647][], starter_index: int[0..255] | null}`. Array limits are main256, ride16, extra64, tokens30. Saving permits incomplete decks; existing room submission is authoritative for playable validation. Legacy local and JSON reads add an empty token section only for the previous exact shape.
 - Each route validates the existing bearer token and derives the owner ID from it. Cloud endpoints reject guests with `403 ACCOUNT_REQUIRED`.
 - Storage identity is `(owner_id, deck_id)`; deck names need not be unique. Revision starts at 1 and increments transactionally. `PUT` must compare-and-swap against `expected_revision`.
 
@@ -135,7 +135,7 @@
 
 **Interfaces:**
 - The room picker consumes saved deck definitions from `useCardfightDecks()`; members see account decks and guests see local decks.
-- Preserve existing `CardfightSetupAction` and `CF_SUBMIT_DECK` payload unchanged.
+- Preserve the `CardfightSetupAction` discriminator and `CF_SUBMIT_DECK` envelope; the nested deck includes its separate `tokens` array.
 
 - [ ] Remove embedded `DeckWorkshop` and replace it with a labeled saved-deck selector, selected deck name/section counts/validation messages, and explicit Submit deck button.
 - [ ] Leave profile selection, first player, ready/start, spectator notice, and server diagnostics intact.

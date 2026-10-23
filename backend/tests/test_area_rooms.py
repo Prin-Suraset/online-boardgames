@@ -19,7 +19,7 @@ def person(index: int) -> PlayerInput:
 
 
 def deck() -> dict[str, JsonValue]:
-    return {"game_id":"cardfight", "catalog_version":VERSION, "name":"Private choice", "main":MAIN.copy(), "ride":[], "extra":[], "starter_index":0}
+    return {"game_id":"cardfight", "catalog_version":VERSION, "name":"Private choice", "main":MAIN.copy(), "ride":[], "extra":[], "tokens":[], "starter_index":0}
 
 
 def lobby() -> tuple[RoomManager, str]:

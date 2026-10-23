@@ -1,6 +1,66 @@
 import type { AreaCard } from "./areaDecks";
 
 export type CardfightFormat = "premium" | "v-standard" | "d-standard";
+export type CardfightCategory = "all" | number;
+
+const CLAN_LABELS: Readonly<Record<number, string>> = {
+  1: "Shadow Paladin", 2: "Megacolony", 3: "Aqua Force", 4: "Nova Grappler", 5: "Gold Paladin",
+  6: "Dimension Police", 7: "Great Nature", 8: "Granblue", 9: "Neo Nectar", 10: "Oracle Think Tank",
+  11: "Dark Irregulars", 12: "Kagero", 13: "Bermuda Triangle", 14: "Spike Brothers", 15: "Royal Paladin",
+  16: "Angel Feather", 17: "Tachikaze", 18: "Pale Moon", 19: "Narukami", 20: "Murakumo",
+  21: "Genesis", 22: "Etranger", 23: "Nubatama", 24: "Link Joker", 25: "Cray Elemental",
+  26: "Gear Chronicle", 27: "Touken Ranbu", 28: "The Mask Collection", 30: "Order Cards", 31: "BanG Dream!",
+  32: "Game series", 33: "Animation series", 34: "Iconic cards", 35: "Live-action series",
+};
+
+const NATION_LABELS: Readonly<Record<number, string>> = {
+  1: "Dragon Empire", 2: "Dark States", 3: "Keter Sanctuary", 4: "Stoicheia", 5: "Brandt Gate",
+  6: "Lyrical Monasterio", 7: "Monster Strike", 8: "Cray Elemental / collaborations", 9: "Shaman King",
+  10: "Record of Ragnarok", 11: "B-Robo Kabutack", 12: "VSPO!", 13: "CoroCoro", 14: "Buddyfight",
+  15: "Inazuma", 16: "The King of Fighters", 17: "Super Sentai", 18: "When They Cry", 19: "Persona",
+};
+
+export interface CardfightCategoryOption {
+  id: number;
+  label: string;
+}
+
+function numericFieldValues(card: AreaCard, fields: readonly string[]): number[] {
+  return fields.flatMap((field) => {
+    const value = card.fields[field];
+    return typeof value === "number" && Number.isInteger(value) && value !== 0 ? [value] : [];
+  });
+}
+
+function clanIds(card: AreaCard): number[] {
+  return numericFieldValues(card, ["CardInClan", ...Array.from({ length: 8 }, (_, index) => `CardInClan${index + 2}`)]);
+}
+
+function nationIds(card: AreaCard): number[] {
+  return numericFieldValues(card, ["DCards", "DCards2"]);
+}
+
+export function cardfightCategoryLabel(format: CardfightFormat): "Clan" | "Nation" {
+  return format === "d-standard" ? "Nation" : "Clan";
+}
+
+export function cardfightCategoryOptions(cards: readonly AreaCard[], format: CardfightFormat, preserveCategory: CardfightCategory = "all"): CardfightCategoryOption[] {
+  const labels = format === "d-standard" ? NATION_LABELS : CLAN_LABELS;
+  const availableIds = new Set(cards.flatMap((card) => {
+    if (!isInCardfightFormat(card, format)) return [];
+    return format === "d-standard" ? nationIds(card) : clanIds(card);
+  }));
+  if (preserveCategory !== "all") availableIds.add(preserveCategory);
+  return Object.entries(labels)
+    .map(([id, label]) => ({ id: Number(id), label }))
+    .filter(({ id }) => availableIds.has(id));
+}
+
+export function isInCardfightCategory(card: AreaCard, format: CardfightFormat, category: CardfightCategory): boolean {
+  if (category === "all") return true;
+  const memberships = format === "d-standard" ? nationIds(card) : clanIds(card);
+  return memberships.includes(category);
+}
 
 const V_STANDARD_FIRST_CARD_ID = 5671;
 

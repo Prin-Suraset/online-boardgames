@@ -170,6 +170,16 @@
 - [x] Browser verified Premium (17,146 cards), V Standard (3,049), and D Standard (7,921), with page one restored on each format change. Frontend production build and all 4 Node test files pass; focused independent reviewer PASS.
 - [x] Commit the format filter and updated HANDOFF (`feat(cardfight-decks): filter cards by format`).
 
+### Owner follow-up: Clan and nation categories
+
+**Files:** Modify `frontend/src/lib/cardFormats.ts`, `frontend/src/pages/CardfightDeckPreview.tsx`, and `frontend/src/pages/cardfight-decks.css`; update `HANDOFF.md`.
+
+**Behavior:** Add an `All` category plus a clan selector for Premium/V Standard and a nation selector for D Standard. Clan membership checks the primary and secondary clan fields; D nation membership checks primary and secondary nation fields. Category, format, grade, and search filtering all apply before the existing 120-card pagination. Switching between clan and nation modes resets the category and page; changing between Premium and V Standard preserves the clan selection.
+
+- [x] Add the category helper and accessible responsive selector using the recovered ID/name mappings, including multi-clan membership, secondary nations, and Order Cards.
+- [x] Reviewer confirmed category selection composes with format, grade, search, and pagination; switching Premium/V preserves the selected clan, switching to/from D resets category, and the grid/selector layout accommodates changed categories and medium screens. `git diff --check` passes. Automated tests, production build, and live responsive browser inspection were not run for this increment.
+- [ ] Commit the reviewed category filter and update HANDOFF.
+
 ## Execution Notes
 
 - The owner approved the design document before this plan was written. Implement tasks sequentially because each establishes interfaces consumed by later work.

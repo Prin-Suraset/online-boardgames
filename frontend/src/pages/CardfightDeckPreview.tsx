@@ -5,7 +5,7 @@ import { CardArtwork } from "../components/cards/CardArtwork";
 import { useAuth } from "../context/AuthContext";
 import { navigate } from "../lib/navigation";
 import { cardName, cardText, emptyDeck, grade, sampleDeck, validateDeck, type AreaCard } from "../lib/areaDecks";
-import { isInCardfightFormat, type CardfightFormat } from "../lib/cardFormats";
+import { cardfightCategoryLabel, cardfightCategoryOptions, isInCardfightCategory, isInCardfightFormat, type CardfightCategory, type CardfightFormat } from "../lib/cardFormats";
 import { paginateItems } from "../lib/cardPagination";
 import type { CardfightDeck } from "../types/cardfight";
 import "../components/cards/cardfight.css";
@@ -25,6 +25,7 @@ export function CardfightDeckPreview() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [format, setFormat] = useState<CardfightFormat>("premium");
+  const [category, setCategory] = useState<CardfightCategory>("all");
   const [cardPage, setCardPage] = useState(1);
   const [notice, setNotice] = useState("");
   const [roomDeck, setRoomDeck] = useState<string>(demoDecks[0]);
@@ -42,7 +43,7 @@ export function CardfightDeckPreview() {
 
   useEffect(() => {
     cardGridRef.current?.scrollTo({ top: 0 });
-  }, [cardPage, filter, format, query]);
+  }, [cardPage, category, filter, format, query]);
 
   useEffect(() => {
     if (selected === null) return;
@@ -79,9 +80,10 @@ export function CardfightDeckPreview() {
       const search = `${cardName(card)} ${cardText(card)} ${card.card_id}`.toLocaleLowerCase();
       const cardGrade = grade(card);
       const gradeMatch = filter === "all" || (filter === "g" ? card.fields.ExtraDeck === 1 : filter === "6plus" ? cardGrade !== null && cardGrade >= 6 : String(cardGrade) === filter);
-      return search.includes(query.toLocaleLowerCase()) && gradeMatch && isInCardfightFormat(card, format);
+      return search.includes(query.toLocaleLowerCase()) && gradeMatch && isInCardfightFormat(card, format) && isInCardfightCategory(card, format, category);
     });
-  }, [catalog, filter, format, query]);
+  }, [catalog, category, filter, format, query]);
+  const categoryOptions = useMemo(() => catalog === null ? [] : cardfightCategoryOptions(catalog.cards, format, category), [catalog, category, format]);
   const pageCount = Math.max(1, Math.ceil(filteredCards.length / CARD_PAGE_SIZE));
   const cards = useMemo(() => paginateItems(filteredCards, cardPage, CARD_PAGE_SIZE), [filteredCards, cardPage]);
 
@@ -194,8 +196,14 @@ export function CardfightDeckPreview() {
 
               <div className="cf-decks-searchline">
                 <label className="cf-decks-search"><Search size={17} /><input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setCardPage(1); }} placeholder="Search card name, text, or ID" aria-label="Search Cardfight cards" /><kbd>/</kbd></label>
-                <label className="cf-decks-filter"><span>Format</span><select aria-label="Filter by format" value={format} onChange={(event) => { setFormat(event.target.value as CardfightFormat); setCardPage(1); }}><option value="premium">Premium</option><option value="v-standard">V Standard</option><option value="d-standard">D Standard</option></select></label>
+                <label className="cf-decks-filter"><span>Format</span><select aria-label="Filter by format" value={format} onChange={(event) => {
+                  const nextFormat = event.target.value as CardfightFormat;
+                  if ((format === "d-standard") !== (nextFormat === "d-standard")) setCategory("all");
+                  setFormat(nextFormat);
+                  setCardPage(1);
+                }}><option value="premium">Premium</option><option value="v-standard">V Standard</option><option value="d-standard">D Standard</option></select></label>
                 <label className="cf-decks-filter"><span>Grade</span><select aria-label="Filter by grade" value={filter} onChange={(event) => { setFilter(event.target.value); setCardPage(1); }}><option value="all">All grades</option><option value="0">Grade 0</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6plus">Grade 6+</option><option value="g">G zone</option></select></label>
+                <label className="cf-decks-filter cf-decks-category-filter"><span>{cardfightCategoryLabel(format)}</span><select aria-label={`Filter by ${cardfightCategoryLabel(format).toLocaleLowerCase()}`} value={category} onChange={(event) => { setCategory(event.target.value === "all" ? "all" : Number(event.target.value)); setCardPage(1); }}><option value="all">All {cardfightCategoryLabel(format).toLocaleLowerCase()}s</option>{categoryOptions.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label>
               </div>
 
               <div className="cf-decks-section-tabs" role="tablist" aria-label="Deck section">

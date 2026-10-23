@@ -1,0 +1,52 @@
+# Bot Test Rooms and PvP Rooms Implementation Plan
+
+> **For agentic workers:** follow this plan task-by-task and get a separate read-only review against this plan before publication.
+
+**Goal:** Let a player create an ordinary PvP room or a test room filled with enough existing bots to start the selected supported game.
+
+**Architecture:** Reuse room creation and the existing `ADD_TEST_BOTS` WebSocket action. Add a bot-test room query marker so the host client fills the lobby once on first state; authorize that action for the authenticated host, leaving capacity/game/lobby checks in `RoomManager`. Do not add bots to ordinary PvP rooms.
+
+**Tech Stack:** FastAPI, Pydantic, Python 3.11+, React, TypeScript, Vite, Node test runner, pytest.
+
+**Spec:** `docs/superpowers/specs/2026-10-23-bot-test-and-pvp-lobby-design.md`
+
+## Global Constraints
+
+- Preserve the current room creation request, WebSocket envelope, and `ADD_TEST_BOTS` payload shape.
+- Bot test rooms are available only for What Number, You or Me, and Top100.
+- Fill minimum player counts: two bots for What Number; one bot for You or Me and Top100.
+- The authenticated host must initiate bot insertion; the human host must ready and start normally.
+- Existing PvP create and join-by-code behavior stays intact. Do not alter Cardfight or Tic-Tac-Toe rules.
+- Keep all changes within the agreed lobby/bot authorization scope; add focused tests before production code.
+
+## Review Focus
+
+- What Number has a three-player minimum and needs two bots for one human.
+- Missing, mismatched, and non-host identities cannot add bots; host authorization does not become unauthenticated access.
+- Unsupported games, full rooms, and non-lobby states reject bot insertion without crashing the socket.
+- Reopening a bot-test room does not create duplicate bots.
+- Ordinary PvP creation and game-catalog quick play never gain bots.
+
+## Task 1: Allow authenticated hosts to add existing test bots
+
+**Files:** `backend/app/main.py`, `backend/tests/test_rooms_api.py`.
+
+**Test:** Add an API/WebSocket regression that creates a guest host and a second guest, proves the authenticated host can use `ADD_TEST_BOTS`, and proves missing/mismatched authentication and non-host callers receive `FORBIDDEN`. Confirm the normal error envelope is sent and the socket remains usable.
+
+**Code:** In the `ADD_TEST_BOTS` dispatch branch, require `authenticated_user.id == message.player_id` instead of admin status, then retain `rooms.add_test_bots(code, message.player_id, count)` so host, game, capacity, and lobby checks remain authoritative.
+
+**Verify:** Run `pytest -q tests/test_rooms_api.py` from `backend/`; `git diff --check`; commit `fix(rooms): allow authenticated hosts to add test bots`.
+
+## Task 2: Add explicit lobby choices and one-time bot fill
+
+**Files:** `frontend/src/pages/index.tsx`, `frontend/src/pages/room.tsx`, `frontend/src/lib/roomModes.ts`, `frontend/tests/roomModes.test.mjs`.
+
+**Test:** Verify `testBotCountFor(gameType)` returns 2 for `what_number`, 1 for `you_or_me` and `top100`, and `null` for `tictactoe` and `cardfight`.
+
+**Code:** Keep selected-game creation. Label ordinary creation “Create PvP room”. Add “Test vs bot” for the three supported games only. Bot-test creation uses the normal POST, then navigates to `/room/{code}?mode=bot-test`; game-catalog quick play defaults to PvP. In `RoomSession`, on a bot-test route, send `ADD_TEST_BOTS` once after the host receives a one-human LOBBY view, with `count` from `testBotCountFor`. Existing bot presence or another player prevents auto-fill. Show pending/errors through existing room notification handling.
+
+**Verify:** Run `node --test frontend/tests/roomModes.test.mjs`, run `npm run build` from `frontend/`, and `git diff --check`; manually inspect the lobby at desktop and phone widths if the local frontend is reachable. Commit `feat(lobby): add bot test and pvp room choices`.
+
+## Final Gate
+
+Request an independent read-only review of the diff against this plan. Publish only after PASS. Update root `HANDOFF.md` with commits, checks, reviewer result, and remaining limitations.

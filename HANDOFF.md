@@ -1,5 +1,10 @@
 # Session Handoff
 
+## 2026-10-23 bot test and PvP lobby choices
+* **Active Task**: Add distinct lobby paths for normal PvP room creation and public test rooms using current game bots.
+* **State**: Owner approved the design: bot tests for What Number (two bots), You or Me (one), and Top100 (one); Tic-Tac-Toe/Cardfight stay PvP-only. Design is saved at `docs/superpowers/specs/2026-10-23-bot-test-and-pvp-lobby-design.md`; implementation plan is saved at `docs/superpowers/plans/2026-10-23-bot-test-and-pvp-lobby.md`. Plan review pending; no product code changed.
+* **Next**: Get plan confirmation, then allow authenticated room hosts to use the existing bot action and wire the lobby's bot-test route to fill minimum seats once. Run focused API/frontend checks, request independent review, and update this file.
+
 ## 2026-10-23 ROOM_NOT_FOUND local connection mismatch
 * **Active Task**: Fix `ROOM_NOT_FOUND: The requested room does not exist.` when connecting to rooms created in local development.
 * **Cause**: `POST /api/rooms` uses Vite's `/api` proxy to `localhost:8000`, but the WebSocket fallback was the hosted Render backend. The in-memory local room therefore did not exist on the hosted WebSocket process.

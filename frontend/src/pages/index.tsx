@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import {
   ArrowRight,
+  Bot,
   BookOpen,
   Gamepad2,
   LoaderCircle,
@@ -16,6 +17,7 @@ import { Toast } from "../components/Toast";
 import { useAuth } from "../context/AuthContext";
 import { catalogGames } from "../lib/gameCatalog";
 import { navigate } from "../lib/navigation";
+import { roomRouteFor, testBotCountFor } from "../lib/roomModes";
 import type { GameType } from "../types";
 
 interface RoomLookup {
@@ -42,6 +44,7 @@ export function HubPage() {
   const [notice, setNotice] = useState<string | null>(null);
   const gameTriggerRef = useRef<HTMLButtonElement>(null);
   const selectedGameDetails = catalogGames.find((game) => game.id === selectedGame) ?? catalogGames[0];
+  const selectedBotCount = testBotCountFor(selectedGame);
 
   const requireUser = (): boolean => {
     if (user !== null) {
@@ -51,7 +54,10 @@ export function HubPage() {
     return false;
   };
 
-  const createRoom = async (gameType: GameType = selectedGame): Promise<void> => {
+  const createRoom = async (
+    gameType: GameType = selectedGame,
+    roomMode: "pvp" | "bot-test" = "pvp",
+  ): Promise<void> => {
     if (!requireUser() || user === null) {
       return;
     }
@@ -73,7 +79,7 @@ export function HubPage() {
       if (!response.ok || !isRoomLookup(body)) {
         throw new Error("The room service did not accept the request.");
       }
-      navigate(`/room/${body.room_code.toUpperCase()}`);
+      navigate(roomRouteFor(body.room_code, roomMode));
     } catch (caught: unknown) {
       setNotice(caught instanceof Error ? caught.message : "Unable to create a room.");
     } finally {
@@ -153,8 +159,23 @@ export function HubPage() {
             </div>
             <button type="button" onClick={() => { void createRoom(); }} disabled={busyAction !== null} className="primary-button mt-5 w-full rounded-lg px-6 py-3 font-black tracking-wider text-[#0B0F19] shadow-lg shadow-amber-500/20">
               {busyAction === "create" ? <LoaderCircle className="size-4 animate-spin" /> : <Gamepad2 className="size-4" />}
-              Enter the lounge
+              Create PvP room
             </button>
+            {selectedBotCount !== null ? (
+              <button
+                type="button"
+                onClick={() => { void createRoom(selectedGame, "bot-test"); }}
+                disabled={busyAction !== null}
+                className="secondary-button mt-3 w-full rounded-lg px-6 py-3 font-bold"
+              >
+                {busyAction === "create" ? <LoaderCircle className="size-4 animate-spin" /> : <Bot className="size-4" />}
+                Test vs bot
+              </button>
+            ) : (
+              <p className="mt-3 text-center text-xs leading-5 text-slate-500">
+                Bot test rooms are not available for {selectedGameDetails?.title} yet.
+              </p>
+            )}
             <button type="button" onClick={() => { setRuleGame(selectedGame); }} className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-amber-300 transition hover:text-amber-100">
               <BookOpen className="size-4" /> อ่านกติกา {selectedGameDetails?.title}
             </button>

@@ -30,6 +30,7 @@ import { useAuth } from "../context/AuthContext";
 import { useRoomSocket } from "../hooks/useRoomSocket";
 import { navigate } from "../lib/navigation";
 import { catalogGames } from "../lib/gameCatalog";
+import { getTestBotFillDecision } from "../lib/roomModes";
 import { cn } from "../lib/styles";
 import type { AuthUser, RoomState, Player, TicTacToeView, Top100View, YouOrMeView } from "../types";
 
@@ -132,6 +133,27 @@ function RoomSession({ code, token, user }: RoomSessionProps) {
     switchToSpectator,
     switchToPlayer,
   } = useRoomSocket(code, profile, token);
+  const botFillAttempted = useRef(false);
+
+  useEffect(() => {
+    const decision = getTestBotFillDecision({
+      mode: new URLSearchParams(window.location.search).get("mode"),
+      attempted: botFillAttempted.current,
+      connected: isConnected,
+      status: room?.status ?? null,
+      gameType: room?.game_type ?? null,
+      isHost: room?.players.some(
+        (player) => player.id === profile.playerId && player.is_host,
+      ) ?? false,
+      players: room?.players ?? [],
+    });
+    if (decision.markAttempted) {
+      botFillAttempted.current = true;
+    }
+    if (decision.count !== null) {
+      sendAction("ADD_TEST_BOTS", { count: decision.count });
+    }
+  }, [isConnected, profile.playerId, room, sendAction]);
 
   useEffect(() => {
     if (room?.status !== "PLAYING") {

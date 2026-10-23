@@ -29,6 +29,8 @@
 
 ## Task 1: Allow authenticated hosts to add existing test bots
 
+**Status:** Complete in `bddffb4`; `tests/test_rooms_api.py` passed (7 tests).
+
 **Files:** `backend/app/main.py`, `backend/tests/test_rooms_api.py`.
 
 **Test:** Add an API/WebSocket regression that creates a guest host and a second guest, proves the authenticated host can use `ADD_TEST_BOTS`, and proves missing/mismatched authentication receive `FORBIDDEN` while a non-host receives the existing `HOST_ONLY` error. Confirm the normal error envelope is sent and the socket remains usable.
@@ -39,11 +41,13 @@
 
 ## Task 2: Add explicit lobby choices and one-time bot fill
 
+**Status:** Implemented; focused verification passed; feature commit and final review pending.
+
 **Files:** `frontend/src/pages/index.tsx`, `frontend/src/pages/room.tsx`, `frontend/src/lib/roomModes.ts`, `frontend/tests/roomModes.test.mjs`.
 
-**Test:** Verify `testBotCountFor(gameType)` returns 2 for `what_number`, 1 for `you_or_me` and `top100`, and `null` for `tictactoe` and `cardfight`.
+**Test:** Verify `testBotCountFor(gameType)` returns 2 for `what_number`, 1 for `you_or_me` and `top100`, and `null` for `tictactoe` and `cardfight`. Verify `roomRouteFor(code)` defaults to an unmarked PvP route and `roomRouteFor(code, "bot-test")` adds the bot-test marker. Verify `getTestBotFillDecision(input)` requests bots only for an unattempted, connected host in a bot-test LOBBY with one human and no bots; eligible states mark the attempt, while PvP, unsupported, disconnected, playing, non-host, existing-bot, multi-human, and already-attempted states never request bots.
 
-**Code:** Keep selected-game creation. Label ordinary creation “Create PvP room”. Add “Test vs bot” for the three supported games only. Bot-test creation uses the normal POST, then navigates to `/room/{code}?mode=bot-test`; game-catalog quick play defaults to PvP. In `RoomSession`, on a bot-test route, send `ADD_TEST_BOTS` once after the host receives a one-human LOBBY view, with `count` from `testBotCountFor`. Existing bot presence or another player prevents auto-fill. Show pending/errors through existing room notification handling.
+**Code:** Add `roomRouteFor(code: string, mode: RoomMode = "pvp"): string` and `getTestBotFillDecision(input: TestBotFillInput): { markAttempted: boolean; count: number | null }` in `frontend/src/lib/roomModes.ts`; use them from the hub and `RoomSession`. Keep selected-game creation. Label ordinary creation “Create PvP room”. Add “Test vs bot” for the three supported games only. Bot-test creation uses the normal POST, then navigates to the helper's `/room/{code}?mode=bot-test` route; game-catalog quick play defaults to PvP. The host sends `ADD_TEST_BOTS` once using the helper's count. Existing bot presence or another player prevents auto-fill. Show pending/errors through existing room notification handling.
 
 **Verify:** Run `node --test frontend/tests/roomModes.test.mjs`, run `npm run build` from `frontend/`, and `git diff --check`; manually inspect the lobby at desktop and phone widths if the local frontend is reachable. Commit `feat(lobby): add bot test and pvp room choices`.
 

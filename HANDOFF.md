@@ -2,9 +2,10 @@
 
 ## 2026-10-23 bot test and PvP lobby choices
 * **Active Task**: Add distinct lobby paths for normal PvP room creation and public test rooms using current game bots.
-* **State**: Owner approved the design and plan. Task 1 implemented and verified: `ADD_TEST_BOTS` requires the socket token identity to match the action player ID; the room manager still requires host role. API regression and full `test_rooms_api.py` pass (7 tests). Commit pending. Task 2 lobby route not started.
+* **State**: Owner approved the design and plan. Task 1 passed and was committed as `bddffb4`. Task 2 is implemented: PvP stays default; supported games get a “Test vs bot” action; bot filling is once-only and gated on a connected solo host in the LOBBY. The existing socket action fills game minimums.
 * **Ruling**: Preserve `HOST_ONLY` for authenticated non-hosts — that is the established room-manager contract. Require an authenticated matching token before the manager call because the prior code otherwise permitted host-ID spoofing. Cost if wrong: callers without guest/account tokens cannot add bots; the lobby always supplies such tokens.
-* **Next**: Commit Task 1, implement the bot-test lobby route, verify, get independent review, and update this file.
+* **Checks**: Backend room and Cardfight adapter suites pass (20 tests); four focused frontend Node test files pass; frontend production build passes (1610 modules); `git diff --check` passes. Final independent review pending.
+* **Next**: Commit Task 2, request plan-based independent review, address findings, then publish only after PASS.
 
 ## 2026-10-23 ROOM_NOT_FOUND local connection mismatch
 * **Active Task**: Fix `ROOM_NOT_FOUND: The requested room does not exist.` when connecting to rooms created in local development.

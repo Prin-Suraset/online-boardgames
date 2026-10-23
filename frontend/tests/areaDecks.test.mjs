@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseCatalog, validateDeck, parseDeckFile, encodeLegacyDeck, decodeLegacyDeck, readSavedDecks, saveDeck } from '../src/lib/areaDecks.ts';
+import { parseCatalog, validateDeck, parseDeckFile, encodeLegacyDeck, decodeLegacyDeck, readSavedDecks, saveDeck, getSavedDeckChoices } from '../src/lib/areaDecks.ts';
 const cards = [0,1,2,3,4].map((grade,i)=>({card_id:i+1,game_id:'cardfight',fields:{UnitGrade:grade,...(i===0?{TokenSummoner:7}:{}),...(i===4?{ExtraDeck:1}:{})},full_art:'/area-games/cardfight/art/full/n1.jpg',thumbnail_art:'/area-games/cardfight/art/thumb/n1.jpg',unresolved_fields:[]}));
 cards.push({card_id:6,game_id:'cardfight',fields:{TokenInHand:1},full_art:'/area-games/cardfight/art/full/n1.jpg',thumbnail_art:'/area-games/cardfight/art/thumb/n1.jpg',unresolved_fields:[]});
 cards.push({card_id:7,game_id:'cardfight',fields:{CardName:'Plant'},full_art:'/area-games/cardfight/art/full/n1.jpg',thumbnail_art:'/area-games/cardfight/art/thumb/n1.jpg',unresolved_fields:[]});
@@ -46,4 +46,11 @@ test('versioned saves are explicit, retain names, and recover malformed storage'
  assert.equal(readSavedDecks(storage).length,2);
  assert.equal(readSavedDecks(storage)[0].main[0],2);
  memory.set('area-games.cardfight.decks.v1','bad'); assert.deepEqual(readSavedDecks(storage),[]);
+});
+test('room deck choices keep local saves separate and report catalog validation per deck',()=>{
+ const memory=new Map(); const storage={getItem:k=>memory.get(k)??null,setItem:(k,v)=>memory.set(k,v)};
+ saveDeck(storage,deck); saveDeck(storage,{...deck,name:'Old catalog',catalog_version:'old'});
+ assert.deepEqual(getSavedDeckChoices(storage,catalog).map(choice=>({name:choice.deck.name,issues:choice.issues.length})),[
+  {name:'Named deck',issues:0},{name:'Old catalog',issues:1}
+ ]);
 });

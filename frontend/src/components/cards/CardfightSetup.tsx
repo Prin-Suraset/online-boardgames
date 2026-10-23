@@ -1,5 +1,5 @@
 import type { CardfightSetupView, CardfightSetupAction, Player } from '../../types';
-import { DeckWorkshop } from './DeckWorkshop';
+import { CardfightDeckPicker } from './CardfightDeckPicker';
 import { useCardfightCatalog } from './useCardfightCatalog';
 import './cardfight.css';
 interface Props { setup:CardfightSetupView; players:readonly Player[]; playerId:string; isHost:boolean; onAction:(action:CardfightSetupAction)=>void; onReady:(ready:boolean)=>void; onStart:()=>void; connected:boolean }
@@ -13,7 +13,7 @@ export function CardfightSetup({setup,players,playerId,isHost,onAction,onReady,o
   {own&&<button className="cf-primary" disabled={!connected||(!own.is_ready&&!valid)} onClick={()=>{onReady(!own.is_ready);}}>{own.is_ready?'Not ready':'Ready for duel'}</button>}{isHost&&<button className="cf-primary" disabled={!canStart} onClick={onStart}>Start duel</button>}</div>
   <p>Changing profile or first player clears both submissions and ready flags. Submit again after a change. Five-card opening; one optional reshuffle mulligan; concession or agreed result ends the match.</p>
   {error&&<p role="alert">{error}</p>}{!catalog&&!error&&<p role="status">Loading card catalog…</p>}{catalog&&catalog.catalog_version!==setup.catalog_version&&<p role="alert">Catalog versions differ. Reload after the current catalog is deployed.</p>}
-  {setup.self_setup!==null&&catalog&&<DeckWorkshop key={setup.catalog_version} catalog={catalog} initialDeck={setup.self_setup.deck} canSubmit={connected&&setup.profile_id!==null&&catalog.catalog_version===setup.catalog_version} onSubmit={deck=>{onAction({action_type:'CF_SUBMIT_DECK',payload:{deck}});}}/>}
+  {setup.self_setup!==null&&catalog&&<CardfightDeckPicker catalog={catalog} currentDeck={setup.self_setup.deck} canSubmit={connected&&setup.profile_id!==null&&catalog.catalog_version===setup.catalog_version} onSubmit={deck=>{onAction({action_type:'CF_SUBMIT_DECK',payload:{deck}});}}/>}
   {setup.self_setup===null&&<p className="cf-validation">You are spectating. Decks stay private; take an available seat to prepare your own.</p>}
  </section>;
 }

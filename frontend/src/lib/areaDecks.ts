@@ -80,5 +80,8 @@ export function saveDeck(storage: StoragePort, deck: CardfightDeck): void {
   if(index<0) existing.push(deck); else existing[index]=deck;
   storage.setItem(STORAGE_KEY,JSON.stringify(existing));
 }
+export function getSavedDeckChoices(storage: StoragePort, catalog: AreaCatalog): { deck: CardfightDeck; issues: string[] }[] {
+  return readSavedDecks(storage).map(deck => ({ deck, issues: validateDeck(deck, catalog) }));
+}
 export function emptyDeck(version: string): CardfightDeck { return {game_id:'cardfight',catalog_version:version,name:'My deck',main:[],ride:[],extra:[],tokens:[],starter_index:null}; }
 export function sampleDeck(version: string): CardfightDeck { return {...emptyDeck(version),name:'Recovered Blaster Blade',starter_index:0,main:[5681,5729,5729,5729,5729,5679,5679,5679,5679,5680,5680,5680,5680,5730,5730,5730,5730,5712,5712,5712,5678,5678,5678,5678,5674,5674,5674,5675,5675,5675,5675,5700,5700,5700,5700,5677,5677,5677,5677,5711,5711,5711,5683,5683,5683,5683,5728,5728,5728,5728]}; }

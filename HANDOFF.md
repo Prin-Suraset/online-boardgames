@@ -1,5 +1,11 @@
 # Session Handoff
 
+## 2026-10-23 Cardfight lobby deck selection
+* **Active Task**: Return from the standalone deck-builder preview to the Cardfight game lobby. The lobby should contain a deck chooser only; deck building remains outside the room.
+* **State**: Implemented and scoped reviewer PASS. The lobby no longer embeds `DeckWorkshop`; it lists saved local decks, validates against the current catalog, shows Main/Ride/G/Token counts and all validation issues, and submits through the existing `CF_SUBMIT_DECK` action. Empty and unavailable-storage states link to Decks. Tests and production build pass. Functional commit pending.
+* **Pending**: Account-synced deck retrieval is not implemented in the repository. This local-only room picker is a scoped lobby slice, not completion of Task 4. When the account deck API/hook is implemented, registered users must select account decks; local decks should require explicit import. Continue remaining Task 4 and full two-player/spectator/browser acceptance separately.
+* **Checks**: `node --test frontend/tests/areaDecks.test.mjs frontend/tests/cardfight.test.mjs frontend/tests/cardfightTokens.test.mjs` (3 files pass); `npm run build` (1609 modules); `git diff --check`; scoped reviewer recheck PASS. No backend contract changes.
+
 ## 2026-10-23 Cardfight token deck contract
 * **Active Task**: Add a distinct Cardfight token deck with 30-card capacity, separate from the 50-card main deck, and carry it through saved deck data and room setup.
 * **State**: Owner-approved full deck/room token support is implemented in both editors and the Cardfight room. Feature commit `474323b` plus reviewer follow-up `70dbc4c` passed independent review and were pushed to `origin/main` with checkpoint `3f74862`.

@@ -4,7 +4,7 @@
 * **Active Task**: Fix `ROOM_NOT_FOUND: The requested room does not exist.` when connecting to rooms created in local development.
 * **Cause**: `POST /api/rooms` uses Vite's `/api` proxy to `localhost:8000`, but the WebSocket fallback was the hosted Render backend. The in-memory local room therefore did not exist on the hosted WebSocket process.
 * **Change**: Development WebSockets now default to the Vite page origin, and Vite proxies `/ws` upgrades to `ws://localhost:8000`. `VITE_WS_URL` still overrides the default; production retains the hosted fallback. README local setup now relies on defaults.
-* **Checks**: Frontend production build passes (1609 modules); `git diff --check` passes; independent reviewer PASS. Feature commit and push pending.
+* **Checks**: Frontend production build passes (1609 modules); `git diff --check` passes; independent reviewer PASS. Fix committed as `64e0a13` (`fix(ws): route local rooms to local backend`) and pushed to `origin/main`.
 
 ## 2026-10-23 Cardfight lobby deck selection
 * **Active Task**: Return from the standalone deck-builder preview to the Cardfight game lobby. The lobby should contain a deck chooser only; deck building remains outside the room.

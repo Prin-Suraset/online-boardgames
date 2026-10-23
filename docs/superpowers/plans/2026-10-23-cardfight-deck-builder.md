@@ -4,7 +4,7 @@
 
 **Goal:** Move Cardfight deck building to a standalone page, keep only saved-deck selection in room setup, and provide account sync plus portable deck sharing.
 
-**Architecture:** Add strict authenticated REST endpoints and an owner-scoped SQLite repository with optimistic revisions. Reuse the existing card browser and deck validation on `/decks/cardfight`; a typed client hook chooses account storage for members and local storage for guests. Share codes encode only deck data and import as drafts. Existing room submission remains `CF_SUBMIT_DECK`.
+**Architecture:** First deliver and review a responsive UI prototype for `/decks/cardfight` and the compact room picker before implementing persistence. After visual acceptance, add strict authenticated REST endpoints and an owner-scoped SQLite repository with optimistic revisions. Reuse the existing card browser and deck validation; a typed client hook chooses account storage for members and local storage for guests. Share codes encode only deck data and import as drafts. Existing room submission remains `CF_SUBMIT_DECK`.
 
 **Tech Stack:** FastAPI, Pydantic v2 strict models, SQLite, React/TypeScript, Vite, browser localStorage and Clipboard API. No dependency additions.
 
@@ -54,6 +54,20 @@
 - Storage identity is `(owner_id, deck_id)`; deck names need not be unique. Revision starts at 1 and increments transactionally. `PUT` must compare-and-swap against `expected_revision`.
 
 ## Tasks
+
+### Task 0: Standalone deck and room-picker visual prototype
+
+**Files:**
+- Create `frontend/src/pages/CardfightDeckPreview.tsx` and `frontend/src/pages/cardfight-decks.css`.
+- Modify `frontend/src/App.tsx` and `frontend/src/components/Navbar.tsx` for a review route and global entry.
+- Update `HANDOFF.md`.
+
+- [x] Add a separate responsive deck page with library, card browser, deck summary, and visual controls using the existing card catalog assets.
+- [x] Add a room-picker preview that demonstrates selecting a saved deck without embedding the builder in the room.
+- [ ] Open the preview locally for owner PC/tablet/phone visual review. Do not start cloud persistence, room contract changes, or replace the current setup until the visual direction is accepted.
+- [ ] Commit the preview and handoff checkpoint.
+
+**Stop condition:** Owner reviews the visual prototype and confirms direction; adjust the UI before continuing to API/storage tasks.
 
 ### Task 1: Owner-scoped cloud repository and REST contract
 

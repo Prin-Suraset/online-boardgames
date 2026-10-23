@@ -1,6 +1,9 @@
 import { usePathname } from "./lib/navigation";
 import { HubPage } from "./pages";
 import { RoomPage } from "./pages/room";
+import { CardfightDeckPreview } from "./pages/CardfightDeckPreview";
+import { AuthModal } from "./components/AuthModal";
+import { Navbar } from "./components/Navbar";
 
 export function App() {
   const pathname = usePathname();
@@ -8,6 +11,8 @@ export function App() {
 
   const page = roomMatch?.[1] !== undefined
     ? <RoomPage code={roomMatch[1]} />
+    : pathname.startsWith("/decks/cardfight")
+      ? <CardfightDeckPreview />
     : <HubPage />;
 
   return (
@@ -18,5 +23,3 @@ export function App() {
     </>
   );
 }
-import { AuthModal } from "./components/AuthModal";
-import { Navbar } from "./components/Navbar";

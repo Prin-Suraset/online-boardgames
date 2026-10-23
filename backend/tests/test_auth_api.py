@@ -160,8 +160,12 @@ async def test_me_rejects_missing_and_tampered_tokens(tmp_path: Path) -> None:
             json={"display_name": "Token Tester"},
         )
         authentication = AuthResponse.model_validate(guest_response.json())
-        replacement = "A" if not authentication.token.endswith("A") else "B"
-        tampered_token = f"{authentication.token[:-1]}{replacement}"
+        header_segment, payload_segment, signature_segment = authentication.token.split(
+            "."
+        )
+        replacement = "B" if signature_segment[0] == "A" else "A"
+        tampered_signature = f"{replacement}{signature_segment[1:]}"
+        tampered_token = f"{header_segment}.{payload_segment}.{tampered_signature}"
         tampered_response = await client.get(
             "/api/auth/me",
             headers={"Authorization": f"Bearer {tampered_token}"},

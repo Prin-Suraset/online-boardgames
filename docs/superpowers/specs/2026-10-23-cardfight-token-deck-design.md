@@ -1,6 +1,6 @@
 # Cardfight Token Deck
 
-**Status:** Draft for owner approval. Implementation has not started.
+**Status:** Owner approved full deck/room scope and the separate Token Deck editor section on 2026-10-23. Implementation is pending the plan in `docs/superpowers/plans/2026-10-23-cardfight-token-deck.md`.
 
 ## Intent
 
@@ -9,7 +9,7 @@ Give Cardfight decks a separate supplemental token section with room for up to 3
 ## Goals
 
 - Add an ordered `tokens: number[]` section with a maximum of 30 entries to the Cardfight deck definition.
-- Show Token Deck in the builder with an independent `0 / 30` counter and capacity validation.
+- Show **Token Deck** as its own section/tab in both deck editor surfaces, with an independent `0 / 30` counter and capacity validation. Selecting it shows only token-classified cards; Main/Ride/G zone hide token-classified cards.
 - Keep tokens separate in saved deck data, deck import/export, lobby submission, trusted catalog snapshots, and the deterministic game state.
 - Let the owning player inspect their token supply and move a token to hand or a rear-guard circle during Main; keep opponent token identities concealed until played.
 - Reject token-classified card IDs in main, ride, and G-zone sections.
@@ -29,7 +29,7 @@ The recovered catalog has no single `IsToken` field. Derive a trusted token-ID s
 
 ## UI proposal
 
-Add a Token Deck section alongside Main, Ride, and G zone. While Token Deck is selected, show only catalog records in the derived token-ID set, apply the selected Cardfight format and text search, and cap additions at 30 total copies. The section's selected cards have normal inspector/removal controls; the main count remains 50. The real room deck selector and submission show token count separately.
+Add a Token Deck section/tab alongside Main, Ride, and G zone in the standalone preview and the current working `DeckWorkshop`. While Token Deck is selected, show only catalog records in the derived token-ID set, apply the selected Cardfight format and text search, and cap additions at 30 total copies. Other sections filter out token-classified cards. The section's selected cards have normal inspector/removal controls; the main count remains 50. The real room deck selector and submission show token count separately.
 
 ## Alternatives considered
 

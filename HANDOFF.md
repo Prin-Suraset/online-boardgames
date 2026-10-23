@@ -18,6 +18,7 @@
 * [x] Created standalone `/decks/cardfight` preview with real Cardfight catalog art, desktop deck library/browser/current-list layout, card inspection and draft additions, visual save/share affordances, global Decks navigation, and preview-only copy.
 * [x] Added switchable compact room-picker preview showing deck selection outside the room editor.
 * [x] Frontend production build passed (1606 modules). Browser inspected desktop builder and room picker at 1905px viewport; server-synced data and room contracts are untouched.
+* [x] Saved checkpoint `2553ad2` (`feat(cardfight-decks): add responsive UI preview`). Independent Task 0 review is in progress; do not push or start cloud/storage work until owner UX direction is accepted.
 * [ ] Owner reviews PC/tablet/phone UX direction. Current browser evidence is desktop only; responsive styles are implemented but still need tablet/phone visual review. Adjust UI based on feedback, then proceed to persistence and live room picker work.
 * **Proposed API**: owner-scoped authenticated GET/POST/PUT/DELETE `/api/cardfight/decks`; registered accounts cloud sync; guest saves local. Share codes are bounded self-contained deck drafts. Existing `CF_SUBMIT_DECK` contract remains unchanged.
 

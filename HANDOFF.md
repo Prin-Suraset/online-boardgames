@@ -1,5 +1,11 @@
 # Session Handoff
 
+## 2026-10-23 Cardfight token deck contract
+* **Active Task**: Add a distinct Cardfight token deck with 30-card capacity, separate from the 50-card main deck, and carry it through saved deck data and room setup.
+* **State**: Owner selected full deck/room contract scope. Draft design is in `docs/superpowers/specs/2026-10-23-cardfight-token-deck-design.md`; waiting for approval of the concrete schema/state behavior required by `AGENTS.md` rule 6. No product code changed.
+* **Findings**: Current strict Cardfight deck shape is `main/ride/extra`; tokens are not part of room submission. Recovered catalog has no universal token boolean. Proposed exact token classification uses `TokenInHand` and IDs referenced by `TokenSummoner*` / ride-upon token reference fields, without parsing card prose. Existing engine shuffles only main, extracts ride, and keeps G zone separate.
+* **Next**: Owner reviews/approves the draft contract. Then write the implementation plan, implement deck builder/import compatibility and server validation/state/view behavior, run required focused tests, obtain plan-based reviewer PASS, update this handoff, and commit. Keep `Reverse Engineered/` untracked and unstaged.
+
 ## 2026-10-23 battlefield zone styling
 * **Active Task**: Remove the persistent UI boxes drawn over Cardfight battlefield zones to match the inspected Vanguard reference.
 * **State**: Implemented, frontend build and whitespace check passed, committed.

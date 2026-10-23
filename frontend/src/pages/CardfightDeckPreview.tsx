@@ -18,6 +18,7 @@ export function CardfightDeckPreview() {
   const [mode, setMode] = useState<"builder" | "room">("builder");
   const [deck, setDeck] = useState<CardfightDeck>(() => ({ ...sampleDeck("preview"), name: "Blaster Blade" }));
   const [section, setSection] = useState<Section>("main");
+  const [quantity, setQuantity] = useState("1");
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [notice, setNotice] = useState("");
@@ -66,7 +67,8 @@ export function CardfightDeckPreview() {
     if (catalog === null) return [];
     return catalog.cards.filter((card) => {
       const search = `${cardName(card)} ${cardText(card)} ${card.card_id}`.toLocaleLowerCase();
-      const gradeMatch = filter === "all" || (filter === "g" ? card.fields.ExtraDeck === 1 : String(grade(card)) === filter);
+      const cardGrade = grade(card);
+      const gradeMatch = filter === "all" || (filter === "g" ? card.fields.ExtraDeck === 1 : filter === "6plus" ? cardGrade !== null && cardGrade >= 6 : String(cardGrade) === filter);
       return search.includes(query.toLocaleLowerCase()) && gradeMatch;
     }).slice(0, 36);
   }, [catalog, filter, query]);
@@ -80,15 +82,17 @@ export function CardfightDeckPreview() {
     return [...counts.entries()].map(([id, count]) => ({ id, count, card: lookup.get(id) }));
   }, [deck.main, lookup]);
 
-  const addCard = (card: AreaCard): void => {
+  const addCard = (card: AreaCard, amount: number): void => {
     const key = section;
     const current = key === "main" ? deck.main : key === "ride" ? deck.ride : deck.extra;
-    if (current.length >= (key === "main" ? 50 : key === "ride" ? 4 : 16)) {
-      setNotice(`${key === "main" ? "Main deck" : key === "ride" ? "Ride deck" : "G zone"} is full in this preview.`);
+    const capacity = key === "main" ? 50 : key === "ride" ? 4 : 16;
+    if (!Number.isInteger(amount) || amount < 1 || amount > capacity - current.length) {
+      setNotice(`Choose 1–${Math.max(0, capacity - current.length)} copies for this section.`);
       return;
     }
-    setDeck((previous) => ({ ...previous, [key]: [...(key === "main" ? previous.main : key === "ride" ? previous.ride : previous.extra), card.card_id] }));
-    setNotice(`${cardName(card)} added to ${key === "extra" ? "G zone" : key}.`);
+    setDeck((previous) => ({ ...previous, [key]: [...(key === "main" ? previous.main : key === "ride" ? previous.ride : previous.extra), ...Array.from({ length: amount }, () => card.card_id)] }));
+    setNotice(`${amount} ${amount === 1 ? "copy" : "copies"} of ${cardName(card)} added to ${key === "extra" ? "G zone" : key}.`);
+    setSelected(null);
   };
 
   const switchMode = (next: "builder" | "room"): void => {
@@ -99,6 +103,7 @@ export function CardfightDeckPreview() {
 
   const openInspector = (opener: HTMLElement, card: AreaCard): void => {
     inspectorOpenerRef.current = opener;
+    setQuantity("1");
     setSelected(card);
   };
 
@@ -157,7 +162,7 @@ export function CardfightDeckPreview() {
 
               <div className="cf-decks-searchline">
                 <label className="cf-decks-search"><Search size={17} /><input type="search" value={query} onChange={(event) => { setQuery(event.target.value); }} placeholder="Search card name, text, or ID" aria-label="Search Cardfight cards" /><kbd>/</kbd></label>
-                <label className="cf-decks-filter"><span>Show</span><select aria-label="Filter by grade" value={filter} onChange={(event) => { setFilter(event.target.value); }}><option value="all">All cards</option><option value="0">Grade 0</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="g">G zone</option></select><ChevronDown size={14} /></label>
+                <label className="cf-decks-filter"><span>Show</span><select aria-label="Filter by grade" value={filter} onChange={(event) => { setFilter(event.target.value); }}><option value="all">All cards</option><option value="0">Grade 0</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6plus">Grade 6+</option><option value="g">G zone</option></select></label>
               </div>
 
               <div className="cf-decks-section-tabs" role="tablist" aria-label="Deck section">
@@ -198,7 +203,7 @@ export function CardfightDeckPreview() {
         <footer className="cf-decks-footer"><span>Common Ground <i /> Cardfight</span><button type="button" onClick={() => { setNotice("Rule help will be linked here in the finished builder."); }}>Deck rules <CircleHelp size={14} /></button><button type="button" onClick={() => { setNotice("Import is planned for the finished builder."); }}><Upload size={14} /> Import</button></footer>
       </div>
 
-      {selected !== null && <div className="cf-decks-modal-backdrop" role="presentation" onClick={() => { setSelected(null); }}><section ref={dialogRef} className="cf-decks-inspector" role="dialog" aria-modal="true" aria-labelledby="cf-decks-inspector-title" onClick={(event) => { event.stopPropagation(); }}><button ref={closeButtonRef} className="cf-decks-inspector-close" type="button" aria-label="Close card details" onClick={() => { setSelected(null); }}><X size={17} /></button><CardArtwork card={selected} full /><div><span className="cf-decks-eyebrow">Grade {grade(selected) ?? "unknown"} · #{selected.card_id}</span><h2 id="cf-decks-inspector-title">{cardName(selected)}</h2><p>{cardText(selected)}</p><button type="button" className="cf-decks-save" onClick={() => { addCard(selected); }}>Add to {section === "extra" ? "G zone" : section}<Plus size={16} /></button></div></section></div>}
+      {selected !== null && <div className="cf-decks-modal-backdrop" role="presentation" onClick={() => { setSelected(null); }}><section ref={dialogRef} className="cf-decks-inspector" role="dialog" aria-modal="true" aria-labelledby="cf-decks-inspector-title" onClick={(event) => { event.stopPropagation(); }}><button ref={closeButtonRef} className="cf-decks-inspector-close" type="button" aria-label="Close card details" onClick={() => { setSelected(null); }}><X size={17} /></button><CardArtwork card={selected} full /><div><span className="cf-decks-eyebrow">Grade {grade(selected) ?? "unknown"} · #{selected.card_id}</span><h2 id="cf-decks-inspector-title">{cardName(selected)}</h2><p>{cardText(selected)}</p><label className="cf-decks-quantity">Copies to add<input type="number" min="1" max={Math.max(0, (section === "main" ? 50 - deck.main.length : section === "ride" ? 4 - deck.ride.length : 16 - deck.extra.length))} step="1" inputMode="numeric" value={quantity} onChange={(event) => { setQuantity(event.target.value); }} aria-label="Number of copies to add" /></label><button type="button" className="cf-decks-save" disabled={!Number.isInteger(Number(quantity)) || Number(quantity) < 1 || Number(quantity) > (section === "main" ? 50 - deck.main.length : section === "ride" ? 4 - deck.ride.length : 16 - deck.extra.length)} onClick={() => { addCard(selected, Number(quantity)); }}>Add {quantity || "0"} {Number(quantity) === 1 ? "copy" : "copies"} to {section === "extra" ? "G zone" : section}<Plus size={16} /></button></div></section></div>}
     </main>
   );
 }

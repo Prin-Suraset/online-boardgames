@@ -1,5 +1,12 @@
 # Session Handoff
 
+## 2026-10-23 battlefield zone styling
+* **Active Task**: Remove the persistent UI boxes drawn over Cardfight battlefield zones to match the inspected Vanguard reference.
+* **State**: Implemented, frontend build and whitespace check passed, committed.
+* [x] Removed backgrounds and borders from closed Damage/Drop overlays and Deck counter; removed dark chips behind circle labels and empty labels. Mat artwork remains the visual zone boundary. Expanded Damage/Drop details retain a dark panel for readable card browsing; auxiliary trays outside the mat are unchanged.
+* [x] Frontend production build passed (1604 modules); `git diff --check` passed; committed as `6b40eff` (`style(cardfight): remove battlefield zone boxes`).
+* **Notes**: No rules, contracts, card placement, privacy, or room behavior changed. Original untracked `Reverse Engineered/` directory remains untouched.
+
 ## 1. Current Status
 * **Active Task**: Task4 Cardfight room/workshop/responsive board integration. Owner resumed UI-only work using the opened Vanguard browser game as a visual reference; backend/contracts/gameplay remain under the prior approved assisted profile. Task3 independent gate PASSED through `b39bf10`.
 * **State**: UI-only increment through `958b61e` implemented, browser-smoked and independently reviewed PASS. Full Task4 remains incomplete and unreviewed. Next implementer LOW. Local UI test servers stopped; no push because github.com did not resolve.

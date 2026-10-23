@@ -1,6 +1,7 @@
 """Trusted pinned Cardfight mechanics loaded outside the pure game engine."""
 from __future__ import annotations
 
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -20,6 +21,18 @@ class CardfightCatalog(BaseModel):
     game_id: str
     catalog_version: str
     cards: tuple[CatalogCard, ...]
+
+    def token_ids(self) -> frozenset[int]:
+        known_ids = {card.card_id for card in self.cards}
+        token_ids: set[int] = set()
+        for card in self.cards:
+            if type(card.fields.get("TokenInHand")) is int and card.fields.get("TokenInHand") == 1:
+                token_ids.add(card.card_id)
+            for field, value in card.fields.items():
+                if (re.fullmatch(r"TokenSummoner\d*|TokenSummonerRodeUponNumber|TokenSummonRodeUponNumber", field)
+                        and type(value) is int and value in known_ids):
+                    token_ids.add(value)
+        return frozenset(token_ids)
 
     def snapshot(self, deck: CardfightDeckDefinition) -> CardfightDeckSnapshot:
         lookup = {card.card_id: card for card in self.cards}

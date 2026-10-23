@@ -1,5 +1,6 @@
 import type { CardfightDeck } from '../types/cardfight';
 import { isCardfightDeck } from './cardfightGuards.ts';
+export { getCardfightTokenIds } from './cardfightTokens.ts';
 export interface AreaCard { card_id: number; game_id: 'cardfight'; fields: Readonly<Record<string, unknown>>; full_art: string; thumbnail_art: string; unresolved_fields: readonly string[] }
 export interface AreaCatalog { game_id: 'cardfight'; catalog_version: string; cards: readonly AreaCard[] }
 const record = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);

@@ -16,7 +16,7 @@ Add a separate Token Deck section with a 30-copy capacity through deck editing, 
 **Behavior**
 - Classify only IDs with `TokenInHand == 1` or referenced by `TokenSummoner`, `TokenSummoner2...`, `TokenSummonerRodeUponNumber`, or `TokenSummonRodeUponNumber` fields.
 - Ignore missing, non-integer, zero, or unknown references; do not parse card prose or names.
-- Cover direct flags, every reference family, and non-token controls before continuing.
+- [x] Cover direct flags, every reference family, and non-token controls with focused frontend and backend tests; both pass.
 
 ## Task 2: Extend deck schema and migrate old local/file decks
 

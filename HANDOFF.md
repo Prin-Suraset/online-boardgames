@@ -2,7 +2,7 @@
 
 ## 2026-10-23 Cardfight token deck contract
 * **Active Task**: Add a distinct Cardfight token deck with 30-card capacity, separate from the 50-card main deck, and carry it through saved deck data and room setup.
-* **State**: Owner approved full deck/room contract scope and a dedicated Token Deck tab/section in both editors. Approved design is in `docs/superpowers/specs/2026-10-23-cardfight-token-deck-design.md`; implementation plan is `docs/superpowers/plans/2026-10-23-cardfight-token-deck.md`. No product code changed yet.
+* **State**: Owner approved full deck/room contract scope and a dedicated Token Deck tab/section in both editors. Approved design is in `docs/superpowers/specs/2026-10-23-cardfight-token-deck-design.md`; implementation plan is `docs/superpowers/plans/2026-10-23-cardfight-token-deck.md`. Token ID derivation is implemented and focused frontend/backend tests pass; deck schema, builder sections, and room supply remain pending.
 * **Findings**: Current strict Cardfight deck shape is `main/ride/extra`; tokens are not part of room submission. Recovered catalog has no universal token boolean. Classification uses exact `TokenInHand` flags and IDs referenced by `TokenSummoner*` / ride-upon token reference fields, without parsing card prose. Existing engine shuffles only main, extracts ride, and keeps G zone separate.
 * **Next**: Implement plan tasks sequentially, including legacy local/JSON normalization, token validation, private TOKEN supply state/view and owner inspection/move behavior. Run focused frontend Node tests, backend Cardfight pytest tests, and production build; obtain plan-based reviewer PASS; update this handoff with commit(s). Keep `Reverse Engineered/` untracked and unstaged.
 

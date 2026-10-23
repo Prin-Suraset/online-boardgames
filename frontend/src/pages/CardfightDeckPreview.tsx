@@ -204,7 +204,6 @@ export function CardfightDeckPreview() {
               <div className="cf-decks-listed-cards">
                 {namedCounts.map(({ id, count, card }) => <div key={id} className="cf-decks-listed-card"><button type="button" className="cf-decks-listed-open" onClick={(event) => { if (card !== undefined) openInspector(event.currentTarget, card); }} aria-label={`Inspect ${cardName(card)}`}><CardArtwork card={card} /><span>{cardName(card)}</span></button><b aria-label={`${count} copies`}>{count}</b><button type="button" className="cf-decks-listed-remove" aria-label={`Remove one copy of ${cardName(card)}`} title="Remove one copy" onClick={() => { removeCard(id); }}><Trash2 size={15} /></button></div>)}
               </div>
-              <div className={`cf-decks-legality${isDeckReady ? "" : " is-incomplete"}`}><span className="cf-decks-legality-icon">{isDeckReady ? <Check size={15} /> : <CircleHelp size={15} />}</span><span><strong>{isDeckReady ? "Ready for assisted play" : "Draft in progress"}</strong><small>{isDeckReady ? "Deck validation checks passed" : `${deck.main.length}/50 main deck cards · Complete the list to continue`}</small></span><CircleHelp size={15} /></div>
               <button type="button" className="cf-decks-room-cta" disabled={!isDeckReady} onClick={() => { switchMode("room"); }}>{isDeckReady ? "Choose for a room" : "Complete deck to choose for room"} <span>›</span></button>
               <p className="cf-decks-editor-note">Ability resolution is handled by players.</p>
             </aside>

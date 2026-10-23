@@ -41,7 +41,7 @@
 
 ## Task 2: Add explicit lobby choices and one-time bot fill
 
-**Status:** Implemented; review follow-up adds a room-code React key and bot-fill explanation. Focused backend/frontend suites and production build pass; final reviewer recheck pending.
+**Status:** Implemented and independently reviewed PASS, including the route-change fix. Focused backend/frontend suites and production build pass; final full-suite integration check pending.
 
 **Files:** `frontend/src/pages/index.tsx`, `frontend/src/pages/room.tsx`, `frontend/src/lib/roomModes.ts`, `frontend/tests/roomModes.test.mjs`.
 
@@ -53,4 +53,4 @@
 
 ## Final Gate
 
-Request an independent read-only review of the diff against this plan. Publish only after PASS. Update root `HANDOFF.md` with commits, checks, reviewer result, and remaining limitations.
+Independent read-only review of `bddffb4`, `61f5f3a`, and `dcffac7` passed. Run the final full-suite integration check and update root `HANDOFF.md` with commits, checks, reviewer result, and remaining limitations before publishing.

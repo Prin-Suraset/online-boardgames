@@ -30,7 +30,7 @@ import { useAuth } from "../context/AuthContext";
 import { useRoomSocket } from "../hooks/useRoomSocket";
 import { navigate } from "../lib/navigation";
 import { catalogGames } from "../lib/gameCatalog";
-import { getTestBotFillDecision } from "../lib/roomModes";
+import { getTestBotFillDecision, roomSessionKey } from "../lib/roomModes";
 import { cn } from "../lib/styles";
 import type { AuthUser, RoomState, Player, TicTacToeView, Top100View, YouOrMeView } from "../types";
 
@@ -96,7 +96,7 @@ export function RoomPage({ code }: RoomPageProps) {
     );
   }
 
-  return <RoomSession code={code} token={token} user={user} />;
+  return <RoomSession key={roomSessionKey(code)} code={code} token={token} user={user} />;
 }
 
 interface RoomSessionProps extends RoomPageProps {

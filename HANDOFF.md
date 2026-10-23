@@ -2,10 +2,10 @@
 
 ## 2026-10-23 bot test and PvP lobby choices
 * **Active Task**: Add distinct lobby paths for normal PvP room creation and public test rooms using current game bots.
-* **State**: Owner approved the design and plan. Task 1 passed and was committed as `bddffb4`. Task 2 is implemented: PvP stays default; supported games get a “Test vs bot” action; bot filling is once-only and gated on a connected solo host in the LOBBY. The existing socket action fills game minimums.
+* **State**: Owner approved the design and plan. Task 1 passed and was committed as `bddffb4`. Task 2 is implemented: PvP stays default; supported games get “Test vs bot”; the session is keyed by room code; bot filling is once-only and gated on a connected solo host in the LOBBY. The lobby explains that ready bots fill the table and the host starts the game. The existing socket action fills game minimums. First review found the route reuse issue; the follow-up is implemented and awaiting re-review.
 * **Ruling**: Preserve `HOST_ONLY` for authenticated non-hosts — that is the established room-manager contract. Require an authenticated matching token before the manager call because the prior code otherwise permitted host-ID spoofing. Cost if wrong: callers without guest/account tokens cannot add bots; the lobby always supplies such tokens.
-* **Checks**: Backend room and Cardfight adapter suites pass (20 tests); four focused frontend Node test files pass; frontend production build passes (1610 modules); `git diff --check` passes. Final independent review pending.
-* **Next**: Commit Task 2, request plan-based independent review, address findings, then publish only after PASS.
+* **Checks**: Route key regression passes; backend room/Cardfight adapter suites pass (20 tests); four frontend Node test files pass; frontend build passes (1610 modules); `git diff --check` passes. Final independent re-review pending.
+* **Next**: Commit review follow-up, request final review, then publish only after PASS.
 
 ## 2026-10-23 ROOM_NOT_FOUND local connection mismatch
 * **Active Task**: Fix `ROOM_NOT_FOUND: The requested room does not exist.` when connecting to rooms created in local development.

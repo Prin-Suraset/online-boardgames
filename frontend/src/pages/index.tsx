@@ -162,15 +162,20 @@ export function HubPage() {
               Create PvP room
             </button>
             {selectedBotCount !== null ? (
-              <button
-                type="button"
-                onClick={() => { void createRoom(selectedGame, "bot-test"); }}
-                disabled={busyAction !== null}
-                className="secondary-button mt-3 w-full rounded-lg px-6 py-3 font-bold"
-              >
-                {busyAction === "create" ? <LoaderCircle className="size-4 animate-spin" /> : <Bot className="size-4" />}
-                Test vs bot
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => { void createRoom(selectedGame, "bot-test"); }}
+                  disabled={busyAction !== null}
+                  className="secondary-button mt-3 w-full rounded-lg px-6 py-3 font-bold"
+                >
+                  {busyAction === "create" ? <LoaderCircle className="size-4 animate-spin" /> : <Bot className="size-4" />}
+                  Test vs bot
+                </button>
+                <p className="mt-2 text-center text-xs leading-5 text-slate-400">
+                  Fills the table with ready bots. You still start the game.
+                </p>
+              </>
             ) : (
               <p className="mt-3 text-center text-xs leading-5 text-slate-500">
                 Bot test rooms are not available for {selectedGameDetails?.title} yet.

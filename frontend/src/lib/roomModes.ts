@@ -8,6 +8,10 @@ const minimumPlayersWithBots: Partial<Record<GameType, number>> = {
 
 export type RoomMode = 'pvp' | 'bot-test';
 
+export function roomSessionKey(roomCode: string): string {
+  return roomCode.trim().toUpperCase();
+}
+
 export function roomRouteFor(roomCode: string, mode: RoomMode = 'pvp'): string {
   const path = `/room/${roomCode.trim().toUpperCase()}`;
   return mode === 'bot-test' ? `${path}?mode=bot-test` : path;

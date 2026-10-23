@@ -2,7 +2,7 @@
 
 ## 2026-10-23 Cardfight lobby deck selection
 * **Active Task**: Return from the standalone deck-builder preview to the Cardfight game lobby. The lobby should contain a deck chooser only; deck building remains outside the room.
-* **State**: Implemented and scoped reviewer PASS. The lobby no longer embeds `DeckWorkshop`; it lists saved local decks, validates against the current catalog, shows Main/Ride/G/Token counts and all validation issues, and submits through the existing `CF_SUBMIT_DECK` action. Empty and unavailable-storage states link to Decks. Tests and production build pass. Functional commit pending.
+* **State**: Implemented and scoped reviewer PASS. The lobby no longer embeds `DeckWorkshop`; it lists saved local decks, validates against the current catalog, shows Main/Ride/G/Token counts and all validation issues, and submits through the existing `CF_SUBMIT_DECK` action. Empty and unavailable-storage states link to Decks. Tests and production build pass. Commit `d8527d4` was pushed to `origin/main` after reviewer PASS.
 * **Pending**: Account-synced deck retrieval is not implemented in the repository. This local-only room picker is a scoped lobby slice, not completion of Task 4. When the account deck API/hook is implemented, registered users must select account decks; local decks should require explicit import. Continue remaining Task 4 and full two-player/spectator/browser acceptance separately.
 * **Checks**: `node --test frontend/tests/areaDecks.test.mjs frontend/tests/cardfight.test.mjs frontend/tests/cardfightTokens.test.mjs` (3 files pass); `npm run build` (1609 modules); `git diff --check`; scoped reviewer recheck PASS. No backend contract changes.
 
@@ -49,9 +49,9 @@
 * **Proposed API**: owner-scoped authenticated GET/POST/PUT/DELETE `/api/cardfight/decks`; registered accounts cloud sync; guest saves local. Share codes are bounded self-contained deck drafts. Existing `CF_SUBMIT_DECK` contract remains unchanged.
 
 ## 1. Current Status
-* **Active Task**: Task4 Cardfight room/workshop/responsive board integration. Owner resumed UI-only work using the opened Vanguard browser game as a visual reference; backend/contracts/gameplay remain under the prior approved assisted profile. Task3 independent gate PASSED through `b39bf10`.
-* **State**: UI-only increment through `958b61e` implemented, browser-smoked and independently reviewed PASS. Full Task4 remains incomplete and unreviewed. Next implementer LOW. Local UI test servers stopped; no push because github.com did not resolve.
-* **Sequencing**: Approved4a backend/setup/typed transport, then4b workshop/table/browser; final Task4 review covers BOTH. One tracked-file writer. A Cardfight catalog entry is present in the saved unfinished wiring; verify the full game is playable before publication. No actual quota gauge is exposed.
+* **Active Task**: Task4 Cardfight room/workshop/responsive board integration, currently focused on room setup UX. Task3 independent gate PASSED through `b39bf10`.
+* **State**: The local-only lobby deck-picker slice passed scoped review and was pushed as `d8527d4`. Full Task4 remains incomplete and has not passed its final review. Account-synced deck retrieval, remaining workshop/board integration, and full multiplayer/browser acceptance remain pending. Next implementer LOW. Local UI test servers stopped.
+* **Sequencing**: Keep room setup on the existing approved Cardfight contract. Integrate account-synced decks once the approved account deck API/hook exists; then complete Task4 workshop/table/browser acceptance. One tracked-file writer. No actual quota gauge is exposed.
 * **Implementer setting**: Owner lowered MEDIUM→LOW on2026-10-22; the already running medium turn could not be retuned. Next implementation turn must use LOW. Reviewer setting unchanged.
 
 ## 2. Completed in this Session

@@ -18,6 +18,8 @@ test('profile validation keeps unknown mechanics unknown and validates explicit 
 });
 test('deck JSON and numeric legacy codec preserve duplicate order and reject malformed input',()=>{
  assert.deepEqual(parseDeckFile(JSON.stringify(deck)),deck);
+ const tokenDeck={...deck,tokens:[6,7,6]};
+ assert.deepEqual(parseDeckFile(JSON.stringify(tokenDeck)),tokenDeck);
  assert.deepEqual(parseDeckFile(JSON.stringify(legacyDeck)),deck);
  assert.throws(()=>parseDeckFile(JSON.stringify({...deck,seed:1})));
  const ids=[3,1,3,2]; const encoded=encodeLegacyDeck(ids);

@@ -19,8 +19,8 @@ def snapshot(*, ride: bool = False, extra: bool = False, tokens: bool = False) -
     definitions = tuple(
         CardfightCardDefinition(card_id=i, catalog_version="fixture-v1", grade=(i - 1) % 4,
                                extra_deck=1 if i == 60 else 0, trigger_type=6 if i == 50 else None,
-                               is_token=i == 61)
-        for i in (*range(1, 51), 60, 61)
+                               is_token=i in (61, 62))
+        for i in (*range(1, 51), 60, 61, 62)
     )
     return CardfightDeckSnapshot(
         deck=CardfightDeckDefinition(catalog_version="fixture-v1", name="Fixture",
@@ -82,6 +82,54 @@ def test_token_supply_can_call_to_rear_only_during_main_phase() -> None:
     public_call = next(card for player in bob_view.players if player.player_id == "alice" for zone in player.zones
                        if zone.zone == "REAR" for card in zone.cards)
     assert public_call.card_id == 61
+
+
+def test_token_ids_must_use_the_token_section() -> None:
+    original = snapshot(tokens=True)
+    invalid_decks = [
+        original.deck.model_copy(update={"main": (61,) + original.deck.main[1:], "tokens": ()}),
+        original.deck.model_copy(update={"ride": (61, 2, 3, 4), "tokens": (), "starter_index": None}),
+    ]
+    for invalid_deck in invalid_decks:
+        invalid_snapshot = original.model_copy(update={"deck": invalid_deck})
+        with pytest.raises(ValueError, match="token cards must be submitted"):
+            Engine.create_state(("alice", "bob"), (invalid_snapshot, snapshot()),
+                                "cardfight-manual-v1", "alice", bytes(range(32)))
+    definitions = tuple(
+        definition.model_copy(update={"extra_deck": 1}) if definition.card_id == 61 else definition
+        for definition in original.definitions
+    )
+    invalid_extra = original.model_copy(update={"definitions": definitions,
+        "deck": original.deck.model_copy(update={"extra": (61,), "tokens": ()})})
+    with pytest.raises(ValueError, match="token cards must be submitted"):
+        Engine.create_state(("alice", "bob"), (invalid_extra, snapshot()),
+                            "cardfight-manual-v1", "alice", bytes(range(32)))
+
+
+def test_token_section_rejects_non_tokens_and_caps_at_thirty() -> None:
+    base = snapshot().deck
+    with pytest.raises(ValidationError):
+        CardfightDeckDefinition.model_validate({**base.model_dump(), "tokens": (1,) * 31})
+    invalid = snapshot().model_copy(update={"deck": base.model_copy(update={"tokens": (2,)})})
+    with pytest.raises(ValueError, match="unsupported token classification"):
+        Engine.create_state(("alice", "bob"), (invalid, snapshot()),
+                            "cardfight-manual-v1", "alice", bytes(range(32)))
+    accepted = snapshot().model_copy(update={"deck": base.model_copy(update={"tokens": (61,) * 30})})
+    state = Engine.create_state(("alice", "bob"), (accepted, snapshot()),
+                                "cardfight-manual-v1", "alice", bytes(range(32)))
+    token_ids = [card.card_id for card in state.cards if card.owner_id == "alice" and card.zone == "TOKEN"]
+    assert token_ids == [61] * 30
+
+
+def test_token_section_preserves_copy_order_and_duplicates() -> None:
+    base = snapshot(tokens=True)
+    deck = base.deck.model_copy(update={"tokens": (62, 61, 62)})
+    token_snapshot = base.model_copy(update={"deck": deck})
+    state = Engine.create_state(("alice", "bob"), (token_snapshot, snapshot()),
+                                "cardfight-manual-v1", "alice", bytes(range(32)))
+    tokens = [card for card in state.cards if card.owner_id == "alice" and card.zone == "TOKEN"]
+    assert [card.card_id for card in tokens] == [62, 61, 62]
+    assert len({card.instance_id for card in tokens}) == 3
 
 
 def act(state: CardfightState, who: str, kind: str, **payload: object) -> CardfightState:

@@ -6,7 +6,8 @@
 * **Ruling**: Preserve `HOST_ONLY` for authenticated non-hosts — that is the established room-manager contract. Require an authenticated matching token before the manager call because the prior code otherwise permitted host-ID spoofing. Cost if wrong: callers without guest/account tokens cannot add bots; the lobby always supplies such tokens.
 * **Ruling**: Correct the existing tampered-token test to change the first signature character; changing only the final base64url character can preserve the decoded bytes through unused padding bits. This makes the full-suite auth check deterministic without changing auth behavior. Cost if wrong: a test-only change outside the bot-room feature scope.
 * **Checks**: Full backend suite passes (141 tests, 10 subtests); all six frontend Node test files pass; frontend production build passes (1610 modules); `git diff --check` passes. First full backend run exposed the pre-existing token-test flake; corrected and reran successfully. Feature and test-only correction both passed independent review.
-* **Next**: Fast-forward the reviewed branch to `main` and push to `origin/main` as authorized.
+* **Published**: Commits `bddffb4`, `61f5f3a`, `dcffac7`, `925a0ab`, `f518720`, and `0c862bf` are on `origin/main`; local `main` is synchronized.
+* **Next**: No pending work for bot-test/PvP lobby creation. Broader Cardfight Task 4 work remains tracked below, including account-synced room deck retrieval and full browser acceptance.
 
 ## 2026-10-23 ROOM_NOT_FOUND local connection mismatch
 * **Active Task**: Fix `ROOM_NOT_FOUND: The requested room does not exist.` when connecting to rooms created in local development.

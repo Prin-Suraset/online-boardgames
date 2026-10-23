@@ -53,4 +53,4 @@
 
 ## Final Gate
 
-Independent read-only review of `bddffb4`, `61f5f3a`, and `dcffac7` passed. The isolated deterministic auth-test correction `925a0ab` also passed read-only review. Full backend suite passes (141 tests, 10 subtests); all six frontend Node test files pass; production build and `git diff --check` pass. Ready to publish.
+Independent read-only review of `bddffb4`, `61f5f3a`, and `dcffac7` passed. The isolated deterministic auth-test correction `925a0ab` also passed read-only review. Full backend suite passes (141 tests, 10 subtests); all six frontend Node test files pass; production build and `git diff --check` pass. Published to `origin/main` through `0c862bf`.

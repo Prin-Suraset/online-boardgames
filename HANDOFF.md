@@ -7,6 +7,14 @@
 * [x] Frontend production build passed (1604 modules); `git diff --check` passed; CSS committed as `ae821ba` (`style(cardfight): remove battlefield zone boxes`). This handoff note is updated in a follow-up docs commit.
 * **Notes**: No rules, contracts, card placement, privacy, or room behavior changed. Original untracked `Reverse Engineered/` directory remains untouched.
 
+## 2026-10-23 separate Cardfight deck builder request
+* **Active Task**: Move Cardfight deck building outside room setup; add account-synced saved decks and copy/paste share codes while retaining file export.
+* **State**: Design drafted and awaiting owner approval. No product code changed.
+* [x] Inspected current `DeckWorkshop`, `CardfightSetup`, router, auth context, and SQLite/FastAPI patterns.
+* [x] Drafted `docs/superpowers/specs/2026-10-23-cardfight-deck-builder-design.md` from the owner's account-sync/share-code direction.
+* [ ] Owner reviews and approves the design/API contract. After approval, write the implementation plan, then implement and independently review before publication.
+* **Proposed API**: owner-scoped authenticated GET/POST/PUT/DELETE `/api/cardfight/decks`; registered accounts cloud sync; guest saves local. Share codes are bounded self-contained deck drafts. Existing `CF_SUBMIT_DECK` contract remains unchanged.
+
 ## 1. Current Status
 * **Active Task**: Task4 Cardfight room/workshop/responsive board integration. Owner resumed UI-only work using the opened Vanguard browser game as a visual reference; backend/contracts/gameplay remain under the prior approved assisted profile. Task3 independent gate PASSED through `b39bf10`.
 * **State**: UI-only increment through `958b61e` implemented, browser-smoked and independently reviewed PASS. Full Task4 remains incomplete and unreviewed. Next implementer LOW. Local UI test servers stopped; no push because github.com did not resolve.

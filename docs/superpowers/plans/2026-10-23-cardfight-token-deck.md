@@ -71,7 +71,7 @@ Add a separate Token Deck section with a 30-copy capacity through deck editing, 
 - Run focused frontend Node tests and backend Cardfight pytest tests plus the frontend production build after the cross-stack implementation. Do not mutate unrelated test data; inspect repository guidance before backend suite runs.
 - Review changes against this plan, especially schema compatibility, identity privacy, token/main separation, and responsive Token Deck tab layout.
 - Commit each finished functional task with a conventional commit. Never stage the user-supplied untracked `Reverse Engineered/` directory.
-- [ ] Independent reviewer assessment, final feature commit, and owner-authorized publication after PASS.
+- [x] Independent plan-based reviewer PASS after follow-up coverage and wording fixes. Feature commits: `474323b`, `70dbc4c`. Owner-authorized publication is the remaining step.
 
 ## Acceptance
 

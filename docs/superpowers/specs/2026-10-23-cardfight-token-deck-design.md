@@ -1,6 +1,6 @@
 # Cardfight Token Deck
 
-**Status:** Owner approved full deck/room scope and the separate Token Deck editor section on 2026-10-23. Implementation is recorded in `docs/superpowers/plans/2026-10-23-cardfight-token-deck.md`; final independent review and commit are pending.
+**Status:** Owner approved full deck/room scope and the separate Token Deck editor section on 2026-10-23. Implementation and independent plan-based review are complete. Publication is recorded in the session handoff.
 
 ## Intent
 

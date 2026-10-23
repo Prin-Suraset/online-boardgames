@@ -2,11 +2,11 @@
 
 ## 2026-10-23 Cardfight token deck contract
 * **Active Task**: Add a distinct Cardfight token deck with 30-card capacity, separate from the 50-card main deck, and carry it through saved deck data and room setup.
-* **State**: Owner approved full deck/room scope and a dedicated Token Deck tab/section in both editors. Schema, legacy local/JSON migration, both builder sections, trusted room snapshots, private TOKEN supply, owner inspection/movement, and frontend zone UI are implemented. Focused frontend/backend tests, frontend production build, and diff check pass. Feature commit `474323b` is saved; independent review and publication remain pending.
+* **State**: Owner-approved full deck/room token support is implemented in both editors and the Cardfight room. Feature commit `474323b` plus reviewer follow-up `70dbc4c` are saved. Independent review passed; authorized publication is pending.
 * **Completed**: Token classification uses exact `TokenInHand` flags and IDs referenced by `TokenSummoner*` / ride-upon token reference fields, without parsing card prose. Decks carry ordered `tokens` up to 30, separate from the main 50; old local/JSON shapes migrate only when `tokens` is the sole missing field. Tokens are excluded from draw/shuffle/opening and concealed from opponents; owner may inspect and move them to hand or Rear during Main. `CF_SUBMIT_DECK` envelope stays the same while its nested deck includes `tokens`.
 * **Checks**: Frontend `areaDecks`, `cardfight`, and `cardfightTokens` tests pass (3 files); backend `test_cardfight.py`, `test_area_rooms.py`, and `test_cardfight_catalog_tokens.py` pass (50 tests); frontend build passes (1609 modules); `git diff --check` passes. The first backend attempt omitted the repository root from `PYTHONPATH` and failed a test-helper import; rerun with the correct path passed.
-* **Review follow-up**: First reviewer pass requested explicit engine tests for wrong-section classification, 30/31 capacity and duplicate/order preservation, plus consistent `Token Deck` inspector wording. Coverage and copy are fixed; focused verification passes; reviewer recheck pending.
-* **Next**: Obtain independent plan-based re-review, then publish only after reviewer PASS per owner instruction. Keep `Reverse Engineered/` untracked and unstaged.
+* **Review follow-up**: Reviewer requested explicit engine tests for wrong-section classification, 30/31 capacity and duplicate/order preservation, plus consistent `Token Deck` inspector wording. Follow-up fixed these and passed focused verification. Reviewer recheck confirmed all findings resolved and marked the feature ready to merge.
+* **Next**: Push the reviewed commits to `origin/main` as owner-authorized. Keep `Reverse Engineered/` untracked and unstaged.
 
 ## 2026-10-23 battlefield zone styling
 * **Active Task**: Remove the persistent UI boxes drawn over Cardfight battlefield zones to match the inspected Vanguard reference.

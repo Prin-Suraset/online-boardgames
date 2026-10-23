@@ -9,9 +9,10 @@
 
 ## 2026-10-23 separate Cardfight deck builder request
 * **Active Task**: Move Cardfight deck building outside room setup; add account-synced saved decks and copy/paste share codes while retaining file export.
-* **State**: Design drafted and awaiting owner approval. No product code changed.
+* **State**: Design drafted, builder-read review complete, awaiting owner approval. No product code changed.
 * [x] Inspected current `DeckWorkshop`, `CardfightSetup`, router, auth context, and SQLite/FastAPI patterns.
 * [x] Drafted `docs/superpowers/specs/2026-10-23-cardfight-deck-builder-design.md` from the owner's account-sync/share-code direction.
+* [x] Builder-read review resolved: cloud saves use optimistic revisions to avoid cross-device overwrite; a registered user's room picker lists account decks, while local saves remain available for explicit import.
 * [ ] Owner reviews and approves the design/API contract. After approval, write the implementation plan, then implement and independently review before publication.
 * **Proposed API**: owner-scoped authenticated GET/POST/PUT/DELETE `/api/cardfight/decks`; registered accounts cloud sync; guest saves local. Share codes are bounded self-contained deck drafts. Existing `CF_SUBMIT_DECK` contract remains unchanged.
 

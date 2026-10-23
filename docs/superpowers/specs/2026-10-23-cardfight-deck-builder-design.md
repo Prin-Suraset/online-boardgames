@@ -34,7 +34,7 @@ Move Cardfight deck building out of the room setup. Players should build and man
 
 ## Proposed product flow
 
-The global navigation gets a **Decks** entry. `/decks/cardfight` opens the full builder outside any room. Registered users load and save their account decks through authenticated requests. Guests continue using device-local storage and see a sign-in prompt if they want cloud sync. Existing local saves remain available; a registered user can explicitly import them into the account, with name collisions presented for a deliberate keep/replace/skip choice.
+The global navigation gets a **Decks** entry. `/decks/cardfight` opens the full builder outside any room. Registered users load and save their account decks through authenticated requests. Guests continue using device-local storage and see a sign-in prompt if they want cloud sync. Existing local saves remain on the device; a registered user can explicitly import them into the account from the Decks page, with name collisions presented for a deliberate keep/replace/skip choice. A registered user's room picker lists account decks only; a local deck must be imported before it can be selected in a room.
 
 Cardfight room setup contains a **Choose deck** control for the player's saved decks, a concise selected-deck status, and the existing **Submit private deck** action. It contains no card search, deck editor, save/import/export controls, or embedded builder. Decks can be managed by leaving the room and using the global Decks page. Selecting and submitting a deck continues to call `CF_SUBMIT_DECK`; the server remains authoritative for current catalog/profile validation.
 
@@ -44,7 +44,7 @@ Add a `cardfight_decks` table with opaque deck ID, owner user ID, deck name, cat
 
 - `GET /api/cardfight/decks` returns the authenticated member's saved deck summaries and definitions.
 - `POST /api/cardfight/decks` creates a saved deck and returns its server ID and timestamps.
-- `PUT /api/cardfight/decks/{deck_id}` replaces that owner's saved deck by ID.
+- `PUT /api/cardfight/decks/{deck_id}` replaces that owner's saved deck by ID and includes the revision last loaded by the client. The server increments the revision on each update and returns `409 DECK_REVISION_CONFLICT` if another device saved a newer revision; the user can reload or save their draft as a separate deck.
 - `DELETE /api/cardfight/decks/{deck_id}` deletes only that owner's saved deck.
 
 Request/response models are strict, bounded, and versioned through the embedded `game_id` and `catalog_version`. Saving an incomplete working deck is allowed; room submission retains full gameplay validation. Missing IDs and attempts to access another owner's deck return the same not-found response. API authorization uses the existing bearer-token dependency and derives owner identity from the validated token, never from a client-provided owner ID.
@@ -66,6 +66,8 @@ Keep existing JSON and legacy `.prfl` exports. Add a `CF1:` versioned base64url 
 
 - Account cloud saves are for registered accounts; guest saves remain local.
 - Local-to-account migration is user-triggered, duplicate names require an explicit choice, and source local saves remain intact.
+- Registered room pickers contain account decks only; explicit import is required before a local deck becomes account-selectable.
+- Cloud updates use optimistic revision checks and never silently overwrite a newer cross-device edit.
 - Copy/paste codes are self-contained deck data, not public links, and imports are drafts until a user saves them.
 - Room setup shows one deck picker with selected status and submission; navigation provides access to the full builder.
 - Existing JSON/legacy imports and exports remain available on the dedicated page.

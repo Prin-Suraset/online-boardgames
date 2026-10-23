@@ -70,7 +70,7 @@ export function CardfightDeckPreview() {
       const cardGrade = grade(card);
       const gradeMatch = filter === "all" || (filter === "g" ? card.fields.ExtraDeck === 1 : filter === "6plus" ? cardGrade !== null && cardGrade >= 6 : String(cardGrade) === filter);
       return search.includes(query.toLocaleLowerCase()) && gradeMatch;
-    }).slice(0, 36);
+    }).slice(0, 100);
   }, [catalog, filter, query]);
 
   const lookup = useMemo(() => new Map((catalog?.cards ?? []).map((card) => [card.card_id, card])), [catalog]);

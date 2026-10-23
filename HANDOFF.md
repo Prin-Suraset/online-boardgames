@@ -2,8 +2,9 @@
 
 ## 2026-10-23 bot test and PvP lobby choices
 * **Active Task**: Add distinct lobby paths for normal PvP room creation and public test rooms using current game bots.
-* **State**: Owner approved the design: bot tests for What Number (two bots), You or Me (one), and Top100 (one); Tic-Tac-Toe/Cardfight stay PvP-only. Design is saved at `docs/superpowers/specs/2026-10-23-bot-test-and-pvp-lobby-design.md`; implementation plan is saved at `docs/superpowers/plans/2026-10-23-bot-test-and-pvp-lobby.md`. Plan review pending; no product code changed.
-* **Next**: Get plan confirmation, then allow authenticated room hosts to use the existing bot action and wire the lobby's bot-test route to fill minimum seats once. Run focused API/frontend checks, request independent review, and update this file.
+* **State**: Owner approved the design and plan. Task 1 implemented and verified: `ADD_TEST_BOTS` requires the socket token identity to match the action player ID; the room manager still requires host role. API regression and full `test_rooms_api.py` pass (7 tests). Commit pending. Task 2 lobby route not started.
+* **Ruling**: Preserve `HOST_ONLY` for authenticated non-hosts — that is the established room-manager contract. Require an authenticated matching token before the manager call because the prior code otherwise permitted host-ID spoofing. Cost if wrong: callers without guest/account tokens cannot add bots; the lobby always supplies such tokens.
+* **Next**: Commit Task 1, implement the bot-test lobby route, verify, get independent review, and update this file.
 
 ## 2026-10-23 ROOM_NOT_FOUND local connection mismatch
 * **Active Task**: Fix `ROOM_NOT_FOUND: The requested room does not exist.` when connecting to rooms created in local development.

@@ -31,9 +31,9 @@
 
 **Files:** `backend/app/main.py`, `backend/tests/test_rooms_api.py`.
 
-**Test:** Add an API/WebSocket regression that creates a guest host and a second guest, proves the authenticated host can use `ADD_TEST_BOTS`, and proves missing/mismatched authentication and non-host callers receive `FORBIDDEN`. Confirm the normal error envelope is sent and the socket remains usable.
+**Test:** Add an API/WebSocket regression that creates a guest host and a second guest, proves the authenticated host can use `ADD_TEST_BOTS`, and proves missing/mismatched authentication receive `FORBIDDEN` while a non-host receives the existing `HOST_ONLY` error. Confirm the normal error envelope is sent and the socket remains usable.
 
-**Code:** In the `ADD_TEST_BOTS` dispatch branch, require `authenticated_user.id == message.player_id` instead of admin status, then retain `rooms.add_test_bots(code, message.player_id, count)` so host, game, capacity, and lobby checks remain authoritative.
+**Code:** In the `ADD_TEST_BOTS` dispatch branch, require a non-null `authenticated_user` whose `id` equals `message.player_id`, then retain `rooms.add_test_bots(code, message.player_id, count)` so the room manager's host, game, capacity, and lobby checks remain authoritative. Missing or mismatched identity returns `FORBIDDEN`; an authenticated non-host keeps the manager's `HOST_ONLY` error.
 
 **Verify:** Run `pytest -q tests/test_rooms_api.py` from `backend/`; `git diff --check`; commit `fix(rooms): allow authenticated hosts to add test bots`.
 

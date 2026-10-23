@@ -282,6 +282,14 @@ def create_app(
                             )
                     elif isinstance(message, GameActionMessage):
                         if message.payload.action_type == "ADD_TEST_BOTS":
+                            if (
+                                authenticated_user is None
+                                or authenticated_user.id != message.player_id
+                            ):
+                                raise RoomError(
+                                    "FORBIDDEN",
+                                    "Only the authenticated room host can add test bots.",
+                                )
                             count = message.payload.payload.get("count")
                             if not isinstance(count, int) or isinstance(count, bool):
                                 raise RoomError(

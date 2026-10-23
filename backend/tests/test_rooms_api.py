@@ -548,3 +548,79 @@ async def test_websocket_role_switch_broadcasts_and_spectator_chat() -> None:
             watcher_view = StateEnvelope.model_validate(await watcher_socket.receive_json()).payload
             assert len(host_view.players) == 1
             assert watcher_view.spectators[0].id == watcher["id"]
+
+
+@pytest.mark.anyio
+async def test_authenticated_host_can_add_test_bots_and_other_callers_cannot(
+    tmp_path: Path,
+) -> None:
+    app = create_app(auth_database_path=tmp_path / "auth.sqlite3")
+    host_token, host_user = app.state.auth.create_guest("Host")
+    other_token, other_user = app.state.auth.create_guest("Other")
+    host = {"id": host_user.id, "name": host_user.display_name, "avatar": "H"}
+    other = {"id": other_user.id, "name": other_user.display_name, "avatar": "O"}
+    async with httpx.AsyncClient(
+        transport=httpx.ASGITransport(app=app), base_url="http://testserver"
+    ) as client:
+        response = await client.post(
+            "/api/rooms", json={"game_type": "top100", "player": host}
+        )
+    assert response.status_code == 201
+    room_code = CreateRoomResponse.model_validate(response.json()).room_code
+    bot_action = {
+        "type": "GAME_ACTION",
+        "player_id": host["id"],
+        "payload": {"action_type": "ADD_TEST_BOTS", "payload": {"count": 1}},
+    }
+
+    async with ASGIWebSocket(app, f"/ws/rooms/{room_code}", token=host_token) as host_socket:
+        await host_socket.send_json(join_message(host))
+        await host_socket.receive_json()
+        await host_socket.send_json(bot_action)
+        host_update = await host_socket.receive_json()
+        assert host_update["type"] == "GAME_STATE_UPDATE"
+        players = host_update["payload"]["players"]
+        assert len(players) == 2
+        assert players[1]["is_bot"] is True
+
+        async with ASGIWebSocket(app, f"/ws/rooms/{room_code}") as anonymous_socket:
+            await anonymous_socket.send_json(join_message(host))
+            await anonymous_socket.receive_json()
+            await anonymous_socket.send_json(bot_action)
+            anonymous_error = ErrorEnvelope.model_validate(
+                await anonymous_socket.receive_json()
+            )
+            assert anonymous_error.payload.code == "FORBIDDEN"
+            await anonymous_socket.send_json(
+                {"action": "SEND_CHAT", "payload": {"text": "Still connected"}}
+            )
+            assert ChatEnvelope.model_validate(
+                await anonymous_socket.receive_json()
+            ).data.text == "Still connected"
+
+        async with ASGIWebSocket(
+            app, f"/ws/rooms/{room_code}", token=other_token
+        ) as mismatched_socket:
+            await mismatched_socket.send_json(join_message(host))
+            await mismatched_socket.receive_json()
+            await mismatched_socket.send_json(bot_action)
+            mismatch_error = ErrorEnvelope.model_validate(
+                await mismatched_socket.receive_json()
+            )
+            assert mismatch_error.payload.code == "FORBIDDEN"
+
+        async with ASGIWebSocket(
+            app, f"/ws/rooms/{room_code}", token=other_token
+        ) as non_host_socket:
+            await non_host_socket.send_json(join_message(other))
+            await non_host_socket.receive_json()
+            non_host_action = {
+                **bot_action,
+                "player_id": other["id"],
+                "payload": {"action_type": "ADD_TEST_BOTS", "payload": {"count": 1}},
+            }
+            await non_host_socket.send_json(non_host_action)
+            non_host_error = ErrorEnvelope.model_validate(
+                await non_host_socket.receive_json()
+            )
+            assert non_host_error.payload.code == "HOST_ONLY"

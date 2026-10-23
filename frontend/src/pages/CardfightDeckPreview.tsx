@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownToLine, ArrowLeft, Check, ChevronDown, CircleHelp, Cloud, Copy, Layers3, Plus, Search, ShieldCheck, Sparkles, Swords, Upload, X } from "lucide-react";
+import { ArrowDownToLine, ArrowLeft, Check, ChevronDown, CircleHelp, Cloud, Copy, Layers3, Plus, Search, ShieldCheck, Sparkles, Swords, Trash2, Upload, X } from "lucide-react";
 import { useCardfightCatalog } from "../components/cards/useCardfightCatalog";
 import { CardArtwork } from "../components/cards/CardArtwork";
 import { useAuth } from "../context/AuthContext";
@@ -95,6 +95,26 @@ export function CardfightDeckPreview() {
     setSelected(null);
   };
 
+  const removeCard = (cardId: number): void => {
+    setDeck((previous) => {
+      const main = [...previous.main];
+      const removedIndex = main.lastIndexOf(cardId);
+      if (removedIndex < 0) return previous;
+      main.splice(removedIndex, 1);
+      let starterIndex = previous.starter_index;
+      if (starterIndex !== null) {
+        if (removedIndex === starterIndex) {
+          const replacementStarter = main.findIndex((id) => grade(lookup.get(id)) === 0);
+          starterIndex = replacementStarter < 0 ? null : replacementStarter;
+        } else if (removedIndex < starterIndex) {
+          starterIndex -= 1;
+        }
+      }
+      return { ...previous, main, starter_index: starterIndex };
+    });
+    setNotice("One copy removed from the main deck.");
+  };
+
   const switchMode = (next: "builder" | "room"): void => {
     setMode(next);
     setSelected(null);
@@ -182,7 +202,7 @@ export function CardfightDeckPreview() {
               <div className="cf-decks-counts"><span><i className="blue" />Ride <b>{deck.ride.length}/4</b></span><span><i className="gold" />G zone <b>{deck.extra.length}/16</b></span></div>
               <div className="cf-decks-list-tabs"><span>Card</span><span>Qty</span></div>
               <div className="cf-decks-listed-cards">
-                {namedCounts.map(({ id, count, card }) => <button type="button" key={id} className="cf-decks-listed-card" onClick={(event) => { if (card !== undefined) openInspector(event.currentTarget, card); }}><CardArtwork card={card} /><span>{cardName(card)}<small>Grade {grade(card) ?? "?"}</small></span><b>{count}</b><span className="cf-decks-card-chevron">›</span></button>)}
+                {namedCounts.map(({ id, count, card }) => <div key={id} className="cf-decks-listed-card"><button type="button" className="cf-decks-listed-open" onClick={(event) => { if (card !== undefined) openInspector(event.currentTarget, card); }} aria-label={`Inspect ${cardName(card)}`}><CardArtwork card={card} /><span>{cardName(card)}</span></button><b aria-label={`${count} copies`}>{count}</b><button type="button" className="cf-decks-listed-remove" aria-label={`Remove one copy of ${cardName(card)}`} title="Remove one copy" onClick={() => { removeCard(id); }}><Trash2 size={15} /></button></div>)}
               </div>
               <div className={`cf-decks-legality${isDeckReady ? "" : " is-incomplete"}`}><span className="cf-decks-legality-icon">{isDeckReady ? <Check size={15} /> : <CircleHelp size={15} />}</span><span><strong>{isDeckReady ? "Ready for assisted play" : "Draft in progress"}</strong><small>{isDeckReady ? "Deck validation checks passed" : `${deck.main.length}/50 main deck cards · Complete the list to continue`}</small></span><CircleHelp size={15} /></div>
               <button type="button" className="cf-decks-room-cta" disabled={!isDeckReady} onClick={() => { switchMode("room"); }}>{isDeckReady ? "Choose for a room" : "Complete deck to choose for room"} <span>›</span></button>

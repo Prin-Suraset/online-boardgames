@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownToLine, ArrowLeft, Check, ChevronDown, CircleHelp, Cloud, Copy, Layers3, Plus, Search, ShieldCheck, Sparkles, Swords, Trash2, Upload, X } from "lucide-react";
+import { ArrowDownToLine, ArrowLeft, Check, ChevronDown, ChevronLeft, ChevronRight, CircleHelp, Cloud, Copy, Layers3, Plus, Search, ShieldCheck, Sparkles, Swords, Trash2, Upload, X } from "lucide-react";
 import { useCardfightCatalog } from "../components/cards/useCardfightCatalog";
 import { CardArtwork } from "../components/cards/CardArtwork";
 import { useAuth } from "../context/AuthContext";
 import { navigate } from "../lib/navigation";
 import { cardName, cardText, emptyDeck, grade, sampleDeck, validateDeck, type AreaCard } from "../lib/areaDecks";
+import { paginateItems } from "../lib/cardPagination";
 import type { CardfightDeck } from "../types/cardfight";
 import "../components/cards/cardfight.css";
 import "./cardfight-decks.css";
 
 type Section = "main" | "ride" | "extra";
+const CARD_PAGE_SIZE = 120;
 const demoDecks = ["Blaster Blade · Royal Paladin", "Dragonic Overlord · Kagero", "New deck · Not saved"] as const;
 
 export function CardfightDeckPreview() {
@@ -21,9 +23,11 @@ export function CardfightDeckPreview() {
   const [quantity, setQuantity] = useState("1");
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
+  const [cardPage, setCardPage] = useState(1);
   const [notice, setNotice] = useState("");
   const [roomDeck, setRoomDeck] = useState<string>(demoDecks[0]);
   const [selected, setSelected] = useState<AreaCard | null>(null);
+  const cardGridRef = useRef<HTMLDivElement | null>(null);
   const dialogRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const inspectorOpenerRef = useRef<HTMLElement | null>(null);
@@ -33,6 +37,10 @@ export function CardfightDeckPreview() {
       setDeck((previous) => previous.catalog_version === "preview" ? { ...previous, catalog_version: catalog.catalog_version } : previous);
     }
   }, [catalog, deck.catalog_version]);
+
+  useEffect(() => {
+    cardGridRef.current?.scrollTo({ top: 0 });
+  }, [cardPage, filter, query]);
 
   useEffect(() => {
     if (selected === null) return;
@@ -63,15 +71,17 @@ export function CardfightDeckPreview() {
     };
   }, [selected]);
 
-  const cards = useMemo(() => {
+  const filteredCards = useMemo(() => {
     if (catalog === null) return [];
     return catalog.cards.filter((card) => {
       const search = `${cardName(card)} ${cardText(card)} ${card.card_id}`.toLocaleLowerCase();
       const cardGrade = grade(card);
       const gradeMatch = filter === "all" || (filter === "g" ? card.fields.ExtraDeck === 1 : filter === "6plus" ? cardGrade !== null && cardGrade >= 6 : String(cardGrade) === filter);
       return search.includes(query.toLocaleLowerCase()) && gradeMatch;
-    }).slice(0, 120);
+    });
   }, [catalog, filter, query]);
+  const pageCount = Math.max(1, Math.ceil(filteredCards.length / CARD_PAGE_SIZE));
+  const cards = useMemo(() => paginateItems(filteredCards, cardPage, CARD_PAGE_SIZE), [filteredCards, cardPage]);
 
   const lookup = useMemo(() => new Map((catalog?.cards ?? []).map((card) => [card.card_id, card])), [catalog]);
   const isDeckReady = catalog !== null && validateDeck(deck, catalog).length === 0;
@@ -181,19 +191,24 @@ export function CardfightDeckPreview() {
               </div>
 
               <div className="cf-decks-searchline">
-                <label className="cf-decks-search"><Search size={17} /><input type="search" value={query} onChange={(event) => { setQuery(event.target.value); }} placeholder="Search card name, text, or ID" aria-label="Search Cardfight cards" /><kbd>/</kbd></label>
-                <label className="cf-decks-filter"><span>Show</span><select aria-label="Filter by grade" value={filter} onChange={(event) => { setFilter(event.target.value); }}><option value="all">All cards</option><option value="0">Grade 0</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6plus">Grade 6+</option><option value="g">G zone</option></select></label>
+                <label className="cf-decks-search"><Search size={17} /><input type="search" value={query} onChange={(event) => { setQuery(event.target.value); setCardPage(1); }} placeholder="Search card name, text, or ID" aria-label="Search Cardfight cards" /><kbd>/</kbd></label>
+                <label className="cf-decks-filter"><span>Show</span><select aria-label="Filter by grade" value={filter} onChange={(event) => { setFilter(event.target.value); setCardPage(1); }}><option value="all">All cards</option><option value="0">Grade 0</option><option value="1">Grade 1</option><option value="2">Grade 2</option><option value="3">Grade 3</option><option value="4">Grade 4</option><option value="5">Grade 5</option><option value="6plus">Grade 6+</option><option value="g">G zone</option></select></label>
               </div>
 
               <div className="cf-decks-section-tabs" role="tablist" aria-label="Deck section">
                 {(["main", "ride", "extra"] as const).map((part) => <button type="button" key={part} role="tab" aria-selected={section === part} onClick={() => { setSection(part); }}>{part === "main" ? "Main deck" : part === "ride" ? "Ride deck" : "G zone"}<span>{part === "main" ? deck.main.length : part === "ride" ? deck.ride.length : deck.extra.length}</span></button>)}
               </div>
 
-              <div className="cf-decks-card-grid">
+              <div id="cf-decks-card-grid" ref={cardGridRef} className="cf-decks-card-grid">
                 {cards.map((card) => <button type="button" key={card.card_id} className="cf-decks-card" onClick={(event) => { openInspector(event.currentTarget, card); }} aria-label={`View ${cardName(card)}`}><CardArtwork card={card} full /><span className="cf-decks-card-name">{cardName(card)}</span></button>)}
-                {catalog !== null && cards.length === 0 && <div className="cf-decks-no-cards">No cards found. Try another search.</div>}
+                {catalog !== null && filteredCards.length === 0 && <div className="cf-decks-no-cards">No cards found. Try another search.</div>}
               </div>
-              <div className="cf-decks-resultline">{catalog === null ? "Loading card collection…" : `${cards.length} cards shown`} <span>Choose a card to inspect and add it to your {section === "extra" ? "G zone" : section}.</span></div>
+              {pageCount > 1 && <nav className="cf-decks-pagination" aria-label="Card pages">
+                <button type="button" aria-label="Previous card page" aria-controls="cf-decks-card-grid" disabled={cardPage === 1} onClick={() => { setCardPage((page) => Math.max(1, page - 1)); }}><ChevronLeft size={16} /> Previous</button>
+                <span aria-live="polite">Page {cardPage} of {pageCount}</span>
+                <button type="button" aria-label="Next card page" aria-controls="cf-decks-card-grid" disabled={cardPage === pageCount} onClick={() => { setCardPage((page) => Math.min(pageCount, page + 1)); }}>Next <ChevronRight size={16} /></button>
+              </nav>}
+              <div className="cf-decks-resultline">{catalog === null ? "Loading card collection…" : filteredCards.length === 0 ? "0 cards found" : `${(cardPage - 1) * CARD_PAGE_SIZE + 1}–${Math.min(cardPage * CARD_PAGE_SIZE, filteredCards.length)} of ${filteredCards.length} cards`} <span>Choose a card to inspect and add it to your {section === "extra" ? "G zone" : section}.</span></div>
             </section>
 
             <aside className="cf-decks-list" aria-label="Current deck list">
